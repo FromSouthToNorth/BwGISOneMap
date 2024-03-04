@@ -1,1 +1,21 @@
+@import 'var/index.less';
 @import 'map.less';
+
+html {
+  overflow: hidden;
+  text-size-adjust: 100%;
+}
+
+html, body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@default-layout-main-cls: ~'@{namespace}-default-layout-main';
+
+
+html .@{default-layout-main-cls} {
+  font-family: JetBrainsMono;
+}

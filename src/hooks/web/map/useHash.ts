@@ -62,8 +62,6 @@ export function behaviorHash(context?: any) {
       // don't update if the new hash already reflects the state of iD
       if (_cachedHash === computedHash())
         return
-      console.log('update zoom center')
-
       map.setView(
         [Math.min(_latitudeLimit, Math.max(-_latitudeLimit, mapArgs[1])), mapArgs[2]],
         mapArgs[0],
@@ -74,10 +72,8 @@ export function behaviorHash(context?: any) {
   function behavior() {
     map.on('moveend', _throttledUpdate)
     window.addEventListener('hashchange', hashchange)
-    console.log(MAP_LOCATION)
 
     const mapLocation = ls.get(MAP_LOCATION)
-    console.log(mapLocation)
 
     if (mapLocation) {
       const mapArgs = mapLocation.split('/').map(Number)
