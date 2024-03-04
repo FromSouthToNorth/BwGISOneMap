@@ -1,5 +1,6 @@
 import 'uno.css'
 import '@/design/index.less'
+import 'leaflet/dist/leaflet.css'
 import 'ant-design-vue/dist/reset.css'
 import { createApp } from 'vue'
 import App from './App.vue'

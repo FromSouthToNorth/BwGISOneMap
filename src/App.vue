@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { ConfigProvider } from 'ant-design-vue/lib'
+import { AppProvider } from '@/components/Application'
 
 const themeConfig = computed(() =>
   Object.assign(
@@ -20,7 +21,9 @@ const themeConfig = computed(() =>
 
 <template>
   <ConfigProvider :theme="themeConfig">
-    <RouterView />
+    <AppProvider>
+      <RouterView />
+    </AppProvider>
   </ConfigProvider>
 </template>
 
