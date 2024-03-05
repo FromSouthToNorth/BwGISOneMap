@@ -3,9 +3,8 @@ import _throttle from 'lodash-es/throttle'
 import { MAP_LOCATION } from '@/enums/cacheEnum'
 import { utilQsString, utilStringQs } from '@/utils'
 import { utilObjectOmit } from '@/utils/object'
-import { createLocalStorage } from '@/utils/cache'
+import { getAuthCache, setAuthCache } from '@/utils/auth'
 
-const ls = createLocalStorage()
 export function behaviorHash(context?: any) {
   const map: any = context.map
   let _cachedHash: any = null
@@ -42,7 +41,7 @@ export function behaviorHash(context?: any) {
       window.history.replaceState(null, '', latestHash)
       const q = utilStringQs(latestHash)
       if (q.map)
-        ls.set(MAP_LOCATION, q.map)
+        setAuthCache(MAP_LOCATION, q.map)
     }
   }
 
@@ -73,7 +72,7 @@ export function behaviorHash(context?: any) {
     map.on('moveend', _throttledUpdate)
     window.addEventListener('hashchange', hashchange)
 
-    const mapLocation = ls.get(MAP_LOCATION)
+    const mapLocation = getAuthCache(MAP_LOCATION)
 
     if (mapLocation) {
       const mapArgs = mapLocation.split('/').map(Number)
