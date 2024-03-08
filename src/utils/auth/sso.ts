@@ -28,7 +28,6 @@ export function getUrlParam(name: string) {
 export function bwSSOSDKLogin(callback: Function) {
   const { hostname, port } = window.location
   BW_SSO_SDK.SSOLogin(hostname, port, (data: any) => {
-    console.log(data)
     if (!data)
       return false
     else callback()

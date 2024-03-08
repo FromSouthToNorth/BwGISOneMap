@@ -1,32 +1,15 @@
-import type { CreateStorageParams } from './storageCache'
-import { createStorage as create } from './storageCache'
-import { getStorageShortName } from '@/utils/env'
-import { DEFAULT_CACHE_TIME, SHOULD_ENABLE_STORAGE_ENCRYPTION } from '@/settings/encryptionSetting'
+import type { BasicKeys } from '@/utils/cache/persistent'
 
-export type Options = Partial<CreateStorageParams>
+const ls = localStorage
 
-function createOptions(storage: Storage, options: Options = {}): Options {
-  return {
-    // No encryption in debug mode
-    hasEncrypt: SHOULD_ENABLE_STORAGE_ENCRYPTION,
-    storage,
-    prefixKey: getStorageShortName(),
-    ...options,
-  }
+export function getCache<T>(key: BasicKeys) {
+  return ls.getItem(key) as T
 }
 
-export const WebStorage = create(createOptions(sessionStorage))
-
-export function createStorage(storage: Storage = sessionStorage, options: Options = {}) {
-  return create(createOptions(storage, options))
+export function setCache(key: BasicKeys, value: any) {
+  return ls.setItem(key, value)
 }
 
-export function createSessionStorage(options: Options = {}) {
-  return createStorage(sessionStorage, { ...options, timeout: DEFAULT_CACHE_TIME })
+export function clearCache() {
+  return ls.clear()
 }
-
-export function createLocalStorage(options: Options = {}) {
-  return createStorage(localStorage, { ...options, timeout: DEFAULT_CACHE_TIME })
-}
-
-export default WebStorage

@@ -12,6 +12,7 @@ export const API_ADDRESS = 'API_ADDRESS__'
 // user info key
 export const USER_INFO_KEY = 'pro__user__info__'
 export const MINE_INFO_KEY = 'pro__mine__info__'
+export const MINE_DESC_KEY = 'pro__MineDesc'
 
 // base global local key
 export const APP_LOCAL_CACHE_KEY = 'COMMON__LOCAL__KEY__'
