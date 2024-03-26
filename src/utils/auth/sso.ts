@@ -1,4 +1,4 @@
-import { setAuthCache } from './index'
+import { setCache } from '../cache'
 import { TOKEN_KEY } from '@/enums/cacheEnum'
 import { getDingtalkToToken } from '@/api/sys/login'
 
@@ -7,7 +7,7 @@ export function initSso(callback: Function) {
   if (token) {
     getDingtalkToToken(token).then((res: any) => {
       // set token
-      setAuthCache(TOKEN_KEY, res.data)
+      setCache(TOKEN_KEY, res.data)
       callback()
     })
   }

@@ -47,6 +47,7 @@
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "eslint": "^8.56.0",
     "less": "^4.2.0",
+    "pkg-types": "^1.0.3",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
     "vue-tsc": "^1.8.27"

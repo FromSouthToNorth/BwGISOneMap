@@ -1,5 +1,14 @@
+/*
+ * @Author: huangyu 598050554@qq.com
+ * @Date: 2024-03-04 16:09:14
+ * @LastEditors: huangyu 598050554@qq.com
+ * @LastEditTime: 2024-03-11 14:54:53
+ * @FilePath: \BwGISOneMap\src\router\routes\guard\permissionGuard.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import type { Router } from 'vue-router'
-import { getToken, setAuthCache } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
+import { setCache } from '@/utils/cache'
 import { TOKEN_KEY } from '@/enums/cacheEnum'
 
 export function createPermissionGuard(router: Router) {
@@ -20,7 +29,7 @@ export function createPermissionGuard(router: Router) {
     const { token } = to.query
 
     if (token) {
-      setAuthCache(TOKEN_KEY, token)
+      setCache(TOKEN_KEY, token)
       delete to.query.token
       next(to || '/')
       return

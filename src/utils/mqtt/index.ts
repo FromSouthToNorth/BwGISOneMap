@@ -1,14 +1,12 @@
-import { RealTimeData } from './Mqtt'
-import { productEnum } from '@/enums/productEnum'
+import { Mqtt } from './Mqtt'
+import { publishGetMineInfo } from './publish'
 
-const realTimeData = new RealTimeData(true, productEnum.PRODUCT_CODE)
+export const mqtt = new Mqtt(true)
+export const MQTT_CLIENT_ID = mqtt.clientId
 
-class Mqtt {
-  private realTimeData: any
-  private OnConnect: any
-  private OnReconnect: any
-  constructor() {
-    this.realTimeData = realTimeData
-    console.log(realTimeData.clientId)
-  }
+export function createMqtt() {
+  mqtt.init()
+  mqtt.subscribeCommon()
+  mqtt.publish(publishGetMineInfo())
+  return mqtt
 }

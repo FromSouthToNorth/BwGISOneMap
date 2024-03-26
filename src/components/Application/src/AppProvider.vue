@@ -3,6 +3,7 @@ import { defineComponent, ref, toRefs, unref } from 'vue'
 import { createAppProviderContext } from './useAppContext'
 import { createBreakpointListen } from '@/hooks/event/useBreakpoint'
 import { prefixCls } from '@/settings/designSetting'
+import { createMqtt } from '@/utils/mqtt'
 
 const props = {
   prefixCls: { type: String, default: prefixCls },
@@ -24,6 +25,8 @@ export default defineComponent({
 
     // Inject variables into the global
     createAppProviderContext({ prefixCls, isMobile })
+
+    createMqtt()
 
     /**
      * Used to maintain the state before the window changes

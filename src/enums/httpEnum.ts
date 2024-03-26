@@ -29,3 +29,8 @@ export enum ContentTypeEnum {
   // form-data  upload
   FORM_DATA = 'multipart/form-data;charset=UTF-8',
 }
+
+export enum HttpTypeEnum {
+  HTTP = 'http:',
+  HTTPS = 'https:',
+}

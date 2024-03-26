@@ -2,6 +2,7 @@ import type { MineInfo, UserInfo } from '#/store'
 
 import type {
   ACCESS_NET_TOKEN,
+  MAP_LOCATION,
   MINE_DESC_KEY,
   MINE_INFO_KEY,
   TOKEN_KEY,
@@ -14,6 +15,7 @@ interface BasicStore {
   [USER_INFO_KEY]: UserInfo
   [MINE_INFO_KEY]: MineInfo
   [MINE_DESC_KEY]: string | null | undefined
+  [MAP_LOCATION]: string
 }
 
 export type BasicKeys = keyof BasicStore

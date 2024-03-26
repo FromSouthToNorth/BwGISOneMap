@@ -1,7 +1,6 @@
 import * as L from 'leaflet'
 import type { Map } from 'leaflet'
 import { tileLayers } from './tileLayer'
-import { buildUUID } from '@/utils/uuid'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useMapStore } from '@/store/modules/map'
 
@@ -19,6 +18,5 @@ export function createMap(id: string): Map {
   hash()
 
   mapStore.setMap(map)
-  console.log('uuid: ', buildUUID())
   return map
 }
