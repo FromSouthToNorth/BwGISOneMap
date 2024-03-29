@@ -1,12 +1,16 @@
 import _throttle from 'lodash-es/throttle'
 
+import type { Map } from 'leaflet'
 import { MAP_LOCATION } from '@/enums/cacheEnum'
 import { utilQsString, utilStringQs } from '@/utils'
 import { utilObjectOmit } from '@/utils/object'
 import { getCache, setCache } from '@/utils/cache'
+import type { MineInfo } from '#/store'
 
 export function behaviorHash(context?: any) {
-  const map: any = context.map
+  const map: Map = context.map
+  const mineInfo: MineInfo = context.mineInfo
+
   let _cachedHash: any = null
   const _latitudeLimit = 90 - 1e-8
 

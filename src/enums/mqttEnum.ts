@@ -4,3 +4,7 @@ export enum MqttEnum {
   SUBSCRIBE = '/Data',
   PUBLISH = '/Get',
 }
+
+export enum MqttFunEnum {
+  MINE_INFO = 'mineinfo',
+}

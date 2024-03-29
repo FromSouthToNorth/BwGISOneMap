@@ -2,7 +2,7 @@ import { getCache } from '../cache'
 import { ACCESS_NET_TOKEN, MINE_DESC_KEY, TOKEN_KEY } from '@/enums/cacheEnum'
 
 export function getToken() {
-  return getCache(TOKEN_KEY) || getCache(ACCESS_NET_TOKEN) || ''
+  return getCache(TOKEN_KEY) || getCache(ACCESS_NET_TOKEN)
 }
 
 export function getMineDesc() {

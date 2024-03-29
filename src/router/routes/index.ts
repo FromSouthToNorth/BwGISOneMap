@@ -15,13 +15,13 @@ export const IndexRoute: AppRouteRecordRaw = {
   path: '/index',
   name: 'Index',
   component: LAYOUT,
-  redirect: '/index/lMap',
+  redirect: '/index',
   meta: {
     title: 'Index',
   },
   children: [
     {
-      path: 'lMap',
+      path: '/index',
       name: 'map',
       component: () => import('@/views/index.vue'),
       meta: {

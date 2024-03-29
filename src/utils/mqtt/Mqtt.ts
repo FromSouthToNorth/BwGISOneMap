@@ -2,6 +2,8 @@ import type { MqttClient, PacketCallback } from 'mqtt'
 import mqtt from 'mqtt'
 import { getMineDesc } from '../auth'
 import { brokerUrl, clientOptions } from './settings'
+import { mqttFun } from './fun'
+import type { MqttResult } from './types'
 import { buildUUID } from '@/utils/uuid'
 import { formatToDateTime } from '@/utils/dateUtil'
 import { MqttEnum } from '@/enums/mqttEnum'
@@ -46,14 +48,14 @@ class Mqtt {
         if (!str)
           console.error(`${topic}, 收到数据为空。`)
 
-        const result = JSON.parse(str)
+        const result = JSON.parse(str) as MqttResult
         console.warn(`[${formatToDateTime(new Date())}] 收到消息: `, topic, result)
+        mqttFun(result.generalFunc, result.params)
       }
       catch (error) {
         console.error(error)
       }
     })
-    return this
   }
 
   publish(message: object, callback?: PacketCallback) {
@@ -66,8 +68,8 @@ class Mqtt {
   }
 
   subscribeCommon() {
-    this.client.subscribe(`/${getMineDesc()}${MqttEnum.SUBSCRIBE}/${this.clientId}/#`)
-    return this
+    const topicObject = `/${getMineDesc()}${MqttEnum.SUBSCRIBE}/${this.clientId}/#`
+    this.client.subscribe(topicObject)
   }
 }
 

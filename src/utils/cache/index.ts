@@ -1,3 +1,4 @@
+import { isObject } from '../is'
 import type { BasicKeys } from '@/utils/cache/persistent'
 
 const ls = localStorage
@@ -8,6 +9,9 @@ export function getCache<T>(key: BasicKeys) {
 }
 
 export function setCache(key: BasicKeys, value: any) {
+  if (isObject(value))
+    value = JSON.stringify(value)
+
   return ls.setItem(key, value)
 }
 

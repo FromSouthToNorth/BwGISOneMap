@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { MineInfo, UserInfo } from '#/store'
-import { MINE_INFO_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
+import { MAP_LOCATION, MINE_INFO_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
 import { getCache, setCache } from '@/utils/cache'
 import { store } from '@/store'
 
@@ -44,7 +44,15 @@ export const useUserStore = defineStore({
     },
     setMineInfo(info: MineInfo | null) {
       this.mineInfo = info
+
       setCache(MINE_INFO_KEY, info)
+      setCache(MAP_LOCATION, info)
+      let value
+      if (info) {
+        const { show_map, centerB, centerL } = info
+        value = `${show_map}/${centerB}/${centerL}`
+      }
+      setCache(MAP_LOCATION, { value })
     },
     resetState() {
       this.userInfo = null
