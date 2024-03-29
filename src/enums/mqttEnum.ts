@@ -7,4 +7,7 @@ export enum MqttEnum {
 
 export enum MqttFunEnum {
   MINE_INFO = 'mineinfo',
+  ONE_MAP_CADS = 'oneMapCads',
+  MINE_BOUNDARY = 'mineBoundary',
+  ONE_MAP_MENU = 'oneMapMenu',
 }

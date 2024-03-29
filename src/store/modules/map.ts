@@ -10,7 +10,9 @@ export const useMapStore = defineStore({
   }),
   getters: {
     getMap(state): Map {
-      return state.map
+      return state.map as Map
+    },
+    getCads(state) {
     },
   },
   actions: {

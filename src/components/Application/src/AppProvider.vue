@@ -3,7 +3,7 @@ import { defineComponent, ref, toRefs, unref } from 'vue'
 import { createAppProviderContext } from './useAppContext'
 import { createBreakpointListen } from '@/hooks/event/useBreakpoint'
 import { prefixCls } from '@/settings/designSetting'
-import { createMqtt } from '@/utils/mqtt'
+import { contextInit } from '@/utils/mqtt'
 
 const props = {
   prefixCls: { type: String, default: prefixCls },
@@ -25,14 +25,14 @@ export default defineComponent({
 
     // Inject variables into the global
     createAppProviderContext({ prefixCls, isMobile })
-
-    createMqtt()
-
+    console.time('timer')
+    contextInit()
+    console.timeEnd('timer')
     /**
      * Used to maintain the state before the window changes
      */
     function handleRestoreState() {
-      console.log(unref(isMobile))
+      console.warn('handleRestoreState: ', unref(isMobile))
     }
     return () => slots.default?.()
   },

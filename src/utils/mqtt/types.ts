@@ -7,10 +7,10 @@ export interface Param {
 
 export interface Publish {
   code: number
-  token: string
-  caller: string
-  clientId: string
-  mineDesc: string
+  token?: string
+  caller?: string
+  clientId?: string
+  mineDesc?: string
   strategyParams?: Param[]
 }
 
