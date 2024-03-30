@@ -22,6 +22,7 @@ export function publishContext(obj: Publish): Publish {
     caller,
     clientId,
   }
+
   if (obj.code !== 682) {
     if (isArray(obj.strategyParams)) {
       obj.strategyParams.forEach(({ name, value }) => {
