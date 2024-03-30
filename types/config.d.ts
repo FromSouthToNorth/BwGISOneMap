@@ -77,3 +77,14 @@ export interface ProjectConfig {
   // Whether to cancel the http request that has been sent but not responded when switching the interface.
   removeAllHttpPending: boolean
 }
+
+export interface TransitionSetting {
+  //  Whether to open the page switching animation
+  enable: boolean
+  // Route basic switching animation
+  basicTransition: RouterTransitionEnum
+  // Whether to open page switching loading
+  openPageLoading: boolean
+  // Whether to open the top progress bar
+  openNProgress: boolean
+}

@@ -8,6 +8,7 @@ import { router, setupRouter } from './router'
 import { setupStore } from './store'
 import { bwSSOSDKLogin } from './utils/auth/sso'
 import { setupRouterGuard } from './router/routes/guard'
+import { setupGlobDirectives } from './directives'
 
 async function bootstrap() {
   const app = createApp(App)
@@ -20,7 +21,13 @@ async function bootstrap() {
   // 配置路由
   setupRouter(app)
 
+  // router-guard
+  // 路由守卫
   setupRouterGuard(router)
+
+  // Register global directive
+  // 注册全局指令
+  setupGlobDirectives(app)
 
   app.mount('#app')
 }

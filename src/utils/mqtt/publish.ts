@@ -4,6 +4,10 @@ import { isArray } from '../is'
 import type { Param, Publish } from './types'
 import { mqtt } from '.'
 
+import { useAppStoreWithOut } from '@/store/modules/app'
+
+const appState = useAppStoreWithOut()
+
 const mineName = getMineName() as string
 const paramMap = new Map()
 paramMap.set('mineName', mineName)
@@ -54,6 +58,7 @@ const initPublishCode = [682, 3011, 2003, 2037]
 
 export function publishInit(departmentID?: string
   | LocationQueryValue[]): Publish[] {
+  appState.setPageLoading(true)
   const init = initPublishCode.map((code) => {
     return publishContext({
       code,

@@ -20,15 +20,15 @@ export function createMap(id: string) {
     })
     const hash = behaviorHash({ map, mineInfo })
     hash()
-    map.on('moveend', () => {
-      hash.updateHashIfNeeded()
-    })
+    map.on('moveend', hash.updateHashIfNeeded)
+
     map.on('zoom', zoom)
+
     tileLayers.forEach(({ tileUrl, options }) => {
       const tileLayer = L.tileLayer(tileUrl, options)
         .addTo(map)
         .on('tileerror', (e) => {
-          console.log(e)
+          console.error(e)
         })
       tileLayersGroup.push(tileLayer)
     })

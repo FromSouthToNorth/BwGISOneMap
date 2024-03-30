@@ -3,6 +3,10 @@ import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
+import { useAppStoreWithOut } from '@/store/modules/app'
+
+const appState = useAppStoreWithOut()
+
 export const mqttFunMap = new Map<MqttFunEnum, Function>()
 
 const userStore = useUserStoreWithOut()
@@ -21,6 +25,7 @@ function setMineInfo(params: Params) {
 
 function oneMapCads(params: Params) {
   console.log('oneMapCads:', params)
+  appState.setPageLoading(false)
 }
 
 function mineBoundary(params: Params) {

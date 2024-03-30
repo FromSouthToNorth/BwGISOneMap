@@ -24,6 +24,8 @@ export const APP_SESSION_CACHE_KEY = 'COMMON__SESSION__KEY'
 // lock info
 export const LOCK_INFO_KEY = 'LOCK__INFO__KEY'
 
+export const APP_DARK_MODE_KEY = '__APP__DARK__MODE'
+
 export enum CacheTypeEnum {
   SESSION,
   LOCAL,
