@@ -89,6 +89,8 @@ export function behaviorHash(context?: any) {
     hashchange()
   }
 
+  behavior.updateHashIfNeeded = updateHashIfNeeded
+
   behavior.off = function () {
     _throttledUpdate.cancel()
     map.off('moveend', _throttledUpdate)
