@@ -4,10 +4,10 @@ import dayjs from 'dayjs'
 import { readPackageJSON } from 'pkg-types'
 import { type UserConfig, defineConfig, loadEnv, mergeConfig } from 'vite'
 
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
 import { generateModifyVars } from '../src/utils/modifyVars'
 import { commonConfig } from './common'
+
+import { createPlugins } from './plugins'
 
 interface DefineOptions {
   overrides?: UserConfig
@@ -19,12 +19,15 @@ interface DefineOptions {
 function defineApplicationConfig(defineOptions: DefineOptions = {}) {
   const { overrides = {} } = defineOptions
 
-  return defineConfig(async ({ mode }) => {
+  return defineConfig(async ({ command, mode }) => {
     const root = process.cwd()
-    // const { VITE_PUBLIC_PATH } = loadEnv(
-    //   mode,
-    //   root,
-    // )
+    const isBuild = command === 'build'
+    const { VITE_BUILD_COMPRESS } = loadEnv(
+      mode,
+      root,
+    )
+
+    const plugins = await createPlugins({ isBuild, root, compress: VITE_BUILD_COMPRESS })
 
     const defineData = await createDefineData(root)
 
@@ -69,7 +72,7 @@ function defineApplicationConfig(defineOptions: DefineOptions = {}) {
           },
         },
       },
-      plugins: [vue(), vueJsx()],
+      plugins,
     }
 
     const mergedConfig = mergeConfig(commonConfig(mode), applicationConfig)
