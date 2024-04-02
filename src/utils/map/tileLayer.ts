@@ -1,15 +1,20 @@
 import type { TileLayerOptions } from 'leaflet'
+import { EncryptionFactory } from '@/utils/cipher'
 
-interface tileLayer {
+interface TileLayer {
   tileUrl: string
   options?: TileLayerOptions
 }
-const accessToken
-  = 'pk.eyJ1IjoiY3VzXzgycW01d2MzIiwiYSI6Ijd5amlkN2xhMmZwMTJ2b2E0cXBseGZ0YWkiLCJ0Ijo0fQ.mE8viqYaaPjHZJTJvxdEZj2zZ5B1E7zHx7Cy4U2Ner4'
+const base64 = EncryptionFactory.createBase64Encryption()
 
-export const tileLayers: Array<tileLayer> = [
+const accessToken
+  = base64.decrypt('cGsuZXlKMUlqb2lZM1Z6WHpneWNXMDFkMk16SWl3aVlTSTZJamQ1YW1sa04yeGhNbVp3TVRKMmIyRTBjWEJzZUdaMFlXa2lMQ0owSWpvMGZRLm1FOHZpcVlhYVBqSFpKVEp2eGRFWmoyelo1QjFFN3pIeDdDeTRVMk5lcjQ=')
+
+const tileUrl = import.meta.env.VITE_GLOB_MAP_URL
+
+export const tileLayers: Array<TileLayer> = [
   {
-    tileUrl: import.meta.env.VITE_GLOB_MAP_URL,
+    tileUrl,
     options: {
       accessToken,
     },
