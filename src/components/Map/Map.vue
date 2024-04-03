@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, unref } from 'vue'
-import { createMap } from '@/utils/map/index'
+import { createMap } from '@/utils/map'
 
 const mapContainer = ref()
 

@@ -1,6 +1,6 @@
 import { useRoute } from 'vue-router'
 import { Mqtt } from './Mqtt'
-import { publishInit } from './publish'
+import { publishInit, publishMineInfo } from './publish'
 
 export const mqtt = new Mqtt(true)
 export const MQTT_CLIENT_ID = mqtt.clientId
@@ -16,6 +16,8 @@ export function contextInit() {
   mqtt.subscribeCommon()
 
   /** 获取矿井消息 */
+  mqtt.publish(publishMineInfo())
+
   publishInit(departmentID).forEach((e) => {
     mqtt.publish(e)
   })

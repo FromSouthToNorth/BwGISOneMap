@@ -1,3 +1,4 @@
+import 'leaflet'
 import type { Params } from './types'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
@@ -6,10 +7,9 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { useAppStoreWithOut } from '@/store/modules/app'
 
 const appState = useAppStoreWithOut()
+const userStore = useUserStoreWithOut()
 
 export const mqttFunMap = new Map<MqttFunEnum, Function>()
-
-const userStore = useUserStoreWithOut()
 
 mqttFunMap.set(MqttFunEnum.MINE_INFO, setMineInfo)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
@@ -19,21 +19,21 @@ mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 
 function setMineInfo(params: Params) {
   const mineInfo = params.data[0] as unknown as MineInfo
-  console.log('mineInfo: ', mineInfo)
+  console.warn('mineInfo: ', mineInfo)
   userStore.setMineInfo(mineInfo)
 }
 
 function oneMapCads(params: Params) {
-  console.log('oneMapCads:', params)
+  console.warn('oneMapCads:', params)
   appState.setPageLoading(false)
 }
 
 function mineBoundary(params: Params) {
-  console.log('mineBoundary', params)
+  console.warn('mineBoundary', params)
 }
 
 function oneMapMenu(params: Params) {
-  console.log('oneMapMenu', params)
+  console.warn('oneMapMenu', params)
 }
 
 export function mqttFun(type: MqttFunEnum, params: Params) {

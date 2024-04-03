@@ -50,11 +50,19 @@ export function publishContext(obj: Publish): Publish {
 
 /**
  * 682 矿井信息
+ */
+export function publishMineInfo(): Publish {
+  const code = 682
+  return publishContext({ code })
+}
+
+/**
+ *
  * 2003 菜单
  * 2037 cad 图纸
  * 3011 矿井边界
  */
-const initPublishCode = [682, 3011, 2003, 2037]
+const initPublishCode = [3011, 2003, 2037]
 
 export function publishInit(departmentID?: string
   | LocationQueryValue[]): Publish[] {

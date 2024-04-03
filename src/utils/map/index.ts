@@ -13,7 +13,7 @@ export const tileLayersGroup: TileLayer[] = []
 
 export function createMap(id: string) {
   watch(() => mineInfo.value, async (mineInfo) => {
-    const { show_map, centerB, centerL, no_show_satellitemap, max_zoom, show_cad } = mineInfo
+    const { show_map, centerB, centerL, no_show_satellitemap, max_zoom, show_cad, is_show_mineboundary } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
 
     const map = L.map(id, {
@@ -21,7 +21,11 @@ export function createMap(id: string) {
       center,
       maxZoom: max_zoom || 25,
     })
+    if (!is_show_mineboundary)
+      console.warn('不显矿井边界!!!')
+
     if (no_show_satellitemap) {
+      console.warn('不显示卫星图!!!')
       map.setView([centerB, centerL], show_cad)
     }
     else {
