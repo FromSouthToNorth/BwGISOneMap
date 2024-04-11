@@ -9,24 +9,26 @@ export interface UserInfo {
 }
 
 export interface MineInfo {
-  id: string
-  mineName: string
-  mineDesc: string
   x: number
   y: number
   z: number
   b: number
   l: number
+  id: string
   centerB: number
   centerL: number
   centerX: number
   centerY: number
-  no_show_satellitemap: number
+  mineName: string
+  mineDesc: string
   gistitle: string
-  isundergroud: number
   show_cad: number
   hide_cad: number
   show_map: number
   hide_map: number
   max_zoom?: number
+  isundergroud: number
+  is_show_mineboundary: number
+  no_show_satellitemap: number
+
 }

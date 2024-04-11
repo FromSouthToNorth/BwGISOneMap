@@ -1,6 +1,8 @@
 import * as L from 'leaflet'
 import type { LatLngExpression, TileLayer } from 'leaflet'
 import { watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { publishInit } from '../mqtt/publish'
 import { tileLayers } from './tileLayer'
 import { zoom } from './event'
 import { behaviorHash } from '@/hooks/web/map/useHash'
@@ -12,6 +14,10 @@ const mapStore = useMapStore()
 export const tileLayersGroup: TileLayer[] = []
 
 export function createMap(id: string) {
+  const route = useRoute()
+
+  /* 根据路由的部门ID查询菜单及图纸 */
+  const departmentID = route.query?.departmentID || route.params?.departmentID
   watch(() => mineInfo.value, async (mineInfo) => {
     const { show_map, centerB, centerL, no_show_satellitemap, max_zoom, show_cad, is_show_mineboundary } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
@@ -44,6 +50,7 @@ export function createMap(id: string) {
     map.on('moveend', hash.updateHashIfNeeded)
 
     map.on('zoom', zoom)
+    publishInit(departmentID)
 
     mapStore.setMap(map)
   })

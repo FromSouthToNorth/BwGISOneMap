@@ -1,13 +1,16 @@
 import 'leaflet'
+import { toLatlngs } from '../map/to'
 import type { Params } from './types'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
+import { useMapStoreWithOut } from '@/store/modules/map'
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
+const mapStore = useMapStoreWithOut()
 
 export const mqttFunMap = new Map<MqttFunEnum, Function>()
 
@@ -29,7 +32,9 @@ function oneMapCads(params: Params) {
 }
 
 function mineBoundary(params: Params) {
-  console.warn('mineBoundary', params)
+  const bls = params as unknown as BL[]
+  console.warn('mineBoundary', toLatlngs(bls), userStore.getMineInfo)
+  console.log(mapStore.getMap)
 }
 
 function oneMapMenu(params: Params) {

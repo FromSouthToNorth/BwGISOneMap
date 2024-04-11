@@ -64,8 +64,7 @@ export function publishMineInfo(): Publish {
  */
 const initPublishCode = [3011, 2003, 2037]
 
-export function publishInit(departmentID?: string
-  | LocationQueryValue[]): Publish[] {
+export function publishInitArray(departmentID: string | LocationQueryValue[]): Publish[] {
   appState.setPageLoading(true)
   const init = initPublishCode.map((code) => {
     return publishContext({
@@ -76,4 +75,10 @@ export function publishInit(departmentID?: string
     })
   })
   return init
+}
+
+export function publishInit(departmentID: string | LocationQueryValue[]) {
+  publishInitArray(departmentID).forEach((e) => {
+    mqtt.publish(e)
+  })
 }
