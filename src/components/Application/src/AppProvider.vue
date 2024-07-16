@@ -25,9 +25,7 @@ export default defineComponent({
 
     // Inject variables into the global
     createAppProviderContext({ prefixCls, isMobile })
-    console.time('timer')
     contextInit()
-    console.timeEnd('timer')
     /**
      * Used to maintain the state before the window changes
      */

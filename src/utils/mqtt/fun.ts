@@ -20,6 +20,7 @@ mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
+  mineInfo.time = new Date()
   console.warn('mineInfo: ', mineInfo)
   userStore.setMineInfo(mineInfo)
 }

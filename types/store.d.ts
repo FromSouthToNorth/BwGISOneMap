@@ -30,5 +30,5 @@ export interface MineInfo {
   isundergroud: number
   is_show_mineboundary: number
   no_show_satellitemap: number
-
+  time: Date
 }

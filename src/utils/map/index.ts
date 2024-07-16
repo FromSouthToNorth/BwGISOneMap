@@ -18,7 +18,7 @@ export function createMap(id: string) {
 
   /* 根据路由的部门ID查询菜单及图纸 */
   const departmentID = route.query?.departmentID || route.params?.departmentID
-  watch(() => mineInfo.value, async (mineInfo) => {
+  watch(() => mineInfo.value, (mineInfo) => {
     const { show_map, centerB, centerL, max_zoom } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
 

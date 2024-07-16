@@ -1,6 +1,6 @@
 import type { LeafletEvent } from 'leaflet'
 import { toRaw } from 'vue'
-import { removeTileLayer, showTile } from './tileLayer'
+import { removeTileLayer, showSatellite } from './tileLayer'
 import { defaultCad, removeCadLayers } from './cadsLayer'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
 import { useMapSetting } from '@/hooks/web/map/useMap'
@@ -14,7 +14,7 @@ export function zoom(e: LeafletEvent) {
   if (zoom <= show_map) {
     refreshCad = true
     removeCadLayers()
-    showTile()
+    showSatellite()
   }
 
   if (zoom >= show_cad) {

@@ -1,4 +1,4 @@
-import type { TileLayerOptions } from 'leaflet'
+import type { Polygon, TileLayerOptions } from 'leaflet'
 import { toRaw } from 'vue'
 import * as L from 'leaflet'
 import { isArray } from '../is'
@@ -10,6 +10,8 @@ import { EncryptionFactory } from '@/utils/cipher'
 import { mineLayersEnum } from '@/enums/mapEnum'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
 import { useMapSetting } from '@/hooks/web/map/useMap'
+
+let mineBoundary: Polygon
 
 export const tileLayersGroup = L.featureGroup()
 
@@ -34,6 +36,11 @@ export const tileLayers: Array<TileLayer> = [
   },
 ]
 
+export function showSatellite() {
+  tile()
+  tileLayersGroup.addLayer(mineBoundary)
+}
+
 export function mineMarker() {
   const { mineInfo } = useUserSetting()
   const { centerB, centerL, mineName } = toRaw(mineInfo.value)
@@ -47,7 +54,6 @@ export function mineMarker() {
   mm.bindPopup(mineName, { autoClose: false, closeOnClick: false })
     .openPopup()
 }
-
 export function setMineBoundary(latLngs: BL[]) {
   const { mineInfo } = useUserSetting()
   const { is_show_mineboundary } = toRaw(mineInfo.value)
@@ -55,61 +61,43 @@ export function setMineBoundary(latLngs: BL[]) {
     return
 
   const lls = toLatlngs(latLngs)
-  const mb = polygon(lls, {
+  mineBoundary = polygon(lls, {
     color: '#2196F3',
     dashSpeed: 1,
     key: mineLayersEnum.MINE_BOUNDARY,
   })
-  mb.on('mouseover', () => {
-    mb.setStyle({
+  mineBoundary.on('mouseover', () => {
+    mineBoundary.setStyle({
       color: '#76FF03',
       dashArray: '12, 12',
       dashSpeed: 30,
     })
   })
-  mb.on('mouseout', () => {
-    mb.setStyle({
+  mineBoundary.on('mouseout', () => {
+    mineBoundary.setStyle({
       color: '#2196F3',
       dashArray: '',
       dashSpeed: 0,
     })
   })
-  mb.on('click', () => {
+  mineBoundary.on('click', () => {
     toShowCad()
   })
 
-  tileLayersGroup.addLayer(mb)
+  tileLayersGroup.addLayer(mineBoundary)
 }
 
 export function tile() {
-  const { mineInfo } = useUserSetting()
-  const { no_show_satellitemap } = toRaw(mineInfo.value)
-  /** 显示卫星图 */
-  if (!no_show_satellitemap) {
-    tileLayers.forEach(({ tileUrl, options }) => {
-      const tileLayer = L.tileLayer(tileUrl, options)
-        .on('tileerror', (e) => {
-          console.error(e)
-        })
-      tileLayersGroup.addLayer(tileLayer)
-    })
-    mineMarker()
-  }
-}
-
-export function showTile() {
-  const { map } = useMapSetting()
-  tileLayersGroup.addTo(toRaw(map.value))
-  for (const layer of tileLayersGroup.getLayers()) {
-    const { options } = layer
-    if (options.key === mineLayersEnum.MINE_MARKER) {
-      layer.openPopup()
-      break
-    }
-  }
+  tileLayers.forEach(({ tileUrl, options }) => {
+    const tileLayer = L.tileLayer(tileUrl, options)
+      .on('tileerror', (e) => {
+        console.error(e)
+      })
+    tileLayersGroup.addLayer(tileLayer)
+  })
+  mineMarker()
 }
 
 export function removeTileLayer() {
-  const { map } = useMapSetting()
-  toRaw(map.value).removeLayer(tileLayersGroup)
+  tileLayersGroup.clearLayers()
 }

@@ -49,7 +49,7 @@ defineProps({
   .full-loading {
     display: flex;
     position: fixed;
-    z-index: 200;
+    z-index: 300;
     top: 0;
     left: 0;
     align-items: center;
@@ -60,7 +60,7 @@ defineProps({
 
     &.absolute {
       position: absolute;
-      z-index: 300;
+      z-index: 400;
       top: 0;
       left: 0;
     }

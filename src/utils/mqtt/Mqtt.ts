@@ -6,7 +6,7 @@ import { mqttFun } from './fun'
 import type { MqttResult } from './types'
 import { buildUUID } from '@/utils/uuid'
 import { formatToDateTime } from '@/utils/dateUtil'
-import { MqttEnum } from '@/enums/mqttEnum'
+import { MqttEnum, MqttFunEnum } from '@/enums/mqttEnum'
 
 class Mqtt {
   clientId: string
