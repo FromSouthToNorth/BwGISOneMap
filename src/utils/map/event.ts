@@ -1,24 +1,34 @@
 import type { LeafletEvent } from 'leaflet'
-import { tileLayersGroup } from '.'
-import { mineInfo } from '@/hooks/web/sys/useUser'
+import { toRaw } from 'vue'
+import { removeTileLayer, showTile } from './tileLayer'
+import { defaultCad, removeCadLayers } from './cadsLayer'
+import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useMapSetting } from '@/hooks/web/map/useMap'
 
+let refreshCad = true
 export function zoom(e: LeafletEvent) {
-  const { max_zoom, show_cad, show_map, hide_cad, hide_map } = mineInfo.value
-
-  const zoom = e?.target.getZoom()
-
+  const { mineInfo } = useUserSetting()
+  const { show_cad, show_map } = mineInfo.value
+  const map = e?.target
+  const zoom = map.getZoom()
   if (zoom <= show_map) {
-    console.warn('显示卫星图')
-    tileLayersGroup.forEach((layer) => {
-      if (!e?.target.hasLayer(layer))
-        layer.addTo(e?.target)
-    })
+    refreshCad = true
+    removeCadLayers()
+    showTile()
   }
 
   if (zoom >= show_cad) {
-    console.warn('显示图纸: ')
-    tileLayersGroup.forEach((layer) => {
-      e?.target.removeLayer(layer)
-    })
+    removeTileLayer()
+    if (refreshCad) {
+      defaultCad()
+      refreshCad = false
+    }
   }
+}
+
+export function toShowCad() {
+  const { map } = useMapSetting()
+  const { mineInfo } = useUserSetting()
+  const { centerB, centerL, show_cad } = mineInfo.value
+  toRaw(map.value).setView([centerB, centerL], show_cad)
 }

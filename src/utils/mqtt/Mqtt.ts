@@ -50,7 +50,7 @@ class Mqtt {
 
         const result = JSON.parse(str) as MqttResult
         console.warn(`[${formatToDateTime(new Date())}] 收到消息: `, topic, result)
-        mqttFun(result.generalFunc, result.params)
+        mqttFun(result.generalFunc, result)
       }
       catch (error) {
         console.error(error)

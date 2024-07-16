@@ -1,7 +1,13 @@
-import { computed } from 'vue'
+import { computed, unref } from 'vue'
 
 import { useUserStore } from '@/store/modules/user'
 
-export const userStore = useUserStore()
+export function useUserSetting() {
+  const userStore = useUserStore()
 
-export const mineInfo = computed(() => userStore.getMineInfo)
+  const mineInfo = computed(() => unref(userStore.getMineInfo))
+
+  return {
+    mineInfo,
+  }
+}

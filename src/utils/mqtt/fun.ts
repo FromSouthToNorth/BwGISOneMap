@@ -1,6 +1,5 @@
-import 'leaflet'
-import { toLatlngs } from '../map/to'
-import type { Params } from './types'
+import { setMineBoundary } from '../map/tileLayer'
+import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
@@ -16,36 +15,42 @@ export const mqttFunMap = new Map<MqttFunEnum, Function>()
 
 mqttFunMap.set(MqttFunEnum.MINE_INFO, setMineInfo)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
-mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
 mqttFunMap.set(MqttFunEnum.MINE_BOUNDARY, mineBoundary)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 
-function setMineInfo(params: Params) {
-  const mineInfo = params.data[0] as unknown as MineInfo
+function setMineInfo(result: MqttResult) {
+  const mineInfo = result.params.data[0] as unknown as MineInfo
   console.warn('mineInfo: ', mineInfo)
   userStore.setMineInfo(mineInfo)
 }
 
-function oneMapCads(params: Params) {
-  console.warn('oneMapCads:', params)
+/**
+ * cad 图纸
+ * @param params
+ */
+function oneMapCads(result: MqttResult) {
+  console.warn('oneMapCads:', result.params)
+  mapStore.setCads(result)
   appState.setPageLoading(false)
 }
 
-function mineBoundary(params: Params) {
-  const bls = params as unknown as BL[]
-  console.warn('mineBoundary', toLatlngs(bls), userStore.getMineInfo)
-  console.log(mapStore.getMap)
+/**
+ * 矿井边界
+ * @param params
+ */
+function mineBoundary(result: MqttResult) {
+  const bls = result.params as unknown as BL[]
+  setMineBoundary(bls)
 }
 
-function oneMapMenu(params: Params) {
-  console.warn('oneMapMenu', params)
+function oneMapMenu(result: MqttResult) {
+  console.warn('oneMapMenu', result.params)
 }
 
-export function mqttFun(type: MqttFunEnum, params: Params) {
+export function mqttFun(type: MqttFunEnum, result: MqttResult) {
   const fun = mqttFunMap.get(type)
-
   if (fun)
-    fun(params)
+    fun(result)
   else
     console.error(`mqttFunMap 内没有找到 ${type} 方法!`)
 }

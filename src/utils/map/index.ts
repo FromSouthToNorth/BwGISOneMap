@@ -1,49 +1,36 @@
 import * as L from 'leaflet'
-import type { LatLngExpression, TileLayer } from 'leaflet'
+import type { LatLngExpression } from 'leaflet'
 import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { publishInit } from '../mqtt/publish'
-import { tileLayers } from './tileLayer'
+import { tile, tileLayersGroup } from './tileLayer'
 import { zoom } from './event'
+import { cadLayersGroup } from './cadsLayer'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useMapStore } from '@/store/modules/map'
-import { mineInfo } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUser'
 
 const mapStore = useMapStore()
 
-export const tileLayersGroup: TileLayer[] = []
-
 export function createMap(id: string) {
   const route = useRoute()
+  const { mineInfo } = useUserSetting()
 
   /* 根据路由的部门ID查询菜单及图纸 */
   const departmentID = route.query?.departmentID || route.params?.departmentID
   watch(() => mineInfo.value, async (mineInfo) => {
-    const { show_map, centerB, centerL, no_show_satellitemap, max_zoom, show_cad, is_show_mineboundary } = mineInfo
+    const { show_map, centerB, centerL, max_zoom } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
 
     const map = L.map(id, {
       zoom: show_map,
       center,
       maxZoom: max_zoom || 25,
+      minZoom: show_map,
+      attributionControl: false,
+      zoomControl: false,
     })
-    if (!is_show_mineboundary)
-      console.warn('不显矿井边界!!!')
-
-    if (no_show_satellitemap) {
-      console.warn('不显示卫星图!!!')
-      map.setView([centerB, centerL], show_cad)
-    }
-    else {
-      tileLayers.forEach(({ tileUrl, options }) => {
-        const tileLayer = L.tileLayer(tileUrl, options)
-          .addTo(map)
-          .on('tileerror', (e) => {
-            console.error(e)
-          })
-        tileLayersGroup.push(tileLayer)
-      })
-    }
+    mapStore.setMap(map)
 
     const hash = behaviorHash({ map, mineInfo })
     hash()
@@ -52,6 +39,10 @@ export function createMap(id: string) {
     map.on('zoom', zoom)
     publishInit(departmentID)
 
-    mapStore.setMap(map)
+    tileLayersGroup.addTo(map)
+
+    cadLayersGroup.addTo(map)
+
+    tile()
   })
 }

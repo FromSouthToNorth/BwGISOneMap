@@ -19,7 +19,15 @@ export interface Params {
   data: []
 }
 
+export interface CoalSeam {
+  ID: string
+  Txt: string
+  Value: string
+  tunnelCount: number
+}
+
 export interface MqttResult {
   generalFunc: MqttFunEnum
   params: Params
+  coalSeam?: CoalSeam[]
 }
