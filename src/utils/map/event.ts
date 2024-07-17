@@ -11,6 +11,7 @@ export function zoom(e: LeafletEvent) {
   const { show_cad, show_map } = mineInfo.value
   const map = e?.target
   const zoom = map.getZoom()
+
   if (zoom <= show_map) {
     refreshCad = true
     removeCadLayers()

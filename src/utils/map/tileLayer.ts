@@ -9,7 +9,6 @@ import { polygon } from './polygon'
 import { EncryptionFactory } from '@/utils/cipher'
 import { mineLayersEnum } from '@/enums/mapEnum'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
-import { useMapSetting } from '@/hooks/web/map/useMap'
 
 let mineBoundary: Polygon
 
@@ -56,8 +55,8 @@ export function mineMarker() {
 }
 export function setMineBoundary(latLngs: BL[]) {
   const { mineInfo } = useUserSetting()
-  const { is_show_mineboundary } = toRaw(mineInfo.value)
-  if (!is_show_mineboundary && !isArray(latLngs))
+  const { is_show_mineboundary, no_show_satellitemap } = toRaw(mineInfo.value)
+  if (no_show_satellitemap || !is_show_mineboundary && !isArray(latLngs))
     return
 
   const lls = toLatlngs(latLngs)

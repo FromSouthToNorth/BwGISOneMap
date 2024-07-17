@@ -1,3 +1,4 @@
+import { toRaw } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
 import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
@@ -6,6 +7,8 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMapStoreWithOut } from '@/store/modules/map'
+import { useMapSetting } from '@/hooks/web/map/useMap'
+import { useUserSetting } from '@/hooks/web/sys/useUser'
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
@@ -33,6 +36,11 @@ function oneMapCads(result: MqttResult) {
   console.warn('oneMapCads:', result.params)
   mapStore.setCads(result)
   appState.setPageLoading(false)
+  const { map } = useMapSetting()
+  const { mineInfo } = useUserSetting()
+  const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
+  if (no_show_satellitemap)
+    toRaw(map.value).setZoom(show_cad + 1)
 }
 
 /**
