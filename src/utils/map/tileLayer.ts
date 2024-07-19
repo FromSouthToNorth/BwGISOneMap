@@ -1,4 +1,4 @@
-import type { Polygon, TileLayerOptions } from 'leaflet'
+import type { Polygon, TileLayer, TileLayerOptions } from 'leaflet'
 import { toRaw } from 'vue'
 import * as L from 'leaflet'
 import { isArray } from '../is'
@@ -12,11 +12,16 @@ import { useUserSetting } from '@/hooks/web/sys/useUser'
 
 let mineBoundary: Polygon
 
+let tileSatellite: TileLayer[]
+
 export const tileLayersGroup = L.featureGroup()
 
-interface TileLayer {
+interface MTileLayer {
   tileUrl: string
-  options?: TileLayerOptions
+  options?: MOptions
+}
+interface MOptions extends TileLayerOptions {
+  key?: string
 }
 const base64 = EncryptionFactory.createBase64Encryption()
 
@@ -25,19 +30,23 @@ const accessToken
 
 const tileUrl = import.meta.env.VITE_GLOB_MAP_URL
 
-export const tileLayers: Array<TileLayer> = [
+export const tileLayers: Array<MTileLayer> = [
   {
     tileUrl,
     options: {
       accessToken,
       key: mineLayersEnum.MINE_SATELLITE,
+      zIndex: -100,
     },
   },
 ]
 
 export function showSatellite() {
+  mineMarker()
   tile()
-  tileLayersGroup.addLayer(mineBoundary)
+  addSatelliteTile()
+  if (mineBoundary && !tileLayersGroup.hasLayer(mineBoundary))
+    tileLayersGroup.addLayer(mineBoundary)
 }
 
 export function mineMarker() {
@@ -53,6 +62,7 @@ export function mineMarker() {
   mm.bindPopup(mineName, { autoClose: false, closeOnClick: false })
     .openPopup()
 }
+
 export function setMineBoundary(latLngs: BL[]) {
   const { mineInfo } = useUserSetting()
   const { is_show_mineboundary, no_show_satellitemap } = toRaw(mineInfo.value)
@@ -82,19 +92,30 @@ export function setMineBoundary(latLngs: BL[]) {
   mineBoundary.on('click', () => {
     toShowCad()
   })
-
   tileLayersGroup.addLayer(mineBoundary)
 }
 
 export function tile() {
+  tileSatellite = []
   tileLayers.forEach(({ tileUrl, options }) => {
     const tileLayer = L.tileLayer(tileUrl, options)
       .on('tileerror', (e) => {
         console.error(e)
       })
-    tileLayersGroup.addLayer(tileLayer)
+    tileSatellite.push(tileLayer)
   })
-  mineMarker()
+}
+
+export function addSatelliteTile() {
+  tileSatellite.forEach((e) => {
+    tileLayersGroup.addLayer(e)
+  })
+}
+
+export function removeSatelliteTile() {
+  tileSatellite.forEach((e) => {
+    tileLayersGroup.removeLayer(e)
+  })
 }
 
 export function removeTileLayer() {

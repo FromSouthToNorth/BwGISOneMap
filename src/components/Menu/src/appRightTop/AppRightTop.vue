@@ -4,7 +4,7 @@ import {
   SlideYTransition,
 } from '@/components/Transtition/index'
 
-import { MineName, User } from '@/components/Application'
+import { Cad, MineName, Satellite, User } from '@/components/Application'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
@@ -16,6 +16,8 @@ const { menuDrop } = useMenuSetting()
     <component :is="SlideYTransition">
       <div v-show="menuDrop" class="app-right-top-menu">
         <MineName />
+        <Satellite />
+        <Cad />
         <User />
       </div>
     </component>

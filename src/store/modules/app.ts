@@ -26,6 +26,7 @@ interface AppState {
   model: any
   menuHide: boolean
   menuDrop: boolean
+  isSatellite: boolean
 }
 let timeId: TimeoutHandle
 export const useAppStore = defineStore({
@@ -37,6 +38,7 @@ export const useAppStore = defineStore({
     model: {},
     menuHide: false,
     menuDrop: true,
+    isSatellite: false,
   }),
   getters: {
     getPageLoading(state): boolean {
@@ -56,6 +58,9 @@ export const useAppStore = defineStore({
     },
     getMenuDrop(state): boolean {
       return state.menuDrop
+    },
+    getIsSatellite(state): boolean {
+      return state.isSatellite
     },
   },
   actions: {
@@ -93,6 +98,9 @@ export const useAppStore = defineStore({
     },
     setMenuDrop(menuDrop: boolean): void {
       this.menuDrop = menuDrop
+    },
+    setIsSatellite(isSatellite: boolean): void {
+      this.isSatellite = isSatellite
     },
   },
 })

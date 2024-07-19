@@ -1,9 +1,8 @@
 import * as L from 'leaflet'
 import type { LatLngExpression } from 'leaflet'
-import { toRaw, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { publishInit } from '../mqtt/publish'
-import { tile, tileLayersGroup } from './tileLayer'
+import { watch } from 'vue'
+
+import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import { behaviorHash } from '@/hooks/web/map/useHash'
@@ -41,6 +40,6 @@ export function createMap(id: string) {
     cadLayersGroup.addTo(map)
     if (no_show_satellitemap)
       return
-    tile()
+    showSatellite()
   })
 }

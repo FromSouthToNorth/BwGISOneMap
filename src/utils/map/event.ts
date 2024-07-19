@@ -19,14 +19,16 @@ export function zoom(e: LeafletEvent) {
     appStore.setMenuHide(false)
     removeCadLayers()
     showSatellite()
+    appStore.setIsSatellite(refreshCad)
   }
 
   if (zoom >= show_cad) {
-    removeTileLayer()
     appStore.setMenuHide(true)
     if (refreshCad) {
+      removeTileLayer()
       defaultCad()
       refreshCad = false
+      appStore.setIsSatellite(refreshCad)
     }
   }
 }
