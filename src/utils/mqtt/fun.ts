@@ -5,6 +5,7 @@ import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
+import type { MenuItem } from '@/store/modules/app'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMapStoreWithOut } from '@/store/modules/map'
 import { useMapSetting } from '@/hooks/web/map/useMap'
@@ -24,7 +25,6 @@ mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
   mineInfo.time = new Date()
-  console.warn('mineInfo: ', mineInfo)
   userStore.setMineInfo(mineInfo)
 }
 
@@ -53,7 +53,7 @@ function mineBoundary(result: MqttResult) {
 }
 
 function oneMapMenu(result: MqttResult) {
-  console.warn('oneMapMenu', result.params)
+  appState.setMenu((result.params as unknown) as MenuItem[])
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

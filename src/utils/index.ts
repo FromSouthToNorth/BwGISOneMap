@@ -1,4 +1,5 @@
 import { intersectionWith, isEqual, mergeWith, unionWith } from 'lodash-es'
+import type { App, Component } from 'vue'
 import { isArray, isObject } from '@/utils/is'
 
 export function utilStringQs(str: string): any {
@@ -96,4 +97,31 @@ export function deepMerge<T extends object | null | undefined, U extends object 
 
     return undefined
   })
+}
+
+// https://github.com/vant-ui/vant/issues/8302
+interface EventShim {
+  new (...args: any[]): {
+    $props: {
+      onClick?: (...args: any[]) => void
+    }
+  }
+}
+
+export type WithInstall<T> = T & {
+  install: (app: App) => void
+} & EventShim
+
+export type CustomComponent = Component & { displayName?: string }
+
+export function withInstall<T extends CustomComponent>(component: T, alias?: string) {
+  (component as Record<string, unknown>).install = (app: App) => {
+    const compName = component.name || component.displayName
+    if (!compName)
+      return
+    app.component(compName, component)
+    if (alias)
+      app.config.globalProperties[alias] = component
+  }
+  return component as WithInstall<T>
 }

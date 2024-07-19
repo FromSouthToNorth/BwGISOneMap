@@ -4,10 +4,28 @@ import { darkMode } from '@/settings/designSetting'
 import type { ThemeEnum } from '@/enums/appEnum'
 import { APP_DARK_MODE_KEY } from '@/enums/cacheEnum'
 
+export interface MenuItem {
+  id: string
+  name: string
+  strategy: number
+  icon_class: string
+  icon_color: string
+  background_color: string
+  time?: Date
+}
+
+export interface Model {
+
+}
+
 interface AppState {
   darkMode?: ThemeEnum
   // Page loading status
   pageLoading: boolean
+  menu: MenuItem[]
+  model: any
+  menuHide: boolean
+  menuDrop: boolean
 }
 let timeId: TimeoutHandle
 export const useAppStore = defineStore({
@@ -15,6 +33,10 @@ export const useAppStore = defineStore({
   state: (): AppState => ({
     darkMode: undefined,
     pageLoading: false,
+    menu: [],
+    model: {},
+    menuHide: false,
+    menuDrop: true,
   }),
   getters: {
     getPageLoading(state): boolean {
@@ -22,6 +44,18 @@ export const useAppStore = defineStore({
     },
     getDarkMode(state): 'light' | 'dark' | string {
       return state.darkMode || darkMode
+    },
+    getMenu(state): MenuItem[] {
+      return state.menu
+    },
+    getModel(state): Model {
+      return state.model
+    },
+    getMenuHide(state): boolean {
+      return state.menuHide
+    },
+    getMenuDrop(state): boolean {
+      return state.menuDrop
     },
   },
   actions: {
@@ -46,6 +80,19 @@ export const useAppStore = defineStore({
         this.setPageLoading(loading)
         clearTimeout(timeId)
       }
+    },
+
+    setMenu(menu: MenuItem[]): void {
+      this.menu = menu
+    },
+    setModel(model: Model): void {
+      this.model = model
+    },
+    setMenuHide(menuHide: boolean): void {
+      this.menuHide = menuHide
+    },
+    setMenuDrop(menuDrop: boolean): void {
+      this.menuDrop = menuDrop
     },
   },
 })

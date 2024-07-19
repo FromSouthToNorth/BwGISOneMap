@@ -34,9 +34,9 @@ export const useUserStore = defineStore({
     },
   },
   actions: {
-    setToken(info: string | undefined) {
-      this.token = info || ''
-      setCache(TOKEN_KEY, info)
+    setToken(token: string | undefined) {
+      this.token = token || ''
+      setCache(TOKEN_KEY, token)
     },
     setUserInfo(info: UserInfo | null) {
       this.userInfo = info

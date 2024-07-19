@@ -64,7 +64,7 @@ export function publishMineInfo(): Publish {
  */
 const initPublishCode = [3011, 2003, 2037]
 
-export function publishInitArray(departmentID: string | LocationQueryValue[]): Publish[] {
+function publishInitArray(departmentID: string | LocationQueryValue[]): Publish[] {
   appState.setPageLoading(true)
   const init = initPublishCode.map((code) => {
     return publishContext({

@@ -4,9 +4,11 @@ import { removeTileLayer, showSatellite } from './tileLayer'
 import { defaultCad, removeCadLayers } from './cadsLayer'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
 import { useMapSetting } from '@/hooks/web/map/useMap'
+import { useAppStore } from '@/store/modules/app'
 
 let refreshCad = true
 export function zoom(e: LeafletEvent) {
+  const appStore = useAppStore()
   const { mineInfo } = useUserSetting()
   const { show_cad, show_map } = mineInfo.value
   const map = e?.target
@@ -14,12 +16,14 @@ export function zoom(e: LeafletEvent) {
 
   if (zoom <= show_map) {
     refreshCad = true
+    appStore.setMenuHide(false)
     removeCadLayers()
     showSatellite()
   }
 
   if (zoom >= show_cad) {
     removeTileLayer()
+    appStore.setMenuHide(true)
     if (refreshCad) {
       defaultCad()
       refreshCad = false

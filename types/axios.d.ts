@@ -36,6 +36,7 @@ export interface RetryRequest {
   waitTime: number
 }
 export interface Result<T = any> {
+  data: any
   code: number
   type: 'success' | 'error' | 'warning'
   message: string

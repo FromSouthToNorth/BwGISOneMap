@@ -6,6 +6,7 @@ export interface UserInfo {
   isDeviceMark: boolean
   orgCode: string
   userName: string
+  name: string
 }
 
 export interface MineInfo {

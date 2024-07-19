@@ -13,13 +13,9 @@ import { useUserSetting } from '@/hooks/web/sys/useUser'
 const mapStore = useMapStore()
 
 export function createMap(id: string) {
-  const route = useRoute()
   const { mineInfo } = useUserSetting()
-
-  /* 根据路由的部门ID查询菜单及图纸 */
-  const departmentID = route.query?.departmentID || route.params?.departmentID
   watch(() => mineInfo.value, (mineInfo) => {
-    const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = toRaw(mineInfo)
+    const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
     const maxZoom = max_zoom || 25
     const minZoom = no_show_satellitemap ? show_cad : show_map
@@ -39,8 +35,6 @@ export function createMap(id: string) {
     const hash = behaviorHash({ map, mineInfo })
     hash()
     map.on('moveend', hash.updateHashIfNeeded)
-
-    publishInit(departmentID)
 
     tileLayersGroup.addTo(map)
 

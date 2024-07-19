@@ -24,7 +24,6 @@ export function checkStatus(
     // Jump to the login page if not logged in, and carry the path of the current page
     // Return to the current page after successful login. This step needs to be operated on the login page.
     case 401:
-      userStore.setToken(undefined)
       errMessage = msg || '401'
       userStore.logout()
       break

@@ -52,6 +52,10 @@ export default defineApplicationConfig({
           target: 'http://192.168.133.110:33382',
           ws: true,
         },
+        '/BwDeviceManage': {
+          target: 'http://192.168.133.110:33382',
+          ws: true,
+        },
       },
       open: true, // 项目启动后，自动打开
       warmup: {
