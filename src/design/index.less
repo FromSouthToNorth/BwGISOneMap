@@ -17,6 +17,13 @@ html, body {
   overflow: hidden;
 }
 
+* ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  overflow: visible;
+  border-left: 1px solid #DDD;
+}
+
 @default-layout-main-cls: ~'@{namespace}-default-layout-main';
 
 
@@ -29,7 +36,7 @@ html .@{default-layout-main-cls} {
 }
 
 .right-top-menu-item {
-  padding: 0 12px;
+  padding: 0 24px;
   background-color:@component-background;
   font-size: 14px;
   color: @text-color-base;

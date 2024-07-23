@@ -1,40 +1,103 @@
 import * as L from 'leaflet'
-import type { TileLayer } from 'leaflet'
+import type { Layer, TileLayer } from 'leaflet'
 
-import { toRaw } from 'vue'
-import { useMapSetting } from '@/hooks/web/map/useMap'
-import { type Cad, useMapStoreWithOut } from '@/store/modules/map'
+import { ref, toRaw, unref } from 'vue'
+import { useCadSetting } from '@/hooks/setting/useCadSetting'
+import { useCadStoreWithOut } from '@/store/modules/cad'
 import { mapURLEnum } from '@/enums/mapEnum'
 
-const mapStore = useMapStoreWithOut()
+const cadStore = useCadStoreWithOut()
 
 export const cadLayersGroup = L.featureGroup()
 
-export function defaultCad() {
-  const { cads } = useMapSetting()
-  setCadLayer(toRaw(cads.value)[0].cads[0])
+export const refSelectCadsMap = ref(new Map<string, string[]>())
+export const refSelectCoalSeamSet = ref(new Set<string>())
+
+export function hasCadsMap(key: string) {
+  return unref(refSelectCadsMap).has(key)
 }
 
-export function setCadLayer(cad: Cad) {
-  const coalSeam = toRaw(useMapSetting().coalSeam.value)
-  const { coalSeams, dwgId } = cad
-  const _coalSeam = coalSeams.map((e) => { return e.CoalBed })
-  const filCoalSeam = coalSeam.filter((e) => { return _coalSeam.includes(e.Value) })
-  mapStore.setCoalSeam(filCoalSeam)
-  filCoalSeam.forEach(({ Value }) => {
-    const cadLayer = cadLayerWms(`${dwgId}${Value}`)
-    cadLayersGroup.addLayer(cadLayer)
+function setCadsMap(key: string, value: string[]) {
+  unref(refSelectCadsMap).set(key, value)
+}
+
+function deleteCadsMap(key: string) {
+  unref(refSelectCadsMap).delete(key)
+}
+
+export function hasCoalSeamSet(key: string) {
+  return unref(refSelectCoalSeamSet).has(key)
+}
+
+export function addSelectCoalSeamSet(key: string) {
+  unref(refSelectCoalSeamSet).add(key)
+}
+
+function deleteSelectCoalSeamSet(key: string) {
+  unref(refSelectCoalSeamSet).delete(key)
+}
+
+export function getCadLayers(): Layer[] {
+  return cadLayersGroup.getLayers()
+}
+
+export function hasLayer(key: string) {
+  const index = cadLayersGroup.getLayers().findIndex(({ options }) => { return options.dwgId === key })
+  return index !== -1
+}
+
+export function removeCadLayer(key: string) {
+  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => { return options.dwgId === key })
+  cadLayer.forEach((cadLayer) => {
+    cadLayersGroup.removeLayer(cadLayer)
+  })
+  deleteCadsMap(key)
+}
+
+export function coalSeamBySetCadLayer(coalSeam: string) {
+  addSelectCoalSeamSet(coalSeam)
+  unref(refSelectCadsMap).forEach((_, key) => {
+    setCadLayer(key)
   })
 }
 
-function cadLayerWms(dwgId: string, cadUrl = mapURLEnum.CAD_URL): TileLayer.WMS {
+export function coalSeamByRemoveCadLayer(coalSeam: string) {
+  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => { return options.coalSeam === coalSeam })
+  cadLayer.forEach((layer) => {
+    cadLayersGroup.removeLayer(layer)
+  })
+  deleteSelectCoalSeamSet(coalSeam)
+  if (!unref(refSelectCoalSeamSet).size)
+    unref(refSelectCadsMap).clear()
+}
+
+export function defaultCad() {
+  const cads = toRaw(useCadSetting().cads.value)
+  const cadName = cads[0].cads[0].typeName
+  cadStore.setCadName(cadName)
+  setCadLayer(cads[0].cads[0].dwgId)
+}
+
+export function setCadLayer(dwgId: string) {
+  const css: string[] = []
+  unref(refSelectCoalSeamSet).forEach((value) => {
+    css.push(value)
+    const cadLayer = cadLayerWms(dwgId, value)
+    cadLayersGroup.addLayer(cadLayer)
+  })
+  setCadsMap(dwgId, css)
+}
+
+function cadLayerWms(dwgId: string, coalSeam: string, cadUrl = mapURLEnum.CAD_URL): TileLayer.WMS {
   return L.tileLayer.wms(cadUrl, {
-    layers: `bwcad:${dwgId}`,
+    layers: `bwcad:${dwgId}${coalSeam}`,
     // crs: L.CRS.EPSG4326,
     format: 'image/png',
     transparent: true,
     minZoom: 8,
     maxZoom: 25,
+    coalSeam,
+    dwgId,
   })
 }
 

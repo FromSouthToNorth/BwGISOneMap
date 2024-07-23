@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useDesign } from '@/hooks/web/useDesign'
 
-const props = defineProps({
+defineProps({
   menuItem: { type: Object, required: true },
 })
 

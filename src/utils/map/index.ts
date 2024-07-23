@@ -27,9 +27,9 @@ export function createMap(id: string) {
       attributionControl: false,
       zoomControl: false,
     })
-    map.on('zoom', onZoom)
-
     mapStore.setMap(map)
+
+    map.on('zoom', onZoom)
 
     const hash = behaviorHash({ map, mineInfo })
     hash()

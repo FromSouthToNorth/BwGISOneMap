@@ -31,3 +31,30 @@ export interface MqttResult {
   params: Params
   coalSeam?: CoalSeam[]
 }
+
+export interface CoalBed {
+  CoalBed: string
+}
+
+export interface DwgLayer {
+  DwgLayer: string
+}
+
+export interface CadType {
+  Classfyname: string
+  Code: string
+  cads: Cad[]
+}
+
+export interface Cad {
+  Classfyname: string
+  Layers: DwgLayer[]
+  coalSeams: CoalBed[]
+  code: string
+  dwgId: string
+  isPublicLayers: boolean
+  isCoalBed: boolean
+  typeName: string
+  publish_days: number
+  exceedDay: number
+}

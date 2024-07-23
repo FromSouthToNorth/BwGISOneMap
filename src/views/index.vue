@@ -10,6 +10,8 @@ import { BasicMenu } from '@/components/Menu'
 </script>
 
 <template>
-  <BasicMenu />
-  <leafletMap />
+  <div>
+    <BasicMenu />
+    <leafletMap />
+  </div>
 </template>

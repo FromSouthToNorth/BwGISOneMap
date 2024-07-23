@@ -1,5 +1,6 @@
 import { toRaw } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
+import { addSelectCoalSeamSet } from '../map/cadsLayer'
 import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
@@ -7,13 +8,13 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 
 import type { MenuItem } from '@/store/modules/app'
 import { useAppStoreWithOut } from '@/store/modules/app'
-import { useMapStoreWithOut } from '@/store/modules/map'
+import { useCadStoreWithOut } from '@/store/modules/cad'
 import { useMapSetting } from '@/hooks/web/map/useMap'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
-const mapStore = useMapStoreWithOut()
+const cadStore = useCadStoreWithOut()
 
 export const mqttFunMap = new Map<MqttFunEnum, Function>()
 
@@ -33,10 +34,15 @@ function setMineInfo(result: MqttResult) {
  * @param params
  */
 function oneMapCads(result: MqttResult) {
-  console.warn('oneMapCads:', result.params)
-  mapStore.setCads(result)
+  console.warn('oneMapCads:', result.coalSeam)
+  const { coalSeam } = result
+  coalSeam?.forEach(({ Value }) => {
+    addSelectCoalSeamSet(Value)
+  })
+  cadStore.setCads(result)
   appState.setPageLoading(false)
   const { map } = useMapSetting()
+
   const { mineInfo } = useUserSetting()
   const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
   if (no_show_satellitemap)

@@ -2,6 +2,8 @@ html {
   // text
   --text-color: rgba(0 0 0 / 85%);
 
+  --hover-text-color:rgba(22,119,255,0.8);
+
   // border
   --border-color: #eee;
 
@@ -17,6 +19,9 @@ html {
 
   // component
   --component-background-color: #fff;
+
+  // shadow
+  --component-shadow: rgba(0, 0, 0, 0.1);
 
   // app
   --app-content-background-color: #fafafa;
@@ -50,6 +55,8 @@ html {
 @border-color-base: var(--border-color);
 
 @text-color-secondary: #8b949e;
+
+@component-shadow: var(--component-shadow);
 
 @component-background: var(--component-background-color);
 
@@ -130,6 +137,7 @@ html {
 
 // Main text color
 @text-color-base: var(--text-color);
+@hover-text-color-base: var(--hover-text-color);
 
 // =================================
 // =======app content color=========
