@@ -8,10 +8,12 @@ export function useCadSetting() {
   const cads = computed(() => cadStore.getCads)
   const coalSeam = computed(() => cadStore.getCoalSeam)
   const cadName = computed(() => cadStore.getCadName)
+  const defaultCad = computed(() => cadStore.getCads[0].cads[0])
 
   return {
     cads,
-    coalSeam,
     cadName,
+    coalSeam,
+    defaultCad,
   }
 }

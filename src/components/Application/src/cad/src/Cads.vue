@@ -26,12 +26,10 @@ const dwgId = ref('')
 const selectCodes = ref<string[]>([])
 
 function onCadChange(checked: boolean, cad: Cad) {
-  const { dwgId, typeName } = cad
-  if (checked) {
-    cadStore.setCadName(typeName)
-    setCadLayer(dwgId)
-  }
-  else { removeCadLayer(dwgId) }
+  if (checked)
+    setCadLayer(cad)
+
+  else removeCadLayer(cad)
 }
 
 function onLChange(checked: boolean, dwgLayer: DwgLayer) {
