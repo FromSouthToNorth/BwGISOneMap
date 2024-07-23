@@ -9,3 +9,9 @@ export enum mineLayersEnum {
   MINE_MARKER = 'mineMarker',
   MINE_SATELLITE = 'satellite',
 }
+
+export enum publicTile {
+  PUBLIC = '_CJGCGYTC',
+  CQL_FILTER_START = 'layer in(',
+  CQL_FILTER_END = ')',
+}

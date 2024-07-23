@@ -3,16 +3,78 @@ import type { Layer, TileLayer } from 'leaflet'
 
 import { ref, toRaw, unref } from 'vue'
 import type { Cad } from '../mqtt/types'
+import { isArray } from '../is'
 import { useCadSetting } from '@/hooks/setting/useCadSetting'
+import { useUserSetting } from '@/hooks/web/sys/useUser'
 import { useCadStoreWithOut } from '@/store/modules/cad'
-import { mapURLEnum } from '@/enums/mapEnum'
+import { mapURLEnum, publicTile } from '@/enums/mapEnum'
 
 const cadStore = useCadStoreWithOut()
 
 export const cadLayersGroup = L.featureGroup()
 
+const cqlFilterStart = 'layer in('
+const cqlFilterEnd = ')'
+
 export const refSelectCadsMap = ref(new Map<string, Cad>())
 export const refSelectCoalSeamSet = ref(new Set<string>())
+export const refSelectDwgLayerSet = ref(new Set<string>())
+
+export function hasDwgLayerSet(key: string) {
+  return unref(refSelectDwgLayerSet).has(key)
+}
+
+export function addSelectDwgLayerSet(dwgLayer: string, cad?: Cad) {
+  unref(refSelectDwgLayerSet).add(dwgLayer)
+  if (cad)
+    setDwgCadLayer(cad)
+}
+
+function setDwgCadLayer(cad: Cad) {
+  const { dwgId, isPublicLayers } = cad
+  const CQL_FILTER = getCqlFilter()
+  const cadLayers = cadLayersGroup.getLayers()
+  const layers = cadLayers.filter(({ options }) => { return options.dwgId === dwgId })
+  if (isArray(layers) && layers.length) {
+    layers.forEach((layer) => {
+      const cadLayer = layer as TileLayer.WMS
+      cadLayer.setUrl(mapURLEnum.CAD_URLS)
+      cadLayer.setParams({ CQL_FILTER })
+    })
+  }
+  else {
+    const { mineInfo } = useUserSetting()
+    const { mineDesc } = toRaw(mineInfo.value)
+    unref(refSelectCoalSeamSet).forEach((value) => {
+      if (isPublicLayers) {
+        const cadLayer = cadLayerWms(`${mineDesc}${publicTile.PUBLIC}`, value, mapURLEnum.CAD_URLS)
+        cadLayersGroup.addLayer(cadLayer)
+      }
+      const cadLayer = cadLayerWms(dwgId, value, mapURLEnum.CAD_URLS)
+      cadLayer.setParams({ CQL_FILTER })
+      cadLayersGroup.addLayer(cadLayer)
+    })
+  }
+}
+
+function getCqlFilter(): string {
+  const dwgLayerSet = unref(refSelectDwgLayerSet)
+  return publicTile.CQL_FILTER_START.concat(`'${Array.from(dwgLayerSet).join('\',\'')}'`, publicTile.CQL_FILTER_END)
+}
+
+export function deleteSelectDwgLayerSet(dwgLayer: string, cad: Cad) {
+  unref(refSelectDwgLayerSet).delete(dwgLayer)
+  const cadLayers = cadLayersGroup.getLayers()
+
+  const layers = cadLayers.filter(({ options }) => { return options.dwgId === cad.dwgId })
+  const CQL_FILTER = getCqlFilter()
+
+  layers.forEach((layer) => {
+    const cadLayer = layer as TileLayer.WMS
+    cadLayer.setUrl(mapURLEnum.CAD_URLS)
+    cadLayer.setParams({ CQL_FILTER })
+  })
+}
 
 export function hasCadsMap(key: string) {
   return unref(refSelectCadsMap).has(key)
@@ -48,7 +110,13 @@ export function hasLayer(key: string) {
 }
 
 export function removeCadLayer(cad: Cad) {
-  const { dwgId } = cad
+  const { dwgId, Layers } = cad
+  if (isArray(Layers) && Layers.length) {
+    Layers.forEach(({ DwgLayer }) => {
+      if (hasDwgLayerSet(DwgLayer))
+        deleteSelectDwgLayerSet(DwgLayer, cad)
+    })
+  }
   const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => { return options.dwgId === dwgId })
   cadLayer.forEach((cadLayer) => {
     cadLayersGroup.removeLayer(cadLayer)
@@ -86,7 +154,12 @@ export function defaultCad() {
 }
 
 export function setCadLayer(cad: Cad) {
-  const { dwgId } = cad
+  const { dwgId, Layers } = cad
+  if (isArray(Layers)) {
+    Layers.forEach((e) => {
+      addSelectDwgLayerSet(e.DwgLayer)
+    })
+  }
   const coalSeam = toRaw(useCadSetting().coalSeam.value)
   const set = unref(refSelectCoalSeamSet)
   if (!set.size) {
@@ -95,16 +168,16 @@ export function setCadLayer(cad: Cad) {
     })
   }
   set.forEach((value) => {
-    const cadLayer = cadLayerWms(dwgId, value)
+    const cadLayer = cadLayerWms(dwgId, value, mapURLEnum.CAD_URL)
     cadLayersGroup.addLayer(cadLayer)
   })
   setCadsMap(dwgId, cad)
 }
 
-function cadLayerWms(dwgId: string, coalSeam: string, cadUrl = mapURLEnum.CAD_URL): TileLayer.WMS {
+function cadLayerWms(dwgId: string, coalSeam: string, cadUrl: mapURLEnum): TileLayer.WMS {
   return L.tileLayer.wms(cadUrl, {
-    layers: `bwcad:${dwgId}${coalSeam}`,
     // crs: L.CRS.EPSG4326,
+    layers: `bwcad:${dwgId}${coalSeam}`,
     format: 'image/png',
     transparent: true,
     minZoom: 8,
@@ -112,7 +185,7 @@ function cadLayerWms(dwgId: string, coalSeam: string, cadUrl = mapURLEnum.CAD_UR
     coalSeam,
     dwgId,
   }).on('tileerror', (e) => {
-    console.error('tile 图片加载错误: ', e)
+    console.error(`${dwgId} ${coalSeam} tile  图片加载错误:  ${e}`)
   })
 }
 

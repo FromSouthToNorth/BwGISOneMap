@@ -4,16 +4,12 @@ import { BadgeRibbon, Button, Checkbox, Divider, Tooltip } from 'ant-design-vue'
 import { WarningTwoTone } from '@ant-design/icons-vue'
 import { isArray } from 'lodash-es'
 import { useCadSetting } from '@/hooks/setting/useCadSetting'
-import type { Cad, CadType, DwgLayer } from '@/utils/mqtt/types'
-
-import { useCadStoreWithOut } from '@/store/modules/cad'
+import type { Cad, CadType } from '@/utils/mqtt/types'
 
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'
-import { hasCadsMap, removeCadLayer, setCadLayer } from '@/utils/map/cadsLayer'
-
-const cadStore = useCadStoreWithOut()
+import { addSelectDwgLayerSet, deleteSelectDwgLayerSet, hasCadsMap, hasDwgLayerSet, removeCadLayer, setCadLayer } from '@/utils/map/cadsLayer'
 
 const { cads } = useCadSetting()
 
@@ -26,14 +22,11 @@ const dwgId = ref('')
 const selectCodes = ref<string[]>([])
 
 function onCadChange(checked: boolean, cad: Cad) {
-  if (checked)
-    setCadLayer(cad)
-
-  else removeCadLayer(cad)
+  checked ? setCadLayer(cad) : removeCadLayer(cad)
 }
 
-function onLChange(checked: boolean, dwgLayer: DwgLayer) {
-  console.log(checked, dwgLayer)
+function onLChange(checked: boolean, dwgLayer: string, cad: Cad) {
+  checked ? addSelectDwgLayerSet(dwgLayer, cad) : deleteSelectDwgLayerSet(dwgLayer, cad)
 }
 
 function onclick(id: string) {
@@ -73,11 +66,16 @@ function onCadClick(id: string) {
                 :key="item.dwgId"
                 class="cad-checkbox"
               >
-                <Checkbox :checked="hasCadsMap(item.dwgId)" @change="onCadChange($event.target.checked, item)">
-                  {{ item.typeName }}
+                <Checkbox
+                  :checked="hasCadsMap(item.dwgId)"
+                  @change="onCadChange($event.target.checked, item)"
+                >
+                  <span>{{ item.typeName }}</span>
                 </Checkbox>
                 <span v-show="item.exceedDay">
-                  <Tooltip :title="`发布已超时(${item.exceedDay})天`">
+                  <Tooltip
+                    :title="`发布已超时(${item.exceedDay})天`"
+                  >
                     <WarningTwoTone two-tone-color="#f50" />
                   </Tooltip>
                 </span>
@@ -88,21 +86,24 @@ function onCadClick(id: string) {
                 >
                   图层
                 </Button>
-                <div
-                  v-show="(dwgId === item.dwgId) && isArray(item.Layers)"
-                  class="cad-layers"
-                >
+                <component :is="SlideYTransition">
                   <div
-                    v-for="l in item.Layers"
-                    :key="l.DwgLayer"
+                    v-show="(dwgId === item.dwgId) && isArray(item.Layers)"
+                    class="cad-layers"
                   >
-                    <Checkbox
-                      @change="onLChange($event.target.checked, l)"
+                    <div
+                      v-for="l in item.Layers"
+                      :key="l.DwgLayer"
                     >
-                      {{ l.DwgLayer }}
-                    </Checkbox>
+                      <Checkbox
+                        :checked="hasDwgLayerSet(l.DwgLayer)"
+                        @change="onLChange($event.target.checked, l.DwgLayer, item)"
+                      >
+                        <span class="">{{ l.DwgLayer }}</span>
+                      </Checkbox>
+                    </div>
                   </div>
-                </div>
+                </component>
               </div>
             </div>
           </component>

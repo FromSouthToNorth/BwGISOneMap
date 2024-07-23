@@ -6,10 +6,7 @@ defineProps({
   coalSeam: Object,
 })
 function onchange(checked: boolean, coalSeam: string) {
-  if (checked)
-    coalSeamBySetCadLayer(coalSeam)
-  else
-    coalSeamByRemoveCadLayer(coalSeam)
+  checked ? coalSeamBySetCadLayer(coalSeam) : coalSeamByRemoveCadLayer(coalSeam)
 }
 </script>
 
