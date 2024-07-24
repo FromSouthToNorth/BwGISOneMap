@@ -1,7 +1,8 @@
 import * as L from 'leaflet'
 import type { LatLngExpression } from 'leaflet'
 import { watch } from 'vue'
-
+import { useRoute } from 'vue-router'
+import { publishInit } from '../mqtt/publish'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
@@ -12,6 +13,7 @@ import { useUserSetting } from '@/hooks/web/sys/useUser'
 const mapStore = useMapStore()
 
 export function createMap(id: string) {
+  const route = useRoute()
   const { mineInfo } = useUserSetting()
   watch(() => mineInfo.value, (mineInfo) => {
     const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = mineInfo
@@ -38,6 +40,12 @@ export function createMap(id: string) {
     tileLayersGroup.addTo(map)
 
     cadLayersGroup.addTo(map)
+
+    /* 根据路由的部门ID查询菜单及图纸 */
+    const departmentID = route.query?.departmentID
+      || route.params?.departmentID
+    publishInit(departmentID)
+
     if (no_show_satellitemap)
       return
     showSatellite()

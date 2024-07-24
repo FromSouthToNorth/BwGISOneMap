@@ -1,17 +1,23 @@
 <script lang="ts" setup>
 import { useDesign } from '@/hooks/web/useDesign'
+import type { MenuItem } from '@/store/modules/app'
 
 defineProps({
   menuItem: { type: Object, required: true },
 })
 
-const emit = defineEmits(['click'])
-
 const { prefixCls } = useDesign('card-grid')
+
+function onClick(menuItem: MenuItem) {
+  console.log(menuItem)
+}
 </script>
 
 <template>
-  <div :class="prefixCls">
+  <div
+    :class="prefixCls"
+    @click="onClick(menuItem as MenuItem)"
+  >
     <div
       class="menu-item-icon"
       v-html="menuItem.icon_class"

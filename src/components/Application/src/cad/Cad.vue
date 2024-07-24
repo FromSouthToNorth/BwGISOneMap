@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { PieChartOutlined } from '@ant-design/icons-vue'
 import { ref, watch } from 'vue'
-import CoalSeam from './src/CoalSeam.vue'
-import Cads from './src/Cads.vue'
+import { CoalSeam } from './src/coalSeam'
+import { Cads } from './src/cads'
 import { useCadSetting } from '@/hooks/setting/useCadSetting'
 import type { CadType } from '@/utils/mqtt/types'
 import {
@@ -44,6 +44,7 @@ watch(() => cads.value, (cads) => {
 }
 
 .cad-dropdown-container {
+  width: 280px;
   display: none;
   position: fixed;
   top: 58px;

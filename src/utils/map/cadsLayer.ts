@@ -13,9 +13,6 @@ const cadStore = useCadStoreWithOut()
 
 export const cadLayersGroup = L.featureGroup()
 
-const cqlFilterStart = 'layer in('
-const cqlFilterEnd = ')'
-
 export const refSelectCadsMap = ref(new Map<string, Cad>())
 export const refSelectCoalSeamSet = ref(new Set<string>())
 export const refSelectDwgLayerSet = ref(new Set<string>())

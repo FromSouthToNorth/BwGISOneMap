@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import HideButton from './HideButton.vue'
+import HideButton from './src/HideButton.vue'
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'

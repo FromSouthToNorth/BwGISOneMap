@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MenuContainer from './MenuContainer.vue'
+import MenuContainer from './src/MenuContainer.vue'
 import { AppSearch } from '@/components/Application'
 import {
   SlideYTransition,
