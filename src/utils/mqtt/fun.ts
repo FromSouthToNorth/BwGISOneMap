@@ -45,7 +45,9 @@ function oneMapCads(result: MqttResult) {
 
   const { mineInfo } = useUserSetting()
   const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
-  if (no_show_satellitemap)
+  console.log(toRaw(map.value), map)
+
+  if (no_show_satellitemap && map)
     toRaw(map.value).setZoom(show_cad + 1)
 }
 
