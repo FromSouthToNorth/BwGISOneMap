@@ -1,13 +1,13 @@
 <script lang="ts" setup>
+import { useMenuHide } from '../src/hooks/useMenuHide'
 import LeftPanel from './leftPanel/LeftPanel.vue'
 import AppRightTop from './appRightTop/AppRightTop.vue'
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
-const { menuHide } = useMenuSetting()
+const { getMenuHide } = useMenuHide()
 </script>
 
 <template>
-  <div v-show="menuHide" class="menu">
+  <div v-show="getMenuHide" class="menu">
     <LeftPanel />
     <AppRightTop />
   </div>

@@ -1,20 +1,24 @@
 <script lang="ts" setup>
+import { useMenuDrop } from '../hooks/useMenuDrop'
 import HideButton from './src/HideButton.vue'
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'
 
-import { Cad, MineName, Satellite, User } from '@/components/Application'
+import {
+  Cad,
+  MineName,
+  Satellite,
+  User,
+} from '@/components/Application'
 
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-
-const { menuDrop } = useMenuSetting()
+const { getMenuDrop } = useMenuDrop()
 </script>
 
 <template>
   <div id="app-right-top">
     <component :is="SlideYTransition">
-      <div v-show="menuDrop" class="app-right-top-menu">
+      <div v-show="getMenuDrop" class="app-right-top-menu">
         <MineName />
         <Satellite />
         <Cad />

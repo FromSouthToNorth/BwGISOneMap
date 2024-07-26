@@ -57,12 +57,11 @@ export function publishMineInfo(): Publish {
 }
 
 /**
- *
- * 2003 菜单
  * 2037 cad 图纸
+ * 2003 菜单
  * 3011 矿井边界
  */
-const initPublishCode = [3011, 2003, 2037]
+const initPublishCode = [2037, 3011, 2003]
 
 function publishInitArray(departmentID: string | LocationQueryValue[]): Publish[] {
   appState.setPageLoading(true)
@@ -75,6 +74,20 @@ function publishInitArray(departmentID: string | LocationQueryValue[]): Publish[
     })
   })
   return init
+}
+
+/**
+ * 2037 cad 图纸
+ * @param departmentID
+ * @returns
+ */
+export function getCad(departmentID: string | LocationQueryValue[]) {
+  return publishContext({
+    code: 2037,
+    strategyParams: [
+      { name: 'departmentID', value: departmentID },
+    ],
+  })
 }
 
 export function publishInit(departmentID: string | LocationQueryValue[]) {

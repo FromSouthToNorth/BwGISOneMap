@@ -6,7 +6,8 @@ import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
-import type { MenuItem } from '@/store/modules/app'
+import type { MenuItem } from '@/components/Menu/src/types/menu'
+import { useMenuSetting } from '@/components/Menu/src/hooks/useMenuSetting'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useCadStoreWithOut } from '@/store/modules/cad'
 import { useMapSetting } from '@/hooks/web/map/useMap'
@@ -45,9 +46,7 @@ function oneMapCads(result: MqttResult) {
 
   const { mineInfo } = useUserSetting()
   const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
-  console.log(toRaw(map.value), map)
-
-  if (no_show_satellitemap && map)
+  if (no_show_satellitemap)
     toRaw(map.value).setZoom(show_cad + 1)
 }
 
@@ -61,7 +60,8 @@ function mineBoundary(result: MqttResult) {
 }
 
 function oneMapMenu(result: MqttResult) {
-  appState.setMenu((result.params as unknown) as MenuItem[])
+  const { setMenu } = useMenuSetting()
+  setMenu((result.params as unknown) as MenuItem[])
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

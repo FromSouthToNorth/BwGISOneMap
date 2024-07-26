@@ -1,23 +1,19 @@
 <script lang="ts" setup>
 import { Button } from 'ant-design-vue'
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue'
-import { useAppStoreWithOut } from '@/store/modules/app'
+import { useMenuDrop } from '../../hooks/useMenuDrop'
 
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-
-const appState = useAppStoreWithOut()
-
-const { menuDrop } = useMenuSetting()
+const { setMenuDrop, getMenuDrop } = useMenuDrop()
 
 function onClick() {
-  appState.setMenuDrop(!menuDrop.value)
+  setMenuDrop(!getMenuDrop.value)
 }
 </script>
 
 <template>
   <Button class="hide-button" size="small" @click="onClick">
     <template #icon>
-      <CaretUpOutlined v-if="menuDrop" />
+      <CaretUpOutlined v-if="getMenuDrop" />
       <CaretDownOutlined v-else />
     </template>
   </Button>

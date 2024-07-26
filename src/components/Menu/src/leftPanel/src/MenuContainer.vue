@@ -1,15 +1,27 @@
 <script lang="ts" setup>
+import { useMenuSetting } from '../../hooks/useMenuSetting'
+import type { MenuItem as MenuItemType } from '../../types/menu'
 import MenuItem from './MenuItem.vue'
 import { useDesign } from '@/hooks/web/useDesign'
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
+const emit = defineEmits(['click'])
 const { prefixCls } = useDesign('menu-container')
-const { menu } = useMenuSetting()
+
+const { getMenu } = useMenuSetting()
+
+function onClick(menuItem: MenuItemType) {
+  console.log(menuItem)
+  emit('click', menuItem)
+}
 </script>
 
 <template>
   <div :class="prefixCls">
-    <MenuItem v-for="m of menu" :key="m.id" :menu-item="m" />
+    <MenuItem
+      v-for="m of getMenu"
+      :key="m.id" :menu-item="m"
+      @click="onClick(m)"
+    />
   </div>
 </template>
 

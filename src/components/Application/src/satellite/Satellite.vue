@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 import { Checkbox } from 'ant-design-vue'
 import { ref, watch } from 'vue'
+import { useSatelliteSetting } from './hooks/useSatelliteSetting'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
 import { addSatelliteTile, removeSatelliteTile } from '@/utils/map/tileLayer'
-import { useMenuSetting } from '@/hooks/setting/useSatelliteSetting'
 
 const { mineInfo } = useUserSetting()
-const { isSatellite } = useMenuSetting()
+const { getIsSatellite } = useSatelliteSetting()
 const checked = ref(false)
 function onChange(e: any) {
   e.target.checked ? addSatelliteTile() : removeSatelliteTile()
 }
-watch(() => isSatellite.value, (v) => {
+watch(() => getIsSatellite.value, (v) => {
   if (v)
     return
   checked.value = v
