@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMenuDrop } from '../hooks/useMenuDrop'
+import type { MenuItem } from '../types/menu'
 import MenuContainer from './src/MenuContainer.vue'
 import CardTabs from './src/CardTabs.vue'
 import { AppSearch } from '@/components/Application'
@@ -8,13 +9,19 @@ import {
   SlideXReverseTransition,
   SlideYTransition,
 } from '@/components/Transtition'
+import { publishOneMapSubMenu } from '@/utils/mqtt/publish'
 
 const { getMenuDrop } = useMenuDrop()
 
 const menuContainerHide = ref(true)
-
-function menuClick() {
-  menuContainerHide.value = !menuContainerHide.value
+const activeTabKey = ref('')
+function menuClick(menu?: MenuItem) {
+  if (menu) {
+    const { id } = menu
+    activeTabKey.value = id
+    publishOneMapSubMenu(menu)
+  }
+  menuContainerHide.value = !menu
 }
 </script>
 
@@ -26,7 +33,7 @@ function menuClick() {
         <MenuContainer v-show="menuContainerHide" @click="menuClick" />
       </component>
       <component :is="SlideXReverseTransition">
-        <CardTabs v-show="!menuContainerHide" @click="menuClick" />
+        <CardTabs v-show="!menuContainerHide" :active-tab-key="activeTabKey" @click="menuClick" />
       </component>
     </div>
   </component>

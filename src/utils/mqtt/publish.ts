@@ -5,12 +5,13 @@ import type { Param, Publish } from './types'
 import { mqtt } from '.'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
+import type { MenuItem } from '@/components/Menu/src/types/menu'
 
 const appState = useAppStoreWithOut()
 
 const mineName = getMineName() as string
 const paramMap = new Map()
-paramMap.set('mineName', mineName)
+paramMap.set('MineName', mineName)
 
 export function publishContext(obj: Publish): Publish {
   const token = getToken() as string
@@ -25,6 +26,7 @@ export function publishContext(obj: Publish): Publish {
     mineDesc,
     caller,
     clientId,
+    noLink: false,
   }
 
   if (obj.code !== 682) {
@@ -39,12 +41,11 @@ export function publishContext(obj: Publish): Publish {
         value,
       })
     })
-    target.strategyParams = strategyParams
+    obj.strategyParams = strategyParams
   }
   else {
     delete obj.strategyParams
   }
-
   return Object.assign(target, obj)
 }
 
@@ -94,4 +95,21 @@ export function publishInit(departmentID: string | LocationQueryValue[]) {
   publishInitArray(departmentID).forEach((e) => {
     mqtt.publish(e)
   })
+}
+
+/**
+ * 获取子模块
+ * @param menu
+ */
+export function publishOneMapSubMenu(menu: MenuItem) {
+  const code = menu.orderCode
+  const moduleName = menu.name
+  const con = publishContext({
+    code,
+    moduleName,
+    strategyParams: [
+      { name: 'module_id', value: menu.id },
+    ],
+  })
+  mqtt.publish(con)
 }

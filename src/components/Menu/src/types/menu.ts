@@ -5,6 +5,8 @@ export interface MenuItem {
   icon_class: string
   icon_color: string
   background_color: string
+  orderCode: string
+  noLink?: boolean
   time?: Date
 }
 
@@ -18,4 +20,13 @@ export interface BasicMenuProps {
   // 菜单是否隐藏
   menuHide: boolean
 
+}
+
+export interface MenuSub {
+  id: string
+  isUpdateZ: number
+  name: string
+  ordercode: string
+  parent_id: string
+  strategy: number | string
 }

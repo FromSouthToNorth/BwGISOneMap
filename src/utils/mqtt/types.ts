@@ -6,11 +6,13 @@ export interface Param {
 }
 
 export interface Publish {
-  code: number
+  code: number | string
   token?: string
   caller?: string
   clientId?: string
   mineDesc?: string
+  moduleName?: string
+  noLink?: boolean
   strategyParams?: Param[]
 }
 

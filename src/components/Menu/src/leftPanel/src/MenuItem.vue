@@ -1,9 +1,8 @@
 <script lang="ts" setup>
+import type { MenuItem } from '../../types/menu'
 import { useDesign } from '@/hooks/web/useDesign'
 
-defineProps({
-  menuItem: { type: Object, required: true },
-})
+defineProps<{ menuItem: MenuItem }>()
 
 const { prefixCls } = useDesign('card-grid')
 </script>

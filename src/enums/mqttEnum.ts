@@ -10,4 +10,5 @@ export enum MqttFunEnum {
   ONE_MAP_CADS = 'oneMapCads',
   MINE_BOUNDARY = 'mineBoundary',
   ONE_MAP_MENU = 'oneMapMenu',
+  ONE_MAP_SUB_MENU = 'oneMapSubMenu',
 }

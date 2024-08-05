@@ -11,10 +11,10 @@ export const useCadStore = defineStore({
     cadName: '',
   }),
   getters: {
-    getCads(state): CadType[] | [] {
+    getCads(state): CadType[] {
       return state.cads
     },
-    getCoalSeam(state): CoalSeam[] | [] {
+    getCoalSeam(state): CoalSeam[] {
       return state.coalSeam
     },
     getCadName(state): string {

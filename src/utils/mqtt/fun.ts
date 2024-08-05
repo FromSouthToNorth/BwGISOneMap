@@ -1,13 +1,14 @@
-import { toRaw } from 'vue'
+import { toRaw, unref, watch } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
 import type { MqttResult } from './types'
+import { isEmpty } from '@/utils/is'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
-import type { MenuItem } from '@/components/Menu/src/types/menu'
-import { useMenuSetting } from '@/components/Menu/src/hooks/useMenuSetting'
+import type { MenuItem, MenuSub } from '@/components/Menu/src/types/menu'
+import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useCadStoreWithOut } from '@/store/modules/cad'
 import { useMapSetting } from '@/hooks/web/map/useMap'
@@ -17,12 +18,13 @@ const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
 const cadStore = useCadStoreWithOut()
 
-export const mqttFunMap = new Map<MqttFunEnum, Function>()
+export const mqttFunMap = new Map<MqttFunEnum, Fn>()
 
 mqttFunMap.set(MqttFunEnum.MINE_INFO, setMineInfo)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
 mqttFunMap.set(MqttFunEnum.MINE_BOUNDARY, mineBoundary)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
+mqttFunMap.set(MqttFunEnum.ONE_MAP_SUB_MENU, oneMapSubMenu)
 
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
@@ -46,8 +48,18 @@ function oneMapCads(result: MqttResult) {
 
   const { mineInfo } = useUserSetting()
   const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
-  if (no_show_satellitemap)
-    toRaw(map.value).setZoom(show_cad + 1)
+  console.log(isEmpty(unref(map)), toRaw(unref(map)))
+
+  if (no_show_satellitemap) {
+    if (isEmpty(unref(map))) {
+      watch(unref(map), (value) => {
+        toRaw(value).setZoom(show_cad + 1)
+      })
+    }
+    else {
+      toRaw(unref(map).setZoom(show_cad + 1))
+    }
+  }
 }
 
 /**
@@ -62,6 +74,10 @@ function mineBoundary(result: MqttResult) {
 function oneMapMenu(result: MqttResult) {
   const { setMenu } = useMenuSetting()
   setMenu((result.params as unknown) as MenuItem[])
+}
+
+function oneMapSubMenu(result: MqttResult) {
+  useMenuSub().setMenuSub(result.params as unknown as MenuSub[])
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

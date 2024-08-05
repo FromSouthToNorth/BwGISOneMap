@@ -10,7 +10,6 @@ const { prefixCls } = useDesign('menu-container')
 const { getMenu } = useMenuSetting()
 
 function onClick(menuItem: MenuItemType) {
-  console.log(menuItem)
   emit('click', menuItem)
 }
 </script>
