@@ -48,3 +48,8 @@ export enum MixSidebarTriggerEnum {
   HOVER = 'hover',
   CLICK = 'click',
 }
+
+export enum ToSwitchTypeEnum {
+  STRATEGY = 'strategy',
+  POPUP = 'popup',
+}

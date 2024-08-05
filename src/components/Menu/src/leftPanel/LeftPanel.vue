@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMenuDrop } from '../hooks/useMenuDrop'
-import type { MenuItem } from '../types/menu'
+import type { MenuItem, MenuSub } from '../types/menu'
 import MenuContainer from './src/MenuContainer.vue'
 import CardTabs from './src/CardTabs.vue'
 import { AppSearch } from '@/components/Application'
@@ -23,17 +23,35 @@ function menuClick(menu?: MenuItem) {
   }
   menuContainerHide.value = !menu
 }
+function subClick(menuSub: MenuSub) {
+  console.log(menuSub)
+}
 </script>
 
 <template>
   <component :is="SlideYTransition">
-    <div v-show="getMenuDrop" id="left-panel">
+    <div
+      v-show="getMenuDrop"
+      id="left-panel"
+    >
       <AppSearch />
-      <component :is="SlideXReverseTransition">
-        <MenuContainer v-show="menuContainerHide" @click="menuClick" />
+      <component
+        :is="SlideXReverseTransition"
+      >
+        <MenuContainer
+          v-show="menuContainerHide"
+          @click="menuClick"
+        />
       </component>
-      <component :is="SlideXReverseTransition">
-        <CardTabs v-show="!menuContainerHide" :active-tab-key="activeTabKey" @click="menuClick" />
+      <component
+        :is="SlideXReverseTransition"
+      >
+        <CardTabs
+          v-show="!menuContainerHide"
+          :active-tab-key="activeTabKey"
+          @click="menuClick"
+          @sub-click="subClick"
+        />
       </component>
     </div>
   </component>

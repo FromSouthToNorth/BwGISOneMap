@@ -1,23 +1,58 @@
 <script lang="ts" setup>
-import { Button } from 'ant-design-vue'
-import type { MenuSub } from '../../types/menu'
+import { title } from 'node:process'
+import { Button, DropdownButton, Menu, MenuItem, Tooltip } from 'ant-design-vue'
+import { DownOutlined } from '@ant-design/icons-vue'
+import { ref } from 'vue'
+import type { MenuSub, ToSwitch } from '../../types/menu'
+import { SizeEnum } from '@/enums/sizeEnum'
 
 const props = defineProps<{ menuSub: MenuSub, activeTabKey: string }>()
 const emit = defineEmits(['menuSubClick'])
 
+const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
 function onClick() {
   emit('menuSubClick', props.menuSub)
+}
+function onMenuClick(toSwitch: ToSwitch) {
+  console.log('click', toSwitch)
 }
 </script>
 
 <template>
-  <Button
-    size="small"
-    :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
-    @click="onClick"
+  <Tooltip
+    :title="menuSub.strategy"
+    trigger="contextmenu"
   >
-    {{ menuSub.name }}
-  </Button>
+    <DropdownButton
+      v-if="menuSub.toSwitchs && menuSub.id === activeTabKey"
+      :size="sizeRef"
+      :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
+    >
+      {{ menuSub.name }}
+      <template #overlay>
+        <Menu>
+          <MenuItem
+            v-for="(item, index) in menuSub.toSwitchs"
+            :key="index"
+            @click="onMenuClick(item)"
+          >
+            {{ item.title }}
+          </MenuItem>
+        </Menu>
+      </template>
+      <template #icon>
+        <DownOutlined />
+      </template>
+    </DropdownButton>
+    <Button
+      v-else
+      :size="sizeRef"
+      :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
+      @click="onClick"
+    >
+      {{ menuSub.name }}
+    </Button>
+  </Tooltip>
 </template>
 
 <style lang="less" scoped>

@@ -11,7 +11,7 @@ import { useDesign } from '@/hooks/web/useDesign'
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
 })
-const emit = defineEmits(['click'])
+const emit = defineEmits(['click', 'subClick'])
 const { prefixCls } = useDesign('car-tab')
 
 const { getMenu } = useMenuSetting()
@@ -60,8 +60,8 @@ function onClick(key?: string) {
 }
 
 function menuSubClick(menuSub: MenuSub) {
-  if (menuSub)
-    menuSubActiveKey.value = menuSub.id
+  menuSubActiveKey.value = menuSub.id
+  emit('subClick', menuSub)
 }
 </script>
 
