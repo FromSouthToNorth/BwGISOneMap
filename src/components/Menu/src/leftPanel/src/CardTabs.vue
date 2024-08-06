@@ -5,6 +5,7 @@ import { h, ref, toRaw, unref, watch } from 'vue'
 import type { CardTabListType } from 'ant-design-vue/lib/card/Card'
 import { useMenuSetting, useMenuSub } from '../../../index'
 import type { MenuItem, MenuSub } from '../../types/menu'
+import { Tool } from './tool'
 import TabSub from './TabSub.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -89,6 +90,7 @@ function menuSubClick(menuSub: MenuSub) {
         :active-tab-key="menuSubActiveKey"
         @menu-sub-click="menuSubClick"
       />
+      <Tool />
     </div>
   </Card>
 </template>
@@ -98,11 +100,5 @@ function menuSubClick(menuSub: MenuSub) {
 .@{prefix-cls} {
   margin-top: 0.5em;
   overflow: hidden;
-}
-
-.tag-container {
-  button + button {
-    margin-left:6px
-  }
 }
 </style>

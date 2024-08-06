@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { title } from 'node:process'
 import { Button, DropdownButton, Menu, MenuItem, Tooltip } from 'ant-design-vue'
 import { DownOutlined } from '@ant-design/icons-vue'
 import { ref } from 'vue'
@@ -27,6 +26,7 @@ function onMenuClick(toSwitch: ToSwitch) {
       v-if="menuSub.toSwitchs && menuSub.id === activeTabKey"
       :size="sizeRef"
       :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
+      @click="onClick"
     >
       {{ menuSub.name }}
       <template #overlay>
