@@ -1,19 +1,17 @@
 <script lang="ts" setup>
 import { PieChartOutlined } from '@ant-design/icons-vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { CoalSeam } from './src/coalSeam'
 import { Cads } from './src/cads'
-import { useCadSetting } from '@/hooks/setting/useCadSetting'
-import type { CadType } from '@/utils/mqtt/types'
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'
 
-const { cads, cadName } = useCadSetting()
-const cadSelect = ref<CadType[]>()
-watch(() => cads.value, (cads) => {
-  cadSelect.value = cads
-})
+const cadName = ref<string>('')
+
+function setCadName(name: string) {
+  cadName.value = name
+}
 </script>
 
 <template>
@@ -25,7 +23,7 @@ watch(() => cads.value, (cads) => {
     <component :is="SlideYTransition">
       <div class="cad-dropdown-container">
         <CoalSeam />
-        <Cads />
+        <Cads @set-cad-name="setCadName" />
       </div>
     </component>
   </div>

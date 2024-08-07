@@ -4,12 +4,11 @@ import type { Layer, TileLayer } from 'leaflet'
 import { ref, toRaw, unref } from 'vue'
 import type { Cad } from '../mqtt/types'
 import { isArray } from '../is'
-import { useCadSetting } from '@/hooks/setting/useCadSetting'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
-import { useCadStoreWithOut } from '@/store/modules/cad'
+import { useCadSetting } from '@/components/Application/src/cad'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { mapURLEnum, publicTile } from '@/enums/mapEnum'
 
-const cadStore = useCadStoreWithOut()
+const { getDefaultCad, getCoalSeam } = useCadSetting()
 
 export const cadLayersGroup = L.featureGroup()
 
@@ -125,7 +124,7 @@ export function coalSeamBySetCadLayer(coalSeam: string) {
   addSelectCoalSeamSet(coalSeam)
   const map = unref(refSelectCadsMap)
   if (!map.size) {
-    const cad = toRaw(useCadSetting().defaultCad.value)
+    const cad = toRaw(unref(getDefaultCad)) as unknown as Cad
     setCadsMap(cad.dwgId, cad)
   }
   map.forEach((value) => {
@@ -144,9 +143,7 @@ export function coalSeamByRemoveCadLayer(coalSeam: string) {
 }
 
 export function defaultCad() {
-  const cad = toRaw(useCadSetting().defaultCad.value)
-  const cadName = cad.typeName
-  cadStore.setCadName(cadName)
+  const cad = toRaw(unref(getDefaultCad)) as unknown as Cad
   setCadLayer(cad)
 }
 
@@ -157,7 +154,7 @@ export function setCadLayer(cad: Cad) {
       addSelectDwgLayerSet(e.DwgLayer)
     })
   }
-  const coalSeam = toRaw(useCadSetting().coalSeam.value)
+  const coalSeam = unref(getCoalSeam)
   const set = unref(refSelectCoalSeamSet)
   if (!set.size) {
     coalSeam.forEach(({ Value }) => {

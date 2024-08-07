@@ -13,8 +13,12 @@ import {
 } from '@/utils/map/cadsLayer'
 
 defineProps<{ cad: CadType, selectCodes: string[] }>()
+const emit = defineEmits(['setCadName'])
 
 function onCadChange(checked: boolean, cad: Cad) {
+  if (checked)
+    emit('setCadName', cad.typeName)
+
   checked ? setCadLayer(cad) : removeCadLayer(cad)
 }
 </script>

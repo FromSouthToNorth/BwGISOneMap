@@ -5,7 +5,7 @@ import type { Param, Publish } from './types'
 import { mqtt } from '.'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
-import type { MenuItem, MenuSub, Model } from '@/components/Menu/src/types/menu'
+import type { MenuItem, MenuSub } from '@/components/Menu/src/types/menu'
 
 const appState = useAppStoreWithOut()
 
@@ -102,7 +102,7 @@ export function publishInit(departmentID: string | LocationQueryValue[]) {
  * @param menu
  */
 export function publishOneMapSubMenu(menu: MenuItem) {
-  const code = menu.orderCode
+  const code = menu.strategy
   const moduleName = menu.name
   const con = publishContext({
     code,
@@ -120,7 +120,7 @@ export function publishOneMapSubMenu(menu: MenuItem) {
  */
 export function publishOneMapDevice(menuSub: MenuSub) {
   const code = menuSub.strategy
-  const moduleName = menuSub.name
+  const moduleName = menuSub.moduleName
   const child_module_id = menuSub.id
   const con = publishContext({
     code,

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { UserOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Menu, MenuItem } from 'ant-design-vue'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
 const userStore = useUserStoreWithOut()

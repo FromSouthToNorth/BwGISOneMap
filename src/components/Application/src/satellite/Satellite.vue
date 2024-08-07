@@ -2,7 +2,7 @@
 import { Checkbox } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 import { useSatelliteSetting } from './hooks/useSatelliteSetting'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { addSatelliteTile, removeSatelliteTile } from '@/utils/map/tileLayer'
 
 const { mineInfo } = useUserSetting()

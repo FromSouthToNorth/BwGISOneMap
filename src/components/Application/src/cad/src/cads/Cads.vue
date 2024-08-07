@@ -1,14 +1,21 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, unref, watch } from 'vue'
 import { BadgeRibbon, Divider } from 'ant-design-vue'
+import { useCadSetting } from '../hooks/useCadSetting'
 import CadCheckbox from './CadCheckbox.vue'
-import { useCadSetting } from '@/hooks/setting/useCadSetting'
 import type { CadType } from '@/utils/mqtt/types'
 
-const { cads } = useCadSetting()
+const emit = defineEmits(['setCadName'])
+
+const { getCad, getDefaultCad } = useCadSetting()
+
+function setCadName(name: string) {
+  emit('setCadName', name)
+}
 
 const cadSelect = ref<CadType[]>()
-watch(() => cads.value, (cads) => {
+watch(() => unref(getCad), (cads) => {
+  setCadName(unref(getDefaultCad).typeName)
   cadSelect.value = cads
 })
 
@@ -28,13 +35,20 @@ function onCadClick(id: string) {
     >
       <BadgeRibbon :text="cad.cads.length">
         <div class="cad-checkbox-container">
-          <div class="cad-head" @click="onCadClick(cad.Code)">
+          <div
+            class="cad-head"
+            @click="onCadClick(cad.Code)"
+          >
             <h4 class="cad-title">
               {{ cad.Classfyname }}
             </h4>
           </div>
           <Divider :style="{ margin: '6px 0' }" />
-          <CadCheckbox :cad="cad" :select-codes="selectCodes" />
+          <CadCheckbox
+            :cad="cad"
+            :select-codes="selectCodes"
+            @set-cad-name="setCadName"
+          />
         </div>
       </BadgeRibbon>
     </div>

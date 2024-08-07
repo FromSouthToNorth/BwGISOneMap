@@ -12,7 +12,7 @@ const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
 function onClick() {
   emit('menuSubClick', props.menuSub)
 }
-function onMenuClick(toSwitch: ToSwitch) {
+function onToSwitchClick(toSwitch: ToSwitch) {
   console.log('click', toSwitch)
 }
 </script>
@@ -29,13 +29,13 @@ function onMenuClick(toSwitch: ToSwitch) {
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
       @click="onClick"
     >
-      {{ menuSub.name }}
+      {{ menuSub.moduleName }}
       <template #overlay>
         <Menu>
           <MenuItem
             v-for="(item, index) in menuSub.toSwitchs"
             :key="index"
-            @click="onMenuClick(item)"
+            @click="onToSwitchClick(item)"
           >
             {{ item.title }}
           </MenuItem>
@@ -52,7 +52,7 @@ function onMenuClick(toSwitch: ToSwitch) {
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
       @click="onClick"
     >
-      {{ menuSub.name }}
+      {{ menuSub.moduleName }}
     </Button>
   </Tooltip>
 </template>

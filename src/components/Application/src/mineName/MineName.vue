@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BankFilled } from '@ant-design/icons-vue'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 
 const { mineInfo } = useUserSetting()
 </script>

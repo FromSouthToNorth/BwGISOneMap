@@ -5,7 +5,7 @@ import { publishInit, publishMineInfo } from './publish'
 import { getUserInfo } from '@/api/sys/login'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 
 export const mqtt = new Mqtt(true)
 export const MQTT_CLIENT_ID = mqtt.clientId

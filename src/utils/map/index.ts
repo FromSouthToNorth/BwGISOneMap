@@ -7,7 +7,7 @@ import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useMapStore } from '@/store/modules/map'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 
 const mapStore = useMapStore()
 

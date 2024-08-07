@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onDeactivated, onMounted, ref, unref } from 'vue'
+import {
+  onBeforeUnmount,
+  onDeactivated,
+  onMounted,
+  ref,
+  unref,
+} from 'vue'
 import { createMap } from '@/utils/map'
 import { onMountedOrActivated } from '@/hooks/src/onMountedOrActivated'
 
@@ -8,9 +14,9 @@ const mapContainerRef = ref()
 function init() {
   createMap(unref(mapContainerRef))
 }
-onMounted(() => {
-  init()
-})
+// onMounted(() => {
+//   init()
+// })
 
 function destroy() {
   const mapInstance = unref(mapContainerRef)
@@ -25,7 +31,7 @@ function destroy() {
   mapInstance.value = null
 }
 
-// onMountedOrActivated(init)
+onMountedOrActivated(init)
 
 onBeforeUnmount(destroy)
 onDeactivated(destroy)

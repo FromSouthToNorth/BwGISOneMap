@@ -8,7 +8,7 @@ import { toLatlngs } from './to'
 import { polygon } from './polygon'
 import { EncryptionFactory } from '@/utils/cipher'
 import { mineLayersEnum } from '@/enums/mapEnum'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 
 let mineBoundary: Polygon
 

@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, unref, watch } from 'vue'
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue'
+import { useCadSetting } from '../hooks/useCadSetting'
 import CoalSeamCheckbox from './CoalSeamCheckbox.vue'
-import { useCadSetting } from '@/hooks/setting/useCadSetting'
 import type { CoalSeam } from '@/utils/mqtt/types'
 
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'
 
-const { coalSeam } = useCadSetting()
+const { getCoalSeam } = useCadSetting()
 const coalSeamSelect = ref<CoalSeam[]>()
-watch(() => coalSeam.value, (coalSeam) => {
+watch(() => unref(getCoalSeam), (coalSeam) => {
   coalSeamSelect.value = coalSeam
 })
 const hide = ref(true)

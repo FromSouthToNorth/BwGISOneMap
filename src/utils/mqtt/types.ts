@@ -13,12 +13,7 @@ export interface Publish {
   mineDesc?: string
   moduleName?: string
   noLink?: boolean
-  strategyParams?: Param[]
-}
-
-export interface Params {
-  code: number
-  data: []
+  strategyParams?: any[]
 }
 
 export interface CoalSeam {
@@ -30,7 +25,7 @@ export interface CoalSeam {
 
 export interface MqttResult {
   generalFunc: MqttFunEnum
-  params: Params
+  params: any
   coalSeam?: CoalSeam[]
 }
 

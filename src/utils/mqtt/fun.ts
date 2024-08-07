@@ -8,18 +8,18 @@ import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
 
 import type { MenuItem, MenuSub } from '@/components/Menu/src/types/menu'
+import { useCadSetting } from '@/components/Application/src/cad'
 import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
-import { useCadStoreWithOut } from '@/store/modules/cad'
-import { useMapSetting } from '@/hooks/web/map/useMap'
-import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useMessage } from '@/hooks/web/useMessage'
 
 const { createMessage } = useMessage()
+const { setCad, setCoalSeam } = useCadSetting()
+const { setMenuSub, setActiveMenuSub, getActiveMenuSub } = useMenuSub()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
-const cadStore = useCadStoreWithOut()
 
 export const mqttFunMap = new Map<MqttFunEnum, Fn>()
 
@@ -41,29 +41,29 @@ function setMineInfo(result: MqttResult) {
  * @param params
  */
 function oneMapCads(result: MqttResult) {
-  console.warn('oneMapCads:', result.coalSeam)
+  console.warn('oneMapCads:', result)
   const { coalSeam } = result
   coalSeam?.forEach(({ Value }) => {
     addSelectCoalSeamSet(Value)
   })
-  cadStore.setCads(result)
+  setCoalSeam(coalSeam!)
+  setCad(result.params)
   appState.setPageLoading(false)
-  const { map } = useMapSetting()
+  // const { map } = useMapSetting()
 
-  const { mineInfo } = useUserSetting()
-  const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
-  console.log(isEmpty(unref(map)), toRaw(unref(map)))
+  // const { mineInfo } = useUserSetting()
+  // const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
 
-  if (no_show_satellitemap) {
-    if (isEmpty(unref(map))) {
-      watch(unref(map), (value) => {
-        toRaw(value).setZoom(show_cad + 1)
-      })
-    }
-    else {
-      toRaw(unref(map).setZoom(show_cad + 1))
-    }
-  }
+  // if (no_show_satellitemap) {
+  //   if (isEmpty(unref(map))) {
+  //     watch(unref(map), (value) => {
+  //       toRaw(value).setZoom(show_cad + 1)
+  //     })
+  //   }
+  //   else {
+  //     toRaw(unref(map).setZoom(show_cad + 1))
+  //   }
+  // }
 }
 
 /**
@@ -81,11 +81,17 @@ function oneMapMenu(result: MqttResult) {
 }
 
 function oneMapSubMenu(result: MqttResult) {
-  useMenuSub().setMenuSub(result.params as unknown as MenuSub[])
+  setMenuSub(result.params as unknown as MenuSub[])
 }
 
 function oneMapDevice(result: MqttResult) {
+  const { params } = result
+  const menuSub = unref(getActiveMenuSub)
   console.warn('oneMapDevice: ', result)
+  menuSub!.markType = params.drawMarkerType
+  menuSub!.layer = params.layer
+  menuSub!.tableKey = params.key
+  setActiveMenuSub(menuSub!)
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

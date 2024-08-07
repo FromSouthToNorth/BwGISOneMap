@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useMenuDrop } from '../hooks/useMenuDrop'
+import { useMenuDrop, useMenuSub } from '../../'
 import type { MenuItem, MenuSub } from '../types/menu'
 import MenuContainer from './src/MenuContainer.vue'
 import CardTabs from './src/CardTabs.vue'
@@ -15,11 +15,13 @@ import {
 } from '@/utils/mqtt/publish'
 
 const { getMenuDrop } = useMenuDrop()
+const { setActiveMenuSub } = useMenuSub()
 
 const menuContainerHide = ref(true)
 const activeTabKey = ref('')
 function menuClick(menu?: MenuItem) {
   if (menu) {
+    console.warn('menuClick: ', menu)
     const { id } = menu
     activeTabKey.value = id
     publishOneMapSubMenu(menu)
@@ -27,7 +29,7 @@ function menuClick(menu?: MenuItem) {
   menuContainerHide.value = !menu
 }
 function subClick(menuSub: MenuSub) {
-  console.log('菜单点击，获取子级菜单: ', menuSub)
+  setActiveMenuSub(menuSub)
   publishOneMapDevice(menuSub)
 }
 </script>

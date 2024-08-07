@@ -24,16 +24,6 @@ export interface Parameter {
   name: string
 }
 
-export interface Model {
-  code: number | string
-  id: string
-  isUpdateZ: number
-  moduleName: string
-  moduleIds: string
-  ordercode: string
-  subscribe?: string
-}
-
 export interface ToSwitch {
   parameter: Parameter[]
   strategyID: number | string
@@ -45,11 +35,14 @@ export interface ToSwitch {
 export interface MenuSub {
   id: string
   isUpdateZ: number
-  name: string
+  moduleName: string
   ordercode: string
   parent_id: string
   strategy: number | string
   toSwitchs?: ToSwitch[]
   subscribe?: string
-  models?: Model[]
+  models?: MenuSub[]
+  layer?: string
+  markType?: string
+  tableKey?: string
 }
