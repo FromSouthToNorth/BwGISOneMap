@@ -9,7 +9,10 @@ import {
   SlideXReverseTransition,
   SlideYTransition,
 } from '@/components/Transtition'
-import { publishOneMapSubMenu } from '@/utils/mqtt/publish'
+import {
+  publishOneMapDevice,
+  publishOneMapSubMenu,
+} from '@/utils/mqtt/publish'
 
 const { getMenuDrop } = useMenuDrop()
 
@@ -24,7 +27,8 @@ function menuClick(menu?: MenuItem) {
   menuContainerHide.value = !menu
 }
 function subClick(menuSub: MenuSub) {
-  console.log(menuSub)
+  console.log('菜单点击，获取子级菜单: ', menuSub)
+  publishOneMapDevice(menuSub)
 }
 </script>
 

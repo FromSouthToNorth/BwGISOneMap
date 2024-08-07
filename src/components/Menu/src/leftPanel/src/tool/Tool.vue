@@ -8,7 +8,7 @@ import {
   Menu,
   MenuItem,
 } from 'ant-design-vue'
-import { CaretDownOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { CaretDownOutlined, DeleteTwoTone } from '@ant-design/icons-vue'
 import { h, ref, unref } from 'vue'
 import { SizeEnum } from '@/enums/sizeEnum'
 
@@ -84,7 +84,7 @@ function clear() {
   </DropdownButton>
   <Button
     :size="sizeRef"
-    :icon="h(DeleteOutlined)"
+    :icon="h(DeleteTwoTone)"
     @click="clear"
   >
     清空
@@ -93,7 +93,7 @@ function clear() {
 
 <style lang="less" scoped>
 .tool-drop {
-  margin-right: 6px;
+  margin: 1px;
 
   span + span {
     margin-right: 6px;

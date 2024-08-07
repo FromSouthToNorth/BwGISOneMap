@@ -13,6 +13,9 @@ import { useAppStoreWithOut } from '@/store/modules/app'
 import { useCadStoreWithOut } from '@/store/modules/cad'
 import { useMapSetting } from '@/hooks/web/map/useMap'
 import { useUserSetting } from '@/hooks/web/sys/useUser'
+import { useMessage } from '@/hooks/web/useMessage'
+
+const { createMessage } = useMessage()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
@@ -21,10 +24,11 @@ const cadStore = useCadStoreWithOut()
 export const mqttFunMap = new Map<MqttFunEnum, Fn>()
 
 mqttFunMap.set(MqttFunEnum.MINE_INFO, setMineInfo)
-mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
 mqttFunMap.set(MqttFunEnum.MINE_BOUNDARY, mineBoundary)
+mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_SUB_MENU, oneMapSubMenu)
+mqttFunMap.set(MqttFunEnum.ONE_MAP_DEVICE, oneMapDevice)
 
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
@@ -80,10 +84,14 @@ function oneMapSubMenu(result: MqttResult) {
   useMenuSub().setMenuSub(result.params as unknown as MenuSub[])
 }
 
+function oneMapDevice(result: MqttResult) {
+  console.warn('oneMapDevice: ', result)
+}
+
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {
   const fun = mqttFunMap.get(type)
   if (fun)
     fun(result)
   else
-    console.error(`mqttFunMap 内没有找到 ${type} 方法!`)
+    createMessage.error(`mqttFunMap 内没有找到 ${type} 方法!`)
 }

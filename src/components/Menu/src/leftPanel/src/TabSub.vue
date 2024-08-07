@@ -24,8 +24,9 @@ function onMenuClick(toSwitch: ToSwitch) {
   >
     <DropdownButton
       v-if="menuSub.toSwitchs && menuSub.id === activeTabKey"
+      class="menu-sub"
       :size="sizeRef"
-      :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
+      :type="menuSub.id === activeTabKey ? 'primary' : undefined"
       @click="onClick"
     >
       {{ menuSub.name }}
@@ -46,8 +47,9 @@ function onMenuClick(toSwitch: ToSwitch) {
     </DropdownButton>
     <Button
       v-else
+      class="menu-sub"
       :size="sizeRef"
-      :type="menuSub.id === activeTabKey ? 'primary' : 'text'"
+      :type="menuSub.id === activeTabKey ? 'primary' : undefined"
       @click="onClick"
     >
       {{ menuSub.name }}
@@ -56,4 +58,7 @@ function onMenuClick(toSwitch: ToSwitch) {
 </template>
 
 <style lang="less" scoped>
+.menu-sub {
+  margin: 1px;
+}
 </style>

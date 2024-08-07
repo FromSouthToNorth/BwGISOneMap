@@ -5,7 +5,7 @@ import type { Param, Publish } from './types'
 import { mqtt } from '.'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
-import type { MenuItem } from '@/components/Menu/src/types/menu'
+import type { MenuItem, MenuSub, Model } from '@/components/Menu/src/types/menu'
 
 const appState = useAppStoreWithOut()
 
@@ -109,6 +109,24 @@ export function publishOneMapSubMenu(menu: MenuItem) {
     moduleName,
     strategyParams: [
       { name: 'module_id', value: menu.id },
+    ],
+  })
+  mqtt.publish(con)
+}
+
+/**
+ *
+ * @param menuSub
+ */
+export function publishOneMapDevice(menuSub: MenuSub) {
+  const code = menuSub.strategy
+  const moduleName = menuSub.name
+  const child_module_id = menuSub.id
+  const con = publishContext({
+    code,
+    moduleName,
+    strategyParams: [
+      { name: 'child_module_id', value: child_module_id },
     ],
   })
   mqtt.publish(con)
