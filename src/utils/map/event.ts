@@ -1,14 +1,18 @@
 import type { LeafletEvent } from 'leaflet'
 import { toRaw } from 'vue'
 import { removeTileLayer, showSatellite } from './tileLayer'
-import { defaultCad, removeCadLayers } from './cadsLayer'
+import { clearCadLayers, defaultCad } from './cadsLayer'
+import { clearMarkerLayers } from './marker'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useMapSetting } from '@/hooks/web/map/useMap'
-import { useMenuHide } from '@/components/Menu/src/hooks/useMenuHide'
-import { useSatelliteSetting } from '@/components/Application/src/satellite/hooks/useSatelliteSetting'
+import { useMenuHide } from '@/components/Menu'
+import { useHideMinePoint, useSatelliteSetting } from '@/components/Application'
 
 let refreshCad = true
 export function zoom(e: LeafletEvent) {
+  const { setIsSatellite } = useSatelliteSetting()
+  const { setMenuHide } = useMenuHide()
+  const { seHideMinePoint } = useHideMinePoint()
   const { mineInfo } = useUserSetting()
   const { show_cad, show_map } = mineInfo.value
   const map = e?.target
@@ -16,19 +20,22 @@ export function zoom(e: LeafletEvent) {
 
   if (zoom <= show_map) {
     refreshCad = true
-    useMenuHide().setMenuHide(false)
-    removeCadLayers()
+    setMenuHide(false)
+    clearCadLayers()
+    clearMarkerLayers()
+    seHideMinePoint(false)
     showSatellite()
-    useSatelliteSetting().setIsSatellite(refreshCad)
+    setIsSatellite(refreshCad)
   }
 
   if (zoom >= show_cad) {
-    useMenuHide().setMenuHide(true)
+    setMenuHide(true)
     if (refreshCad) {
       removeTileLayer()
       defaultCad()
       refreshCad = false
-      useSatelliteSetting().setIsSatellite(refreshCad)
+      setIsSatellite(refreshCad)
+      seHideMinePoint(true)
     }
   }
 }

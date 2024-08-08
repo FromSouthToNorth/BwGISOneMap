@@ -18,7 +18,10 @@ const { getMenuDrop } = useMenuDrop()
 <template>
   <div id="app-right-top">
     <component :is="SlideYTransition">
-      <div v-show="getMenuDrop" class="app-right-top-menu">
+      <div
+        v-show="getMenuDrop"
+        class="app-right-top-menu"
+      >
         <MineName />
         <Satellite />
         <Cad />

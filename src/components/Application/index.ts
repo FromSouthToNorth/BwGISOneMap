@@ -7,6 +7,8 @@ import satellite from './src/satellite/Satellite.vue'
 import { withInstall } from '@/utils'
 
 export { useAppProviderContext } from './src/useAppContext'
+export { useSatelliteSetting } from './src/satellite/hooks/useSatelliteSetting'
+export { useHideMinePoint } from './src/mineName/hooks/useHideMinePoint'
 
 export const AppProvider = appProvider
 export const AppSearch = withInstall(appSearch)

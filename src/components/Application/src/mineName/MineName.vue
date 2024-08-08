@@ -1,11 +1,23 @@
 <script lang="ts" setup>
 import { BankFilled } from '@ant-design/icons-vue'
-import { computed, ref, unref } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
+import { useHideMinePoint } from './hooks/useHideMinePoint'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
-import { createMineBasePoint, removeMineBasePoint } from '@/utils/map/marker'
+import {
+  createMineBasePoint,
+  removeMineBasePoint,
+} from '@/utils/map/marker'
+
+const isClickRef = ref(true)
+
+const { getHideMinePoint } = useHideMinePoint()
+
+watch(() => unref(getHideMinePoint), (hide) => {
+  isClickRef.value = hide
+})
 
 const { mineInfo } = useUserSetting()
-const isClickRef = ref(true)
+
 function onClick() {
   unref(isClickRef) ? createMineBasePoint() : removeMineBasePoint()
   isClickRef.value = !unref(isClickRef)
@@ -27,5 +39,6 @@ const getClass = computed(() => !unref(isClickRef) ? 'active' : '')
 <style lang="less" scoped>
 .active {
   color: #0958d9;
+  font-weight: bold;
 }
 </style>

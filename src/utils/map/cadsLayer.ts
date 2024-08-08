@@ -1,5 +1,10 @@
 import * as L from 'leaflet'
-import type { Layer, TileLayer } from 'leaflet'
+import type {
+  Layer,
+  LayerOptions,
+  TileLayer,
+  TileLayerOptions,
+} from 'leaflet'
 
 import { ref, toRaw, unref } from 'vue'
 import type { Cad } from '../mqtt/types'
@@ -9,6 +14,15 @@ import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { mapURLEnum, publicTile } from '@/enums/mapEnum'
 
 const { getDefaultCad, getCoalSeam } = useCadSetting()
+
+interface MTileLayerOptions extends TileLayerOptions {
+  dwgId?: string
+  key?: string
+}
+
+interface MFeatureGroupOptions extends LayerOptions {
+  coalSeam?: string
+}
 
 export const cadLayersGroup = L.featureGroup()
 
@@ -30,7 +44,9 @@ function setDwgCadLayer(cad: Cad) {
   const { dwgId, isPublicLayers } = cad
   const CQL_FILTER = getCqlFilter()
   const cadLayers = cadLayersGroup.getLayers()
-  const layers = cadLayers.filter(({ options }) => { return options.dwgId === dwgId })
+  const layers = cadLayers.filter(({ options }) => {
+    return (options as any).dwgId === dwgId
+  })
   if (isArray(layers) && layers.length) {
     layers.forEach((layer) => {
       const cadLayer = layer as TileLayer.WMS
@@ -62,7 +78,9 @@ export function deleteSelectDwgLayerSet(dwgLayer: string, cad: Cad) {
   unref(refSelectDwgLayerSet).delete(dwgLayer)
   const cadLayers = cadLayersGroup.getLayers()
 
-  const layers = cadLayers.filter(({ options }) => { return options.dwgId === cad.dwgId })
+  const layers = cadLayers.filter(({ options }) => {
+    return (options as MTileLayerOptions).dwgId === cad.dwgId
+  })
   const CQL_FILTER = getCqlFilter()
 
   layers.forEach((layer) => {
@@ -101,7 +119,9 @@ export function getCadLayers(): Layer[] {
 }
 
 export function hasLayer(key: string) {
-  const index = cadLayersGroup.getLayers().findIndex(({ options }) => { return options.dwgId === key })
+  const index = cadLayersGroup.getLayers().findIndex(({ options }) => {
+    return (options as MTileLayerOptions).dwgId === key
+  })
   return index !== -1
 }
 
@@ -113,7 +133,9 @@ export function removeCadLayer(cad: Cad) {
         deleteSelectDwgLayerSet(DwgLayer, cad)
     })
   }
-  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => { return options.dwgId === dwgId })
+  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => {
+    return (options as MTileLayerOptions).dwgId === dwgId
+  })
   cadLayer.forEach((cadLayer) => {
     cadLayersGroup.removeLayer(cadLayer)
   })
@@ -133,7 +155,9 @@ export function coalSeamBySetCadLayer(coalSeam: string) {
 }
 
 export function coalSeamByRemoveCadLayer(coalSeam: string) {
-  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => { return options.coalSeam === coalSeam })
+  const cadLayer = cadLayersGroup.getLayers().filter(({ options }) => {
+    return (options as MFeatureGroupOptions).coalSeam === coalSeam
+  })
   cadLayer.forEach((layer) => {
     cadLayersGroup.removeLayer(layer)
   })
@@ -183,6 +207,6 @@ function cadLayerWms(dwgId: string, coalSeam: string, cadUrl: mapURLEnum): TileL
   })
 }
 
-export function removeCadLayers() {
+export function clearCadLayers() {
   cadLayersGroup.clearLayers()
 }

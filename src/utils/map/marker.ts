@@ -19,6 +19,10 @@ export function marker(latlng: LatLngExpression, options?: MOptions) {
   return L.marker(latlng, options)
 }
 
+export function clearMarkerLayers() {
+  markerFeatureGroup.clearLayers()
+}
+
 export function removeMineBasePoint() {
   const layers = markerFeatureGroup.getLayers()
 
