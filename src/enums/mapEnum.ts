@@ -15,3 +15,8 @@ export enum publicTile {
   CQL_FILTER_START = 'layer in(',
   CQL_FILTER_END = ')',
 }
+
+export enum basePoint {
+  BASE_POINT = 'basePoint',
+  CENTER_POINT = 'centerPoint',
+}

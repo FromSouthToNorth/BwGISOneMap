@@ -5,6 +5,7 @@ import { unref, watch } from 'vue'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
+import { markerFeatureGroup } from './marker'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useMapStore } from '@/store/modules/map'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
@@ -37,6 +38,8 @@ export function createMap(id: string) {
     tileLayersGroup.addTo(map)
 
     cadLayersGroup.addTo(map)
+
+    markerFeatureGroup.addTo(map)
 
     if (no_show_satellitemap)
       return
