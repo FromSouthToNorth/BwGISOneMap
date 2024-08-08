@@ -74,7 +74,7 @@ export function behaviorHash(context?: any) {
     map.on('moveend', _throttledUpdate)
     window.addEventListener('hashchange', hashchange)
 
-    const mapLocation = getCache(MAP_LOCATION)
+    const mapLocation = getCache(MAP_LOCATION) as string
 
     if (mapLocation) {
       const mapArgs = mapLocation.split('/').map(Number)
