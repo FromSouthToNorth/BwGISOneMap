@@ -1,11 +1,23 @@
 <script lang="ts" setup>
-import { PieChartOutlined } from '@ant-design/icons-vue'
-import { ref } from 'vue'
+import { ExclamationCircleFilled, PieChartOutlined } from '@ant-design/icons-vue'
+import { Tooltip } from 'ant-design-vue'
+import { ref, unref, watch } from 'vue'
+import { useCadSetting } from './src/hooks/useCadSetting'
 import { CoalSeam } from './src/coalSeam'
 import { Cads } from './src/cads'
 import {
   SlideYTransition,
 } from '@/components/Transtition/index'
+import type { CadType } from '@/utils/mqtt/types'
+
+const { getCad, getDefaultCad } = useCadSetting()
+
+const cadSelect = ref<CadType[]>([])
+
+watch(() => unref(getCad), (cads) => {
+  setCadName(unref(getDefaultCad).typeName)
+  cadSelect.value = cads
+})
 
 const cadName = ref<string>('')
 
@@ -17,13 +29,31 @@ function setCadName(name: string) {
 <template>
   <div class="cad right-top-menu-item cad-dropdown">
     <div class="cad-head">
-      <PieChartOutlined />
-      {{ cadName }}
+      <span v-if="cadSelect.length">
+        <PieChartOutlined />
+        {{ cadName }}
+      </span>
+      <span
+        v-else
+        style="color: #faad14;"
+      >
+        <Tooltip
+          color="#faad14"
+          placement="left"
+          title="查看2037查询图纸策略"
+        >
+          <ExclamationCircleFilled />
+        </Tooltip>
+        没有图纸数据
+      </span>
     </div>
     <component :is="SlideYTransition">
       <div class="cad-dropdown-container">
         <CoalSeam />
-        <Cads @set-cad-name="setCadName" />
+        <Cads
+          :cad-select="cadSelect"
+          @set-cad-name="setCadName"
+        />
       </div>
     </component>
   </div>

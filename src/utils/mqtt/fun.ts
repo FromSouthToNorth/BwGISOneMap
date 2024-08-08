@@ -1,8 +1,9 @@
-import { toRaw, unref, watch } from 'vue'
+import { unref } from 'vue'
+import { result } from 'lodash-es'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
+import { isArray } from '../is'
 import type { MqttResult } from './types'
-import { isEmpty } from '@/utils/is'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
 import { useUserStoreWithOut } from '@/store/modules/user'
@@ -11,10 +12,9 @@ import type { MenuItem, MenuSub } from '@/components/Menu/src/types/menu'
 import { useCadSetting } from '@/components/Application/src/cad'
 import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
-import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useMessage } from '@/hooks/web/useMessage'
 
-const { createMessage } = useMessage()
+const { createMessage, createErrorModal } = useMessage()
 const { setCad, setCoalSeam } = useCadSetting()
 const { setMenuSub, setActiveMenuSub, getActiveMenuSub } = useMenuSub()
 
@@ -42,28 +42,20 @@ function setMineInfo(result: MqttResult) {
  */
 function oneMapCads(result: MqttResult) {
   console.warn('oneMapCads:', result)
-  const { coalSeam } = result
+  const { coalSeam, params } = result
+  const id = getStrategyId(result.topic)
+  if (!isArray(coalSeam) && !coalSeam!.length)
+    createErrorModal({ title: '警告提示', content: `[${id}]策略查询煤层数据为空` })
+
+  if (!isArray(params) && !params.length)
+    createErrorModal({ title: '警告提示', content: `[${id}]策略查询图纸数据为空` })
+
   coalSeam?.forEach(({ Value }) => {
     addSelectCoalSeamSet(Value)
   })
   setCoalSeam(coalSeam!)
-  setCad(result.params)
+  setCad(params)
   appState.setPageLoading(false)
-  // const { map } = useMapSetting()
-
-  // const { mineInfo } = useUserSetting()
-  // const { no_show_satellitemap, show_cad } = toRaw(mineInfo.value)
-
-  // if (no_show_satellitemap) {
-  //   if (isEmpty(unref(map))) {
-  //     watch(unref(map), (value) => {
-  //       toRaw(value).setZoom(show_cad + 1)
-  //     })
-  //   }
-  //   else {
-  //     toRaw(unref(map).setZoom(show_cad + 1))
-  //   }
-  // }
 }
 
 /**
@@ -100,4 +92,9 @@ export function mqttFun(type: MqttFunEnum, result: MqttResult) {
     fun(result)
   else
     createMessage.error(`mqttFunMap 内没有找到 ${type} 方法!`)
+}
+
+function getStrategyId(topic: string): string {
+  const topics = topic.split('/')
+  return topics[topics.length - 1]
 }

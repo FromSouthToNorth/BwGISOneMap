@@ -1,23 +1,16 @@
 <script lang="ts" setup>
-import { ref, unref, watch } from 'vue'
+import { ref } from 'vue'
 import { BadgeRibbon, Divider } from 'ant-design-vue'
-import { useCadSetting } from '../hooks/useCadSetting'
 import CadCheckbox from './CadCheckbox.vue'
 import type { CadType } from '@/utils/mqtt/types'
 
-const emit = defineEmits(['setCadName'])
+defineProps<{ cadSelect: CadType[] }>()
 
-const { getCad, getDefaultCad } = useCadSetting()
+const emit = defineEmits(['setCadName'])
 
 function setCadName(name: string) {
   emit('setCadName', name)
 }
-
-const cadSelect = ref<CadType[]>()
-watch(() => unref(getCad), (cads) => {
-  setCadName(unref(getDefaultCad).typeName)
-  cadSelect.value = cads
-})
 
 const selectCodes = ref<string[]>([])
 

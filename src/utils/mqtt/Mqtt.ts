@@ -6,7 +6,10 @@ import { mqttFun } from './fun'
 import type { MqttResult } from './types'
 import { buildUUID } from '@/utils/uuid'
 import { formatToDateTime } from '@/utils/dateUtil'
-import { MqttEnum, MqttFunEnum } from '@/enums/mqttEnum'
+import { MqttEnum } from '@/enums/mqttEnum'
+import { useMessage } from '@/hooks/web/useMessage'
+
+const { createMessage } = useMessage()
 
 class Mqtt {
   clientId: string
@@ -45,14 +48,18 @@ class Mqtt {
     _client.on('message', (topic, message) => {
       try {
         const str = message.toString()
-        if (!str)
+        if (!str) {
+          createMessage.error(`${topic}, 收到数据为空。`)
           console.error(`${topic}, 收到数据为空。`)
+        }
 
         const result = JSON.parse(str) as MqttResult
+        result.topic = topic
         console.warn(`[${formatToDateTime(new Date())}] 收到消息: `, topic, result)
         mqttFun(result.generalFunc, result)
       }
       catch (error) {
+        createMessage.error(error as string)
         console.error(error)
       }
     })

@@ -27,6 +27,7 @@ export interface MqttResult {
   generalFunc: MqttFunEnum
   params: any
   coalSeam?: CoalSeam[]
+  topic: string
 }
 
 export interface CoalBed {
