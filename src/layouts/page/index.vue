@@ -1,12 +1,7 @@
 <template>
   <RouterView>
     <template #default="{ Component, route }">
-      <transition
-        name="fade" mode="out-in"
-        appear
-      >
-        <component :is="Component" :key="route.fullPath" />
-      </transition>
+      <component :is="Component" :key="route.fullPath" />
     </template>
   </RouterView>
 </template>
