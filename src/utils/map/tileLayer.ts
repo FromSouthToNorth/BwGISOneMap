@@ -1,18 +1,18 @@
 import type { Polygon, TileLayer, TileLayerOptions } from 'leaflet'
-import { toRaw } from 'vue'
+import { toRaw, unref } from 'vue'
 import * as L from 'leaflet'
 import { isArray } from '../is'
 import { marker } from './marker'
 import { toShowCad } from './event'
 import { toLatlngs } from './to'
 import { polygon } from './polygon'
-import { EncryptionFactory } from '@/utils/cipher'
 import { mineLayersEnum } from '@/enums/mapEnum'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
+import { useSatelliteSetting } from '@/components/Application'
 
 let mineBoundary: Polygon
 
-let tileSatellite: TileLayer[]
+let tileSatellite: TileLayer
 
 export const tileLayersGroup = L.featureGroup()
 
@@ -23,23 +23,17 @@ interface MTileLayer {
 interface MOptions extends TileLayerOptions {
   key?: string
 }
-const base64 = EncryptionFactory.createBase64Encryption()
-
-const accessToken
-  = base64.decrypt('cGsuZXlKMUlqb2lZM1Z6WHpneWNXMDFkMk16SWl3aVlTSTZJamQ1YW1sa04yeGhNbVp3TVRKMmIyRTBjWEJzZUdaMFlXa2lMQ0owSWpvMGZRLm1FOHZpcVlhYVBqSFpKVEp2eGRFWmoyelo1QjFFN3pIeDdDeTRVMk5lcjQ=')
 
 const tileUrl = import.meta.env.VITE_GLOB_MAP_URL
 
-export const tileLayers: Array<MTileLayer> = [
-  {
-    tileUrl,
-    options: {
-      accessToken,
-      key: mineLayersEnum.MINE_SATELLITE,
-      zIndex: -100,
-    },
+export const tileLayer: MTileLayer = {
+  tileUrl,
+  options: {
+    accessToken: '',
+    key: mineLayersEnum.MINE_SATELLITE,
+    zIndex: -100,
   },
-]
+}
 
 export function showSatellite() {
   mineMarker()
@@ -66,7 +60,7 @@ export function mineMarker() {
 export function setMineBoundary(latLngs: BL[]) {
   const { mineInfo } = useUserSetting()
   const { is_show_mineboundary, no_show_satellitemap } = toRaw(mineInfo.value)
-  if (no_show_satellitemap || !is_show_mineboundary && !isArray(latLngs))
+  if (no_show_satellitemap || (!is_show_mineboundary && !isArray(latLngs)))
     return
 
   const lls = toLatlngs(latLngs)
@@ -80,14 +74,14 @@ export function setMineBoundary(latLngs: BL[]) {
       color: '#76FF03',
       dashArray: '12, 12',
       dashSpeed: 30,
-    })
+    } as L.PathOptions)
   })
   mineBoundary.on('mouseout', () => {
     mineBoundary.setStyle({
       color: '#2196F3',
       dashArray: '',
       dashSpeed: 0,
-    })
+    } as L.PathOptions)
   })
   mineBoundary.on('click', () => {
     toShowCad()
@@ -96,28 +90,31 @@ export function setMineBoundary(latLngs: BL[]) {
 }
 
 export function tile() {
-  tileSatellite = []
-  tileLayers.forEach(({ tileUrl, options }) => {
-    const tileLayer = L.tileLayer(tileUrl, options)
-      .on('tileerror', (e) => {
-        console.error(e)
-      })
-    tileSatellite.push(tileLayer)
-  })
+  const { mineInfo } = useUserSetting()
+  const { satelliteImageToken } = unref(mineInfo)
+  tileLayer.options!.accessToken = satelliteImageToken
+  const { tileUrl, options } = tileLayer
+  tileSatellite = L.tileLayer(tileUrl, options)
+    .on('tileerror', (e) => {
+      console.error(e)
+    })
 }
 
 export function addSatelliteTile() {
-  tileSatellite.forEach((e) => {
-    tileLayersGroup.addLayer(e)
-  })
+  tileLayersGroup.addLayer(tileSatellite)
 }
 
 export function removeSatelliteTile() {
-  tileSatellite.forEach((e) => {
-    tileLayersGroup.removeLayer(e)
-  })
+  tileLayersGroup.removeLayer(tileSatellite)
 }
 
 export function removeTileLayer() {
-  tileLayersGroup.clearLayers()
+  const { getIsSatellite } = useSatelliteSetting()
+  const layers = tileLayersGroup.getLayers()
+  for (const layer of layers) {
+    if (unref(getIsSatellite)
+      && (layer.options as MOptions).key === mineLayersEnum.MINE_SATELLITE)
+      continue
+    tileLayersGroup.removeLayer(layer)
+  }
 }

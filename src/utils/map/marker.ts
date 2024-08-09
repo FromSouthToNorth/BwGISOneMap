@@ -80,7 +80,7 @@ function createBaseMarker(
         += `<p><span>${e}: </span><b>${popupContent[e]}</b></p>`
     })
   const point = marker(latLng, { key })
-    .bindTooltip(tooltip, { permanent: true, direction: 'right' })
+    .bindTooltip(tooltip, { permanent: true, direction: 'right', className: key })
     .bindPopup(markerpopupContent)
   markerFeatureGroup.addLayer(point)
 }

@@ -1,35 +1,31 @@
 <script lang="ts" setup>
-import { Checkbox } from 'ant-design-vue'
-import { ref, watch } from 'vue'
+import { Checkbox, Tooltip } from 'ant-design-vue'
 import { useSatelliteSetting } from './hooks/useSatelliteSetting'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { addSatelliteTile, removeSatelliteTile } from '@/utils/map/tileLayer'
 
 const { mineInfo } = useUserSetting()
-const { getIsSatellite } = useSatelliteSetting()
-const checked = ref(false)
+const { setIsSatellite } = useSatelliteSetting()
 function onChange(e: any) {
-  e.target.checked ? addSatelliteTile() : removeSatelliteTile()
+  const { checked } = e.target
+  setIsSatellite(checked)
+  checked ? addSatelliteTile() : removeSatelliteTile()
 }
-watch(() => getIsSatellite.value, (v) => {
-  if (v)
-    return
-  checked.value = v
-})
 </script>
 
 <template>
-  <div
-    v-show="!mineInfo.no_show_satellitemap"
-    class="satellite right-top-menu-item"
-  >
-    <Checkbox
-      v-model:checked="checked"
-      @change="onChange"
+  <Tooltip title="是否勾选显示卫星图, 最大显示层级为 16 级">
+    <div
+      v-show="!mineInfo.no_show_satellitemap"
+      class="satellite right-top-menu-item"
     >
-      卫星图
-    </Checkbox>
-  </div>
+      <Checkbox
+        @change="onChange"
+      >
+        卫星图
+      </Checkbox>
+    </div>
+  </Tooltip>
 </template>
 
 <style lang="less" scoped>

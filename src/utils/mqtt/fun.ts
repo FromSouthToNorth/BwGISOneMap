@@ -1,5 +1,4 @@
 import { unref } from 'vue'
-import { result } from 'lodash-es'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
 import { isArray } from '../is'
@@ -29,6 +28,7 @@ mqttFunMap.set(MqttFunEnum.ONE_MAP_CADS, oneMapCads)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_SUB_MENU, oneMapSubMenu)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_DEVICE, oneMapDevice)
+mqttFunMap.set(MqttFunEnum.PROMPT_MESSAGE, promptMessage)
 
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
@@ -84,6 +84,11 @@ function oneMapDevice(result: MqttResult) {
   menuSub!.layer = params.layer
   menuSub!.tableKey = params.key
   setActiveMenuSub(menuSub!)
+}
+
+function promptMessage(result: MqttResult) {
+  const { params } = result
+  createErrorModal({ title: '错误提示', content: params.mesg })
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

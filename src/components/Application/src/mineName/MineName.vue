@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Tooltip } from 'ant-design-vue'
 import { BankFilled } from '@ant-design/icons-vue'
 import { computed, ref, unref, watch } from 'vue'
 import { useHideMinePoint } from './hooks/useHideMinePoint'
@@ -26,14 +27,16 @@ const getClass = computed(() => !unref(isClickRef) ? 'active' : '')
 </script>
 
 <template>
-  <div
-    class="mine-name right-top-menu-item"
-    :class="getClass"
-    @click="onClick"
-  >
-    <BankFilled />
-    {{ mineInfo.mineName }}
-  </div>
+  <Tooltip title="点击显示矿井基点, 再次点击删除">
+    <div
+      class="mine-name right-top-menu-item"
+      :class="getClass"
+      @click="onClick"
+    >
+      <BankFilled />
+      {{ mineInfo.mineName }}
+    </div>
+  </Tooltip>
 </template>
 
 <style lang="less" scoped>

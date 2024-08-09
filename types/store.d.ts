@@ -32,4 +32,5 @@ export interface MineInfo {
   is_show_mineboundary: number
   no_show_satellitemap: number
   time: Date
+  satelliteImageToken: string
 }

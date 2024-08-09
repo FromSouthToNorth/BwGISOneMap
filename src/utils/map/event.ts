@@ -6,11 +6,10 @@ import { clearMarkerLayers } from './marker'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useMapSetting } from '@/hooks/web/map/useMap'
 import { useMenuHide } from '@/components/Menu'
-import { useHideMinePoint, useSatelliteSetting } from '@/components/Application'
+import { useHideMinePoint } from '@/components/Application'
 
 let refreshCad = true
 export function zoom(e: LeafletEvent) {
-  const { setIsSatellite } = useSatelliteSetting()
   const { setMenuHide } = useMenuHide()
   const { seHideMinePoint } = useHideMinePoint()
   const { mineInfo } = useUserSetting()
@@ -25,7 +24,6 @@ export function zoom(e: LeafletEvent) {
     clearMarkerLayers()
     seHideMinePoint(false)
     showSatellite()
-    setIsSatellite(refreshCad)
   }
 
   if (zoom >= show_cad) {
@@ -34,7 +32,6 @@ export function zoom(e: LeafletEvent) {
       removeTileLayer()
       defaultCad()
       refreshCad = false
-      setIsSatellite(refreshCad)
       seHideMinePoint(true)
     }
   }

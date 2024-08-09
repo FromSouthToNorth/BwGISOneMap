@@ -24,13 +24,13 @@ export const useUserStore = defineStore({
   }),
   getters: {
     getUserInfo(state): UserInfo {
-      return state.userInfo || getCache<UserInfo>(USER_INFO_KEY) || {}
+      return state.userInfo || getCache<UserInfo>(USER_INFO_KEY) as UserInfo || {} as UserInfo
     },
     getToken(state): string {
-      return state.token || getCache<string>(TOKEN_KEY)
+      return state.token || getCache<string>(TOKEN_KEY) as string
     },
     getMineInfo(state): MineInfo {
-      return state.mineInfo || getCache<MineInfo>(MINE_INFO_KEY) || {}
+      return state.mineInfo || getCache<MineInfo>(MINE_INFO_KEY) as MineInfo || {} as MineInfo
     },
   },
   actions: {
