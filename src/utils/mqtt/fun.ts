@@ -94,7 +94,8 @@ function oneMapDevice(result: MqttResult) {
 
 function promptMessage(result: MqttResult) {
   const { params } = result
-  createErrorModal({ title: '错误提示', content: params.mesg })
+  createErrorModal({ title: '策略错误提示', content: params.mesg })
+  setMenuSubLoading(false)
 }
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {

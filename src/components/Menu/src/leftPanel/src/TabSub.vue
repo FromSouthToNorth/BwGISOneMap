@@ -35,6 +35,7 @@ function onToSwitchClick(toSwitch: ToSwitch) {
       class="menu-sub"
       :size="sizeRef"
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
+      :disabled="loading"
       @click="onClick"
     >
       {{ menuSub.moduleName }}
@@ -59,6 +60,7 @@ function onToSwitchClick(toSwitch: ToSwitch) {
       :size="sizeRef"
       :loading="loading && menuSub.id === activeTabKey"
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
+      :disabled="loading"
       @click="onClick"
     >
       {{ menuSub.moduleName }}
