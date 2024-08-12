@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useMenuDrop, useMenuSub } from '../../'
-import type { MenuItem, MenuSub } from '../types/menu'
+import type { MenuItem } from '../types/menu'
 import MenuContainer from './src/MenuContainer.vue'
 import CardTabs from './src/CardTabs.vue'
 import { AppSearch } from '@/components/Application'
@@ -10,27 +10,21 @@ import {
   SlideYTransition,
 } from '@/components/Transtition'
 import {
-  publishOneMapDevice,
   publishOneMapSubMenu,
 } from '@/utils/mqtt/publish'
 
 const { getMenuDrop } = useMenuDrop()
-const { setActiveMenuSub } = useMenuSub()
+const { menuSubClick } = useMenuSub()
 
 const menuContainerHide = ref(true)
 const activeTabKey = ref('')
 function menuClick(menu?: MenuItem) {
   if (menu) {
-    console.warn('menuClick: ', menu)
     const { id } = menu
     activeTabKey.value = id
     publishOneMapSubMenu(menu)
   }
   menuContainerHide.value = !menu
-}
-function subClick(menuSub: MenuSub) {
-  setActiveMenuSub(menuSub)
-  publishOneMapDevice(menuSub)
 }
 </script>
 
@@ -56,7 +50,7 @@ function subClick(menuSub: MenuSub) {
           v-show="!menuContainerHide"
           :active-tab-key="activeTabKey"
           @click="menuClick"
-          @sub-click="subClick"
+          @sub-click="menuSubClick"
         />
       </component>
     </div>

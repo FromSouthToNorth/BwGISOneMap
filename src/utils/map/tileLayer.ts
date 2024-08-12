@@ -64,8 +64,9 @@ export function setMineBoundary(latLngs: BL[]) {
     return
 
   const lls = toLatlngs(latLngs)
+  const color = '#2196F3'
   mineBoundary = polygon(lls, {
-    color: '#2196F3',
+    color,
     dashSpeed: 1,
     key: mineLayersEnum.MINE_BOUNDARY,
   })
@@ -78,7 +79,7 @@ export function setMineBoundary(latLngs: BL[]) {
   })
   mineBoundary.on('mouseout', () => {
     mineBoundary.setStyle({
-      color: '#2196F3',
+      color,
       dashArray: '',
       dashSpeed: 0,
     } as L.PathOptions)

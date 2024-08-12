@@ -1,11 +1,18 @@
 <script lang="ts" setup>
-import { Button, DropdownButton, Menu, MenuItem, Tooltip } from 'ant-design-vue'
+import {
+  Button,
+  DropdownButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from 'ant-design-vue'
 import { DownOutlined } from '@ant-design/icons-vue'
 import { ref } from 'vue'
 import type { MenuSub, ToSwitch } from '../../types/menu'
 import { SizeEnum } from '@/enums/sizeEnum'
 
-const props = defineProps<{ menuSub: MenuSub, activeTabKey: string }>()
+const props = defineProps<{ menuSub: MenuSub, activeTabKey: string, loading: boolean }>()
+
 const emit = defineEmits(['menuSubClick'])
 
 const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
@@ -24,6 +31,7 @@ function onToSwitchClick(toSwitch: ToSwitch) {
   >
     <DropdownButton
       v-if="menuSub.toSwitchs && menuSub.id === activeTabKey"
+      :loading="loading && menuSub.id === activeTabKey"
       class="menu-sub"
       :size="sizeRef"
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
@@ -49,6 +57,7 @@ function onToSwitchClick(toSwitch: ToSwitch) {
       v-else
       class="menu-sub"
       :size="sizeRef"
+      :loading="loading && menuSub.id === activeTabKey"
       :type="menuSub.id === activeTabKey ? 'primary' : undefined"
       @click="onClick"
     >

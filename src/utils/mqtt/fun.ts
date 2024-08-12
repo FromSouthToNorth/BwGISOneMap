@@ -15,7 +15,12 @@ import { useMessage } from '@/hooks/web/useMessage'
 
 const { createMessage, createErrorModal } = useMessage()
 const { setCad, setCoalSeam } = useCadSetting()
-const { setMenuSub, setActiveMenuSub, getActiveMenuSub } = useMenuSub()
+const {
+  setMenuSub,
+  setActiveMenuSub,
+  getActiveMenuSub,
+  setMenuSubLoading,
+} = useMenuSub()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
@@ -84,6 +89,7 @@ function oneMapDevice(result: MqttResult) {
   menuSub!.layer = params.layer
   menuSub!.tableKey = params.key
   setActiveMenuSub(menuSub!)
+  setMenuSubLoading(false)
 }
 
 function promptMessage(result: MqttResult) {
