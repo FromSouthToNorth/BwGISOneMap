@@ -26,9 +26,8 @@ export function utilQsString(obj: any, noencode: boolean): string {
   return Object.keys(obj)
     .sort()
     .map((key) => {
-      return `${encodeURIComponent(key)}=${
-        noencode ? softEncode(obj[key]) : encodeURIComponent(obj[key])
-      }`
+      return `${encodeURIComponent(key)}=${noencode ? softEncode(obj[key]) : encodeURIComponent(obj[key])
+        }`
     })
     .join('&')
 }
@@ -101,7 +100,7 @@ export function deepMerge<T extends object | null | undefined, U extends object 
 
 // https://github.com/vant-ui/vant/issues/8302
 interface EventShim {
-  new (...args: any[]): {
+  new(...args: any[]): {
     $props: {
       onClick?: (...args: any[]) => void
     }
@@ -124,4 +123,11 @@ export function withInstall<T extends CustomComponent>(component: T, alias?: str
       app.config.globalProperties[alias] = component
   }
   return component as WithInstall<T>
+}
+
+/**
+ * @description:  Set ui mount node
+ */
+export function getPopupContainer(node?: HTMLElement): HTMLElement {
+  return (node?.parentNode as HTMLElement) ?? document.body
 }

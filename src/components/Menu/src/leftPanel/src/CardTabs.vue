@@ -10,6 +10,7 @@ import { Tool } from './tool'
 import TabSub from './TabSub.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { SizeEnum } from '@/enums/sizeEnum'
+import BasicTable from '@/components/Table/src/BasicTable.vue'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
@@ -67,8 +68,6 @@ watch(
 )
 
 function onClick(key?: string) {
-  console.log(unref(getMenuSubLoading))
-
   if (unref(getMenuSubLoading))
     return
 
@@ -117,6 +116,7 @@ function menuSubClick(menuSub: MenuSub) {
       />
       <Tool />
     </div>
+    <BasicTable />
   </Card>
 </template>
 

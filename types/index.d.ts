@@ -30,3 +30,13 @@ declare type ElRef<T extends HTMLElement = HTMLDivElement> = Nullable<T>
  * 任意类型的函数
  */
 type AnyFunction = AnyNormalFunction | AnyPromiseFunction
+
+/**
+ * 字符串类型对象
+ */
+type Recordable<T = any> = Record<string, T>
+
+/**
+ *  T | null 包装
+ */
+type Nullable<T> = T | null
