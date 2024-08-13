@@ -11,6 +11,7 @@ interface ActionType {
 
 const dataSourceRef = ref([])
 const rowKeyRef = ref('')
+const scrollRef = ref({ x: 0, y: 400 })
 
 export function useDataSource() {
   function setDataSource(dataSource: []) {
@@ -40,10 +41,16 @@ export function useDataSource() {
           return a[sorter.field] < b[sorter.field] ? 1 : -1
         }
       })
+      setDataSource(tableData.value as [])
     }
     setLoading(false)
-    console.log('emit: ', emit)
   }
+
+  function setScrollX(x: number) {
+    scrollRef.value.x = x
+  }
+
+  const getScrollX = computed(() => unref(scrollRef))
 
   return {
     getDataSourceRef: computed(() => unref(dataSourceRef)),
@@ -52,5 +59,7 @@ export function useDataSource() {
     setRowKey,
     getRowKey,
     handleTableChange,
+    setScrollX,
+    getScrollX,
   }
 }

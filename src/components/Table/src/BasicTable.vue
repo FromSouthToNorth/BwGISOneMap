@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Table } from 'ant-design-vue'
-import { computed, ref, unref } from 'vue'
+import {
+  computed,
+  ref,
+  toRaw,
+  unref,
+  useAttrs,
+  useSlots,
+} from 'vue'
 import { omit } from 'lodash-es'
 import { useDataSource } from './hooks/useDataSource'
 import { useLoading } from './hooks/useLoading'
@@ -30,6 +37,9 @@ const emit = defineEmits([
   'columnsChange',
 ])
 
+const attrs = useAttrs()
+const slots = useSlots()
+
 const { getLoading, setLoading } = useLoading()
 const { getColumns } = useColumns()
 const { getPaginationInfo, setPagination } = usePagination()
@@ -41,6 +51,7 @@ const {
   getDataSourceRef,
   getRowKey,
   handleTableChange: onTableChange,
+  getScrollX,
 } = useDataSource()
 
 const { prefixCls } = useDesign('basic-table')
@@ -48,13 +59,18 @@ const { prefixCls } = useDesign('basic-table')
 const getBindValues = computed(() => {
   const dataSource = unref(getDataSourceRef)
   let propsData: any = {
-    dataSource,
+    ...attrs,
+    tableLayout: 'fixed',
     rowKey: unref(getRowKey),
     loading: unref(getLoading),
-    columns: unref(getColumns),
-    pagination: unref(getPaginationInfo),
+    columns: toRaw(unref(getColumns)),
+    pagination: toRaw(unref(getPaginationInfo)),
+    dataSource,
+    size: 'small',
+    scroll: unref(getScrollX),
   }
   propsData = omit(propsData, ['class', 'onChange'])
+
   return propsData
 })
 function handleTableChange(pagination: any, filters: any, sorter: any) {
@@ -69,12 +85,12 @@ function handleTableChange(pagination: any, filters: any, sorter: any) {
 <template>
   <div
     ref="wrapRef"
-    :class="prefixCls"
   >
     <BasicForm />
     <Table
       v-bind="getBindValues"
       ref="tableElRef"
+      :class="prefixCls"
       @change="handleTableChange"
     />
   </div>
