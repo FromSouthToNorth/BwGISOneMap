@@ -34,10 +34,14 @@ const { getLoading, setLoading } = useLoading()
 const { getColumns } = useColumns()
 const { getPaginationInfo, setPagination } = usePagination()
 
+const wrapRef = ref(null)
 const tableElRef = ref(null)
 const tableData = ref([])
-const wrapRef = ref(null)
-const { getDataSourceRef, getRowKey, handleTableChange: onTableChange } = useDataSource()
+const {
+  getDataSourceRef,
+  getRowKey,
+  handleTableChange: onTableChange,
+} = useDataSource()
 
 const { prefixCls } = useDesign('basic-table')
 
@@ -58,7 +62,7 @@ function handleTableChange(pagination: any, filters: any, sorter: any) {
     setPagination,
     setLoading,
     tableData,
-  }, pagination, filters, sorter)
+  }, pagination, filters, sorter, emit)
 }
 </script>
 

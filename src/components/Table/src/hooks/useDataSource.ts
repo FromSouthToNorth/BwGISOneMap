@@ -27,7 +27,7 @@ export function useDataSource() {
     setPagination,
     setLoading,
     tableData,
-  }: ActionType, pagination: any, _filters: any, sorter: any) {
+  }: ActionType, pagination: any, _filters: any, sorter: any, emit: EmitType) {
     setPagination(pagination)
     setLoading(true)
     if (!isEmpty(sorter)) {
@@ -42,6 +42,7 @@ export function useDataSource() {
       })
     }
     setLoading(false)
+    console.log('emit: ', emit)
   }
 
   return {
