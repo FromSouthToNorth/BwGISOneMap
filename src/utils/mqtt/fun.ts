@@ -12,15 +12,20 @@ import { useCadSetting } from '@/components/Application/src/cad'
 import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMessage } from '@/hooks/web/useMessage'
+import { useDataSource } from '@/components/Table/src/hooks/useDataSource'
+import { useColumns } from '@/components/Table/src/hooks/useColumns'
 
 const { createMessage, createErrorModal } = useMessage()
 const { setCad, setCoalSeam } = useCadSetting()
+const { setColumns } = useColumns()
 const {
   setMenuSub,
   setActiveMenuSub,
   getActiveMenuSub,
   setMenuSubLoading,
 } = useMenuSub()
+
+const { setDataSource, setRowKey } = useDataSource()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
@@ -83,12 +88,23 @@ function oneMapSubMenu(result: MqttResult) {
 
 function oneMapDevice(result: MqttResult) {
   const { params } = result
+  const {
+    data,
+    columns,
+    key,
+    dwg,
+    layer,
+    drawMarkerType,
+  } = params
   const menuSub = unref(getActiveMenuSub)
   console.warn('oneMapDevice: ', result)
-  menuSub!.markType = params.drawMarkerType
-  menuSub!.layer = params.layer
-  menuSub!.tableKey = params.key
+  menuSub!.markType = drawMarkerType
+  menuSub!.layer = layer
+  menuSub!.tableKey = key
   setActiveMenuSub(menuSub!)
+  setColumns(columns)
+  setDataSource(data)
+  setRowKey(key)
   setMenuSubLoading(false)
 }
 

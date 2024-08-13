@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import type { CardSize } from 'ant-design-vue'
+import type { CardSize, CardTabListType } from 'ant-design-vue/lib/card/Card'
 import { Button, Card } from 'ant-design-vue'
 import { RollbackOutlined } from '@ant-design/icons-vue'
 import { h, ref, toRaw, unref, watch } from 'vue'
-import type { CardTabListType } from 'ant-design-vue/lib/card/Card'
 import { useMenuSetting, useMenuSub } from '../../../index'
 import type { MenuItem, MenuSub } from '../../types/menu'
 import { Tool } from './tool'
@@ -28,6 +27,7 @@ interface MCardTabListType extends CardTabListType {
 const activeTabKey = ref<string>('')
 const menuSubActiveKey = ref<string>('')
 const tabList = ref<MCardTabListType[]>([])
+const tableShow = ref(false)
 
 const menuSubList = ref<MenuSub[] | undefined>([])
 const sizeRef = ref<CardSize>(SizeEnum.SMALL)
@@ -71,6 +71,8 @@ function onClick(key?: string) {
   if (unref(getMenuSubLoading))
     return
 
+  tableShow.value = false
+
   if (key) {
     const tab = unref(tabList).find((tab) => {
       return tab.key === key
@@ -84,6 +86,7 @@ function onClick(key?: string) {
 
 function menuSubClick(menuSub: MenuSub) {
   menuSubActiveKey.value = menuSub.id
+  tableShow.value = true
   emit('subClick', menuSub)
 }
 </script>
@@ -116,7 +119,7 @@ function menuSubClick(menuSub: MenuSub) {
       />
       <Tool />
     </div>
-    <BasicTable />
+    <BasicTable v-show="tableShow" />
   </Card>
 </template>
 
