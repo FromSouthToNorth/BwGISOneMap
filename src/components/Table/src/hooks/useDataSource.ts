@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash-es'
 import { type ComputedRef, type Ref, computed, ref, unref } from 'vue'
 import type { PaginationProps } from '../types/pagination'
+import { useLoading } from './useLoading'
 
 interface ActionType {
   getPaginationInfo?: ComputedRef<boolean | PaginationProps>
@@ -9,6 +10,7 @@ interface ActionType {
   tableData: Ref<Recordable[]>
 }
 
+const { setLoading } = useLoading()
 const dataSourceRef = ref([])
 const rowKeyRef = ref('')
 const scrollRef = ref({ x: 0, y: 400 })
@@ -16,6 +18,7 @@ const scrollRef = ref({ x: 0, y: 400 })
 export function useDataSource() {
   function setDataSource(dataSource: []) {
     dataSourceRef.value = dataSource
+    setLoading(false)
   }
   const getDataSource = computed(() => unref(dataSourceRef))
 
@@ -43,7 +46,6 @@ export function useDataSource() {
       })
       setDataSource(tableData.value as [])
     }
-    setLoading(false)
   }
 
   function setScrollX(x: number) {

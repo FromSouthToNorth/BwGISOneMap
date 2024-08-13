@@ -3,6 +3,9 @@ import type { MenuSub } from '../types/menu'
 import {
   publishOneMapDevice,
 } from '@/utils/mqtt/publish'
+import { useLoading } from '@/components/Table/src/hooks/useLoading'
+
+const { setLoading } = useLoading()
 
 const menuSubRef = ref<MenuSub[]>()
 const activeMenuSubRef = ref<MenuSub>()
@@ -26,6 +29,7 @@ export function useMenuSub() {
 
   function menuSubClick(menuSub: MenuSub) {
     setMenuSubLoading(true)
+    setLoading(true)
     setActiveMenuSub(menuSub)
     publishOneMapDevice(menuSub)
   }
