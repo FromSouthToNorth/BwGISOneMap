@@ -12,7 +12,7 @@ export function useCadSetting() {
     cadRef.value = cad
     const { mineInfo } = useUserSetting()
     const { map } = useMapSetting()
-    console.log('useCadSetting map: ', unref(map))
+    console.error('useCadSetting map: ', unref(map))
     const { no_show_satellitemap, show_cad } = unref(mineInfo)
     if (no_show_satellitemap)
       toRaw(unref(map)).setZoom(show_cad + 1)

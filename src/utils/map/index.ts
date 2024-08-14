@@ -27,7 +27,6 @@ export function createMap(id: string) {
       attributionControl: false,
       zoomControl: false,
     })
-    mapStore.setMap(map)
 
     map.on('zoom', onZoom)
 
@@ -41,8 +40,9 @@ export function createMap(id: string) {
 
     markerFeatureGroup.addTo(map)
 
-    if (no_show_satellitemap)
-      return
-    showSatellite()
+    if (!no_show_satellitemap) {
+      showSatellite()
+    }
+    mapStore.setMap(map)
   })
 }

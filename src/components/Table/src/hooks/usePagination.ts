@@ -50,8 +50,13 @@ export function usePagination() {
     }
   }
 
+  function getPagination() {
+    return unref(getPaginationInfo)
+  }
+
   return {
     setPagination,
+    getPagination,
     getPaginationInfo,
   }
 }

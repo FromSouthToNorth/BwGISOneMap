@@ -26,6 +26,9 @@ export const LOCK_INFO_KEY = 'LOCK__INFO__KEY'
 
 export const APP_DARK_MODE_KEY = '__APP__DARK__MODE'
 
+// table 列设置
+export const TABLE_SETTING_KEY = 'TABLE__SETTING__KEY__'
+
 export enum CacheTypeEnum {
   SESSION,
   LOCAL,

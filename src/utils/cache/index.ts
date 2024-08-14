@@ -15,6 +15,10 @@ export function setCache(key: BasicKeys, value: any) {
   return ls.setItem(key, value)
 }
 
+export function removeCache(key: BasicKeys) {
+  ls.removeItem(key)
+}
+
 export function clearCache() {
   return ls.clear()
 }

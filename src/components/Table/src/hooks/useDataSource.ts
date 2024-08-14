@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash-es'
 import { type ComputedRef, type Ref, computed, ref, unref } from 'vue'
 import type { PaginationProps } from '../types/pagination'
 import { useLoading } from './useLoading'
+import { useMenuSub } from '@/components/Menu'
 
 interface ActionType {
   getPaginationInfo?: ComputedRef<boolean | PaginationProps>
@@ -11,7 +12,8 @@ interface ActionType {
 }
 
 const { setLoading } = useLoading()
-const dataSourceRef = ref([])
+const { menuSubClick } = useMenuSub()
+const dataSourceRef = ref<Recordable[]>([])
 const rowKeyRef = ref('')
 const scrollRef = ref({ x: 0, y: 400 })
 
@@ -52,6 +54,10 @@ export function useDataSource() {
     scrollRef.value.x = x
   }
 
+  async function reload() {
+    menuSubClick()
+  }
+
   const getScrollX = computed(() => unref(scrollRef))
 
   return {
@@ -63,5 +69,6 @@ export function useDataSource() {
     handleTableChange,
     setScrollX,
     getScrollX,
+    reload,
   }
 }

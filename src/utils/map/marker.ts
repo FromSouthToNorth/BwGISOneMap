@@ -28,7 +28,7 @@ export function removeMineBasePoint() {
 
   for (const [_key, value] of Object.entries(basePoint)) {
     const point = layers.find((_layer) => {
-      return _layer.options.key === value
+      return (_layer.options as MOptions).key === value
     })
     if (point)
       markerFeatureGroup.removeLayer(point)

@@ -27,10 +27,15 @@ export function useMenuSub() {
   }
   const getMenuSubLoading = computed(() => unref(menuSubLoadingRef))
 
-  function menuSubClick(menuSub: MenuSub) {
+  function menuSubClick(menuSub?: MenuSub) {
     setMenuSubLoading(true)
     setLoading(true)
-    setActiveMenuSub(menuSub)
+    if (!menuSub) {
+      menuSub = unref(getActiveMenuSub)!
+    }
+    else {
+      setActiveMenuSub(menuSub)
+    }
     publishOneMapDevice(menuSub)
   }
 

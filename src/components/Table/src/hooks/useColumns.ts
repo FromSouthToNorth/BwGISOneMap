@@ -1,10 +1,11 @@
 import { computed, ref, unref } from 'vue'
+import type { BasicColumn } from '../types/table'
 import { useDataSource } from './useDataSource'
 import { specialColTypeEnum } from '@/enums/tableEnum'
 
 const { setScrollX } = useDataSource()
 
-const columnsRef = ref([])
+const columnsRef = ref<Partial<BasicColumn>[] | (string | string[])[]>([])
 const specialColumnsRef = ref({})
 
 function funReviver(_key: string, value: string) {
@@ -21,11 +22,11 @@ function funReviver(_key: string, value: string) {
 }
 
 export function useColumns() {
-  function setColumns(columns: []) {
-    const columnsStr = JSON.stringify(columns)
-    columns = JSON.parse(columnsStr, funReviver)
+  function setColumns(columnList: Partial<BasicColumn>[] | (string | string[])[]) {
+    const columnsStr = JSON.stringify(columnList)
+    columnList = JSON.parse(columnsStr, funReviver)
     const col: any[] = []
-    columns.forEach((c: any) => {
+    columnList.forEach((c: any) => {
       const { dataIndex } = c.value
       if (dataIndex === specialColTypeEnum.SCROLL_X) {
         setScrollX(c.value[dataIndex])
@@ -34,7 +35,7 @@ export function useColumns() {
         col.push(c.value)
       }
     })
-    columnsRef.value = col as never[]
+    columnsRef.value = col
   }
   const getColumns = computed(() => unref(columnsRef))
 
