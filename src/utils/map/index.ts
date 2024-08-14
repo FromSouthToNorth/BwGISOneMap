@@ -44,5 +44,7 @@ export function createMap(id: string) {
       showSatellite()
     }
     mapStore.setMap(map)
+
+    return map
   })
 }

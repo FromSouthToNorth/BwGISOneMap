@@ -67,7 +67,7 @@ const getProps = computed(() => {
 const isFixedHeightPage = inject(PageWrapperFixedHeightKey, false)
 
 const { getLoading, setLoading } = useLoading()
-const { getColumns, setColumns } = useColumns()
+const { getColumns, setColumns, getViewColumns } = useColumns()
 
 const {
   getPaginationInfo,
@@ -103,7 +103,7 @@ const getBindValues = computed(() => {
     scroll: unref(getScrollRef),
     rowKey: unref(getRowKey),
     loading: unref(getLoading),
-    columns: toRaw(unref(getColumns)),
+    columns: toRaw(unref(getViewColumns)),
     pagination: toRaw(unref(getPaginationInfo)),
     dataSource,
   }

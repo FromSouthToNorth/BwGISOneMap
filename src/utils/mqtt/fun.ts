@@ -92,7 +92,7 @@ function oneMapDevice(result: MqttResult) {
   const { params } = result
   const {
     data,
-    columns,
+    columns: col,
     key,
     dwg,
     layer,
@@ -104,6 +104,9 @@ function oneMapDevice(result: MqttResult) {
   menuSub!.layer = layer
   menuSub!.tableKey = key
   setActiveMenuSub(menuSub!)
+  const columns = col.map((e: any) => {
+    return e.value
+  })
   setColumns(columns)
   setDataSource(data)
   setRowKey(key)

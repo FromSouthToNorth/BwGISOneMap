@@ -71,6 +71,9 @@ importers:
       resize-observer-polyfill:
         specifier: ^1.5.1
         version: 1.5.1
+      sortablejs:
+        specifier: ^1.15.2
+        version: 1.15.2
       unocss:
         specifier: ^0.58.9
         version: 0.58.9(postcss@8.4.41)(rollup@4.20.0)(vite@5.4.0(@types/node@20.14.15)(less@4.2.0)(terser@5.31.5))
@@ -114,6 +117,9 @@ importers:
       '@types/qs':
         specifier: ^6.9.15
         version: 6.9.15
+      '@types/sortablejs':
+        specifier: ^1.15.8
+        version: 1.15.8
       '@vitejs/plugin-vue':
         specifier: ^5.1.2
         version: 5.1.2(vite@5.4.0(@types/node@20.14.15)(less@4.2.0)(terser@5.31.5))(vue@3.4.37(typescript@5.5.4))
@@ -1121,6 +1127,9 @@ packages:
 
   '@types/readable-stream@4.0.15':
     resolution: {integrity: sha512-oAZ3kw+kJFkEqyh7xORZOku1YAKvsFTogRY8kVl4vHpEKiDkfnSA/My8haRE7fvmix5Zyy+1pwzOi7yycGLBJw==}
+
+  '@types/sortablejs@1.15.8':
+    resolution: {integrity: sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==}
 
   '@types/unist@2.0.10':
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
@@ -3026,6 +3035,9 @@ packages:
   slashes@3.0.12:
     resolution: {integrity: sha512-Q9VME8WyGkc7pJf6QEkj3wE+2CnvZMI+XJhwdTPR8Z/kWQRXi7boAWLDibRPyHRTUTPx5FaU7MsyrjI3yLB4HA==}
 
+  sortablejs@1.15.2:
+    resolution: {integrity: sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==}
+
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
@@ -4907,6 +4919,8 @@ snapshots:
     dependencies:
       '@types/node': 20.14.15
       safe-buffer: 5.1.2
+
+  '@types/sortablejs@1.15.8': {}
 
   '@types/unist@2.0.10': {}
 
@@ -7064,6 +7078,8 @@ snapshots:
   slash@3.0.0: {}
 
   slashes@3.0.12: {}
+
+  sortablejs@1.15.2: {}
 
   source-map-js@1.2.0: {}
 

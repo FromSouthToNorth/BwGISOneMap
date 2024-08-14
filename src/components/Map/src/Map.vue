@@ -2,7 +2,6 @@
 import {
   onBeforeUnmount,
   onDeactivated,
-  onMounted,
   ref,
   unref,
 } from 'vue'
@@ -10,9 +9,10 @@ import { createMap } from '@/utils/map'
 import { onMountedOrActivated } from '@/hooks/src/onMountedOrActivated'
 
 const mapContainerRef = ref()
+const mapRef = ref()
 
 function init() {
-  createMap(unref(mapContainerRef))
+  mapRef.value = createMap(unref(mapContainerRef))
 }
 // onMounted(() => {
 //   init()
@@ -23,6 +23,7 @@ function destroy() {
   if (!mapContainerRef.value)
     return
   try {
+    mapRef.value.remove()
     mapInstance?.destroy?.()
   }
   catch (error) {
