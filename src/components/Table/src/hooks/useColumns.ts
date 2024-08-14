@@ -27,11 +27,11 @@ export function useColumns() {
     columnList = JSON.parse(columnsStr, funReviver)
     const col: BasicColumn[] = []
     columnList.forEach((c: any) => {
-      const { dataIndex, customRender } = c
+      const { dataIndex, ifShow } = c
       if (Object.values(specialColTypeEnum).includes(dataIndex)) {
         // setScrollX(c.value[dataIndex])
       }
-      else if (customRender) {
+      else if (ifShow === false) {
         //
       }
       else {
@@ -48,7 +48,6 @@ export function useColumns() {
   const getViewColumns = computed(() => {
     const viewColumns = sortFixedColumn(unref(columnsRef))
     const columns = cloneDeep(viewColumns)
-    console.log(columns)
     return columns
   })
 

@@ -51,8 +51,6 @@ function getPopupContainer() {
 }
 
 // 默认值
-let defaultIsIndexColumnShow: boolean = false
-const defaultIsRowSelectionShow: boolean = false
 let defaultRowSelection: TableRowSelection<Recordable<any>>
 let defaultColumnOptions: ColumnOptionsType[] = []
 
@@ -114,28 +112,6 @@ const indeterminate = computed(() => {
   )
 })
 
-// 是否显示序号列
-const isIndexColumnShow = ref<boolean>(false)
-// 序号列更新
-function onIndexColumnShowChange(e: CheckboxChangeEvent) {
-  // 更新 showIndexColumn
-  showIndexColumnUpdate(e.target.checked)
-  // 更新 showIndexColumn 缓存
-  if (props.cache && typeof route.name === 'string')
-    tableSettingStore.setShowIndexColumn(route.name, e.target.checked)
-}
-
-// 是否显示选择列
-const isRowSelectionShow = ref<boolean>(false)
-// 选择列更新
-function onRowSelectionShowChange(e: CheckboxChangeEvent) {
-  // 更新 showRowSelection
-  showRowSelectionUpdate(e.target.checked)
-  // 更新 showRowSelection 缓存
-  if (props.cache && typeof route.name === 'string')
-    tableSettingStore.setShowIndexColumn(route.name, e.target.checked)
-}
-
 // 更新列缓存
 function columnOptionsSave() {
   if (typeof route.name === 'string') {
@@ -146,18 +122,6 @@ function columnOptionsSave() {
 
 // 重置
 function onReset() {
-  // 重置默认值
-  isIndexColumnShow.value = defaultIsIndexColumnShow
-  // 序号列更新
-  onIndexColumnShowChange({
-    target: { checked: defaultIsIndexColumnShow },
-  } as CheckboxChangeEvent)
-  // 重置默认值
-  isRowSelectionShow.value = defaultIsRowSelectionShow
-  // 选择列更新
-  onRowSelectionShowChange({
-    target: { checked: defaultIsRowSelectionShow },
-  } as CheckboxChangeEvent)
   // 重置默认值
   columnOptions.value = cloneDeep(defaultColumnOptions)
   // 更新表单状态
@@ -245,11 +209,6 @@ function tableColumnsUpdate() {
   let count = columns.filter(
     o => o.flag !== INDEX_COLUMN_FLAG && (o.fixed === 'left' || o.fixed === true),
   ).length
-
-  // 序号列提前
-  if (isIndexColumnShow.value) {
-    count++
-  }
 
   // 按 columnOptions 的排序 调整 table.getColumns() 的顺序和值
   for (const opt of columnOptions.value) {
@@ -353,28 +312,6 @@ function diff() {
 // 从缓存恢复
 function restore() {
   if (typeof route.name === 'string') {
-    const isIndexColumnShowCache = tableSettingStore.getShowIndexColumn(route.name)
-    // 设置过才恢复
-    if (typeof isIndexColumnShowCache === 'boolean') {
-      isIndexColumnShow.value = defaultIsIndexColumnShow && isIndexColumnShowCache
-    }
-
-    const isRowSelectionShowCache = tableSettingStore.getShowRowSelection(route.name)
-    // 设置过才恢复
-    if (typeof isRowSelectionShowCache === 'boolean') {
-      isRowSelectionShow.value = defaultIsRowSelectionShow && isRowSelectionShowCache
-    }
-  }
-  // 序号列更新
-  onIndexColumnShowChange({
-    target: { checked: isIndexColumnShow.value },
-  } as CheckboxChangeEvent)
-  // 选择列更新
-  onRowSelectionShowChange({
-    target: { checked: isRowSelectionShow.value },
-  } as CheckboxChangeEvent)
-
-  if (typeof route.name === 'string') {
     const cache = tableSettingStore.getColumns(route.name)
     // 设置过才恢复
     if (Array.isArray(cache)) {
@@ -421,12 +358,6 @@ function formUpdate() {
   // 从 列可选项 更新 全选状态
   isColumnAllSelectedUpdate()
 
-  // 更新 showIndexColumn
-  showIndexColumnUpdate(isIndexColumnShow.value)
-
-  // 更新 showRowSelection
-  showRowSelectionUpdate(isRowSelectionShow.value)
-
   // 列表列更新
   tableColumnsUpdate()
 }
@@ -464,11 +395,9 @@ async function init() {
     }
 
     // 默认值 缓存
-    defaultIsIndexColumnShow = table.getBindValues.value.showIndexColumn || false
     defaultColumnOptions = options
 
     // 默认值 赋值
-    isIndexColumnShow.value = defaultIsIndexColumnShow
     columnOptions.value = cloneDeep(options)
 
     // remove消失的列、push新出现的列
@@ -526,18 +455,6 @@ onMounted(() => {
             v-model:checked="isColumnAllSelected"
             :indeterminate="indeterminate"
             @change="onColumnAllSelectChange"
-          >
-            列展示
-          </Checkbox>
-
-          <Checkbox v-model:checked="isIndexColumnShow" @change="onIndexColumnShowChange">
-            显示序号列
-          </Checkbox>
-          <!-- 设置了 rowSelection 才出现 -->
-          <Checkbox
-            v-if="defaultIsRowSelectionShow"
-            v-model:checked="isRowSelectionShow"
-            @change="onRowSelectionShowChange"
           >
             列展示
           </Checkbox>
