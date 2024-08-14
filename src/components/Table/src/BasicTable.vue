@@ -2,13 +2,16 @@
 import { Table } from 'ant-design-vue'
 import {
   computed,
+  inject,
   ref,
   toRaw,
   unref,
   useAttrs,
   useSlots,
+  watch,
 } from 'vue'
-import { omit } from 'lodash-es'
+import { debounce, omit } from 'lodash-es'
+import { useElementSize } from '@vueuse/core'
 import { useDataSource } from './hooks/useDataSource'
 import { useLoading } from './hooks/useLoading'
 import { useColumns } from './hooks/useColumns'
@@ -17,8 +20,11 @@ import { createTableContext } from './hooks/useTableContext'
 import type { BasicTableProps, SizeType, TableActionType } from './types/table'
 import TableSetting from './components/settings/index.vue'
 import { basicProps } from './props'
+import { useTableScroll } from './hooks/useTableScroll'
+import { useTableScrollTo } from './hooks/useScrollTo'
 import { useDesign } from '@/hooks/web/useDesign'
 import BasicForm from '@/components/Form/src/BasicForm.vue'
+import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 
 defineOptions({ name: 'BasicTable' })
 
@@ -49,12 +55,20 @@ const slots = useSlots()
 const tableData = ref([])
 const showName = ref(false)
 const wrapRef = ref(null)
+const formRef = ref(null)
 const tableElRef = ref(null)
+const { prefixCls } = useDesign('basic-table')
 
 const innerPropsRef = ref<Partial<BasicTableProps>>()
+const { height } = useElementSize(wrapRef)
+const getProps = computed(() => {
+  return { ...props, ...unref(innerPropsRef) } as BasicTableProps
+})
+const isFixedHeightPage = inject(PageWrapperFixedHeightKey, false)
 
 const { getLoading, setLoading } = useLoading()
 const { getColumns, setColumns } = useColumns()
+
 const {
   getPaginationInfo,
   setPagination,
@@ -66,15 +80,19 @@ const {
   getDataSourceRef,
   getRowKey,
   handleTableChange: onTableChange,
-  getScrollX,
   reload,
 } = useDataSource()
+const { getScrollRef, redoHeight } = useTableScroll(
+  getProps,
+  tableElRef,
+  getDataSourceRef,
+  wrapRef,
+  formRef,
+)
 
-const { prefixCls } = useDesign('basic-table')
+const debounceRedoHeight = debounce(redoHeight, 50)
 
-const getProps = computed(() => {
-  return { ...props, ...unref(innerPropsRef) } as BasicTableProps
-})
+const { scrollTo } = useTableScrollTo(tableElRef, getDataSourceRef)
 
 const getBindValues = computed(() => {
   const dataSource = unref(getDataSourceRef)
@@ -82,12 +100,12 @@ const getBindValues = computed(() => {
     ...attrs,
     ...unref(getProps),
     tableLayout: 'fixed',
+    scroll: unref(getScrollRef),
     rowKey: unref(getRowKey),
     loading: unref(getLoading),
     columns: toRaw(unref(getColumns)),
     pagination: toRaw(unref(getPaginationInfo)),
     dataSource,
-    scroll: unref(getScrollX),
   }
   propsData = omit(propsData, ['class', 'onChange'])
 
@@ -101,6 +119,11 @@ function handleTableChange(pagination: any, filters: any, sorter: any) {
     tableData,
   }, pagination, filters, sorter, emit)
 }
+
+watch(height, () => {
+  if (unref(isFixedHeightPage) && props.canResize)
+    debounceRedoHeight()
+})
 
 function setProps(props: Partial<BasicTableProps>) {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
@@ -118,6 +141,7 @@ const tableAction: TableActionType = {
   getColumns,
   reload,
   emit,
+  scrollTo,
   getSize: () => {
     return unref(getBindValues).size as SizeType
   },
@@ -133,7 +157,10 @@ defineExpose({ tableElRef, ...tableAction })
     ref="wrapRef"
     :class="prefixCls"
   >
-    <div class="table-header">
+    <div
+      ref="formRef"
+      class="table-header"
+    >
       <BasicForm />
       <TableSetting />
     </div>
@@ -148,7 +175,7 @@ defineExpose({ tableElRef, ...tableAction })
 <style lang="less" scoped>
 @prefix-cls: ~'@{namespace}-basic-table';
 .@{prefix-cls} {
-  background: #fff
+  background: #fff;
 }
 .table-header {
   display: flex;

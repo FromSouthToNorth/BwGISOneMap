@@ -9,7 +9,7 @@ import { Tool } from './tool'
 import TabSub from './TabSub.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { SizeEnum } from '@/enums/sizeEnum'
-import BasicTable from '@/components/Table/src/BasicTable.vue'
+import { BasicTable } from '@/components/Table'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },

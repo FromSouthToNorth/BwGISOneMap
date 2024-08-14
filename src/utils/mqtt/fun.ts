@@ -12,12 +12,11 @@ import { useCadSetting } from '@/components/Application/src/cad'
 import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMessage } from '@/hooks/web/useMessage'
-import { useDataSource } from '@/components/Table/src/hooks/useDataSource'
-import { useColumns } from '@/components/Table/src/hooks/useColumns'
+
+import { useColumns, useDataSource, useTableLoading } from '@/components/Table'
 
 const { createMessage, createErrorModal } = useMessage()
 const { setCad, setCoalSeam } = useCadSetting()
-const { setColumns } = useColumns()
 const {
   setMenuSub,
   setActiveMenuSub,
@@ -26,6 +25,9 @@ const {
 } = useMenuSub()
 
 const { setDataSource, setRowKey } = useDataSource()
+const { setColumns } = useColumns()
+
+const { setLoading: setTableLoading } = useTableLoading()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
@@ -106,6 +108,7 @@ function oneMapDevice(result: MqttResult) {
   setDataSource(data)
   setRowKey(key)
   setMenuSubLoading(false)
+  setTableLoading(false)
 }
 
 function promptMessage(result: MqttResult) {
