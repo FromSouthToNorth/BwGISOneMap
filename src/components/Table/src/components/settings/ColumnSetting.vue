@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { computed, nextTick, onMounted, ref, unref, useAttrs, watch } from 'vue'
 import { Button, Checkbox, Divider, Popover, Tooltip } from 'ant-design-vue'
-import type { CheckboxChangeEvent } from 'ant-design-vue/lib/checkbox/interface'
 import { DragOutlined, SettingOutlined } from '@ant-design/icons-vue'
-import { cloneDeep, omit } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 import Sortablejs from 'sortablejs'
 import { useRoute } from 'vue-router'
 import type { BasicColumn, ColumnChangeParam, ColumnOptionsType } from '../../types/table'
 import { useTableContext } from '../../hooks/useTableContext'
-import { useColumns } from '../../hooks/useColumns'
 import Icon from '@/components/Icon/Icon.vue'
 import { ScrollContainer } from '@/components/Container'
 import { useDesign } from '@/hooks/web/useDesign'
@@ -18,7 +16,6 @@ import { INDEX_COLUMN_FLAG } from '@/components/Table/src/const'
 
 // 列表设置缓存
 import { useTableSettingStore } from '@/store/modules/tableSetting'
-import type { TableRowSelection } from '@/components/Table/src/types/table'
 
 defineOptions({ name: 'ColumnSetting' })
 
@@ -37,7 +34,6 @@ const props = withDefaults(
 const emit = defineEmits(['columnsChange'])
 
 const tableSettingStore = useTableSettingStore()
-const { getColumns, setColumns } = useColumns()
 
 const route = useRoute()
 
@@ -47,11 +43,10 @@ const attrs = useAttrs()
 const table = useTableContext()
 
 function getPopupContainer() {
-  return isFunction(attrs.getPopupContainer) ? attrs.getPopupContainer() : getParentContainer()
+  return isFunction(attrs['get-popup-container']) ? attrs['get-popup-container']() : getParentContainer()
 }
 
 // 默认值
-let defaultRowSelection: TableRowSelection<Recordable<any>>
 let defaultColumnOptions: ColumnOptionsType[] = []
 
 // 是否已经从缓存恢复
@@ -183,13 +178,15 @@ function columnIfShow(column?: Partial<Omit<BasicColumn, 'children'>>) {
 
 // 获取数据列
 function getTableColumns() {
-  return unref(getColumns).filter((col: Partial<Omit<BasicColumn, 'children'>>) => columnIfShow(col))
+  return table
+    .getColumns()
+    .filter((col: Partial<Omit<BasicColumn, 'children'>>) => columnIfShow(col))
 }
 
 // 设置列表列
 function tableColumnsSet(columns: BasicColumn[]) {
   isInnerChange = true
-  setColumns(columns)
+  table.setColumns(columns)
 
   // 沿用逻辑
   const columnChangeParams: ColumnChangeParam[] = columns.map(col => ({
@@ -203,7 +200,7 @@ function tableColumnsSet(columns: BasicColumn[]) {
 // 列表列更新
 function tableColumnsUpdate() {
   // 考虑了所有列
-  const columns = cloneDeep(unref(getColumns))
+  const columns = cloneDeep(table.getColumns())
 
   // 从左 fixed 最一列开始排序（除了 序号列）
   let count = columns.filter(
@@ -287,7 +284,7 @@ function diff() {
         JSON.stringify(columnOptions.value.map(o => ({ value: o.value, label: o.label })))
         !== JSON.stringify(cache.map(o => ({ value: o.value, label: o.label })))
       ) {
-        const map = columnOptions.value.reduce((map, item) => {
+        const map = columnOptions.value.reduce((map: any, item) => {
           map[item.value] = item.label
           return map
         }, {})
@@ -329,25 +326,6 @@ function columnCheckedOptionsUpdate() {
 // 从 列可选项 更新 全选状态
 function isColumnAllSelectedUpdate() {
   isColumnAllSelected.value = columnOptions.value.length === columnCheckedOptions.value.length
-}
-// 更新 showIndexColumn
-function showIndexColumnUpdate(showIndexColumn: any) {
-  isInnerChange = true
-  table.setProps({
-    showIndexColumn,
-  })
-}
-// 更新 rowSelection
-function showRowSelectionUpdate(showRowSelection: any) {
-  isInnerChange = true
-  table.setProps({
-    rowSelection: showRowSelection
-      ? {
-          ...omit(defaultRowSelection, ['selectedRowKeys']),
-          fixed: true,
-        }
-      : undefined,
-  })
 }
 
 // 更新表单状态
@@ -423,8 +401,16 @@ async function once() {
 }
 once()
 
+// 外部列改变
+const getColumns = computed(() => {
+  return table?.getColumns()
+})
+const getValues = computed(() => {
+  return table?.getBindValues
+})
+
 onMounted(() => {
-  watch(() => unref(getColumns), () => {
+  watch([getColumns, getValues], () => {
     if (!isInnerChange) {
       isRestored = false
       console.warn('onMounted isRestored')
@@ -443,7 +429,7 @@ onMounted(() => {
       <span>列设置</span>
     </template>
     <Popover
-      placement="bottomLeft"
+      placement="bottomRight"
       trigger="click"
       :overlay-class-name="`${prefixCls}__column-list`"
       :get-popup-container="getPopupContainer"

@@ -1,4 +1,4 @@
-import { computed, ref, unref } from 'vue'
+import { computed, ref, toRaw, unref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import type { BasicColumn } from '../types/table'
 import { specialColTypeEnum } from '@/enums/tableEnum'
@@ -25,7 +25,7 @@ export function useColumns() {
     const columnsStr = JSON.stringify(columnList)
 
     columnList = JSON.parse(columnsStr, funReviver)
-    const col: BasicColumn[] = []
+    columnsRef.value = []
     columnList.forEach((c: any) => {
       const { dataIndex, ifShow } = c
       if (Object.values(specialColTypeEnum).includes(dataIndex)) {
@@ -35,18 +35,25 @@ export function useColumns() {
         //
       }
       else {
-        col.push(c)
+        columnsRef.value.push(c)
       }
       originColumnsRef.value.push(c)
     })
-    columnsRef.value = col
   }
-  const getColumns = computed(() => unref(columnsRef))
+
+  const getColumnsRef = computed(() => {
+    return cloneDeep(unref(columnsRef))
+  })
+
+  function getColumns() {
+    const columns = toRaw(unref(getColumnsRef))
+    return columns
+  }
 
   const getSpecialColumns = computed(() => unref(specialColumnsRef))
 
   const getViewColumns = computed(() => {
-    const viewColumns = sortFixedColumn(unref(columnsRef))
+    const viewColumns = sortFixedColumn(unref(getColumnsRef))
     const columns = cloneDeep(viewColumns)
     return columns
   })
@@ -54,6 +61,7 @@ export function useColumns() {
   return {
     setColumns,
     getColumns,
+    getColumnsRef,
     getSpecialColumns,
     getViewColumns,
   }

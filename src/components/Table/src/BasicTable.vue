@@ -106,6 +106,7 @@ const getBindValues = computed(() => {
     columns: toRaw(unref(getViewColumns)),
     pagination: toRaw(unref(getPaginationInfo)),
     dataSource,
+    showSorterTooltip: false,
   }
   propsData = omit(propsData, ['class', 'onChange'])
 
