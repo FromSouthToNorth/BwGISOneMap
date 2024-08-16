@@ -5,10 +5,13 @@ import { unref, watch } from 'vue'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
-import { markerFeatureGroup } from './marker'
+import { addMarkerLayer, markerFeatureGroup } from './marker'
+import { polygonFeatureGroup } from './polygon'
+import { polylineFeatureGroup } from './polyline'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useMapStore } from '@/store/modules/map'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
+import type { MenuSub } from '@/components/Menu/src/types/menu'
 
 const mapStore = useMapStore()
 
@@ -35,10 +38,10 @@ export function createMap(id: string) {
     map.on('moveend', hash.updateHashIfNeeded)
 
     tileLayersGroup.addTo(map)
-
     cadLayersGroup.addTo(map)
-
     markerFeatureGroup.addTo(map)
+    polygonFeatureGroup.addTo(map)
+    polylineFeatureGroup.addTo(map)
 
     if (!no_show_satellitemap) {
       showSatellite()
@@ -47,4 +50,24 @@ export function createMap(id: string) {
 
     return map
   })
+}
+
+export function setLayer(
+  data: any,
+  menuSub: MenuSub,
+  markconfig: any,
+) {
+  const { markType } = menuSub
+  switch (markType) {
+    case 'AO1':
+      console.log('polygon')
+      break
+    case 'B08':
+    case 'B46':
+      console.log('polyline')
+      break
+    default:
+      console.log('maker')
+      addMarkerLayer(data, menuSub, markconfig)
+  }
 }

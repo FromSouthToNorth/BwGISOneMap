@@ -7,19 +7,6 @@ const columnsRef = ref<BasicColumn[]>([])
 const originColumnsRef = ref<BasicColumn[]>([])
 const specialColumnsRef = ref({})
 
-function funReviver(_key: string, value: string) {
-  if (typeof value === 'string' && value.indexOf(specialColTypeEnum._BW_FUNCTION_) === 0) {
-    value = value.replace(/_bw_function_/g, 'function')
-    // eslint-disable-next-line no-new-func
-    const dom = new Function(`return ${value}`)()
-    if (typeof dom !== 'function')
-      return
-    // let { text, record } = this
-    return dom
-  }
-  return value
-}
-
 export function useColumns() {
   function setColumns(columnList: BasicColumn[]) {
     const columnsStr = JSON.stringify(columnList)
@@ -65,6 +52,19 @@ export function useColumns() {
     getSpecialColumns,
     getViewColumns,
   }
+}
+
+function funReviver(_key: string, value: string) {
+  if (typeof value === 'string' && value.indexOf(specialColTypeEnum._BW_FUNCTION_) === 0) {
+    value = value.replace(/_bw_function_/g, 'function')
+    // eslint-disable-next-line no-new-func
+    const dom = new Function(`return ${value}`)()
+    if (typeof dom !== 'function')
+      return
+    // let { text, record } = this
+    return dom
+  }
+  return value
 }
 
 function sortFixedColumn(columns: BasicColumn[]) {

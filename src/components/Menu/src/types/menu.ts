@@ -45,4 +45,6 @@ export interface MenuSub {
   layer?: string
   markType?: string
   tableKey?: string
+  count?: string
+  markerclusterMaxZoom?: number
 }

@@ -19,7 +19,7 @@ export function useTableScroll(
   wrapRef: Ref<HTMLElement | null>,
   formRef: Ref<ComponentRef>,
 ) {
-  const tableHeightRef: Ref<Nullable<number | string>> = ref(400)
+  const tableHeightRef: Ref<Nullable<number | string>> = ref(420)
   const modalFn = useModalContext()
 
   // Greater than animation time 280
@@ -273,7 +273,7 @@ export function useTableScroll(
     const tagContainerEL = document.querySelector('.tag-container') as HTMLElement
     const antTabsTopEL = document.querySelector('.ant-tabs-top') as HTMLElement
     const tagHeight = tagContainerEL.offsetHeight || 0
-    const antTabsTopHeight = antTabsTopEL.offsetHeight ? antTabsTopEL.offsetHeight - 8 : 0
+    const antTabsTopHeight = antTabsTopEL.offsetHeight ? antTabsTopEL.offsetHeight - 28 : 0
 
     const paginationHeight = caclPaginationHeight(tableEl)
     const footerHeight = caclFooterHeight(tableEl)

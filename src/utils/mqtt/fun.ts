@@ -1,7 +1,8 @@
-import { unref } from 'vue'
+import { toRaw, unref } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
 import { isArray } from '../is'
+import { setLayer } from '../map'
 import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
 import { MqttFunEnum } from '@/enums/mqttEnum'
@@ -13,7 +14,11 @@ import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useMessage } from '@/hooks/web/useMessage'
 
-import { useColumns, useDataSource, useTableLoading } from '@/components/Table'
+import {
+  useColumns,
+  useDataSource,
+  useTableLoading,
+} from '@/components/Table'
 
 const { createMessage, createErrorModal } = useMessage()
 const { setCad, setCoalSeam } = useCadSetting()
@@ -91,24 +96,28 @@ function oneMapSubMenu(result: MqttResult) {
 function oneMapDevice(result: MqttResult) {
   const { params } = result
   const {
-    data,
-    columns: col,
     key,
     dwg,
+    data,
     layer,
+    count,
+    markconfig,
+    columns: col,
     drawMarkerType,
   } = params
-  const menuSub = unref(getActiveMenuSub)
+  const menuSub = toRaw(unref(getActiveMenuSub))
   console.warn('oneMapDevice: ', result)
   menuSub!.markType = drawMarkerType
   menuSub!.layer = layer
   menuSub!.tableKey = key
+  menuSub!.count = count
   setActiveMenuSub(menuSub!)
   const columns = col.map((e: any) => {
     return e.value
   })
   setColumns(columns)
   setDataSource(data)
+  setLayer(data, menuSub!, markconfig[0].value)
   setRowKey(key)
   setMenuSubLoading(false)
   setTableLoading(false)

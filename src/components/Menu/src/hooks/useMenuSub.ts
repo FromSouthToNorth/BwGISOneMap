@@ -10,6 +10,7 @@ const { setLoading } = useLoading()
 const menuSubRef = ref<MenuSub[]>()
 const activeMenuSubRef = ref<MenuSub>()
 const menuSubLoadingRef = ref(false)
+const menuSubModelsRef = ref<MenuSub[]>()
 
 export function useMenuSub() {
   function setMenuSub(menuSud: MenuSub[]) {
@@ -39,6 +40,11 @@ export function useMenuSub() {
     publishOneMapDevice(menuSub)
   }
 
+  function setMenuSubModels(menuSudModels: MenuSub[]) {
+    menuSubModelsRef.value = menuSudModels
+  }
+  const getMenuSubModels = computed(() => unref(menuSubModelsRef))
+
   return {
     setMenuSub,
     getMenuSub,
@@ -47,5 +53,7 @@ export function useMenuSub() {
     setMenuSubLoading,
     getMenuSubLoading,
     menuSubClick,
+    setMenuSubModels,
+    getMenuSubModels,
   }
 }

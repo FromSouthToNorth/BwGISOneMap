@@ -10,6 +10,7 @@ import {
 } from 'ant-design-vue'
 import { CaretDownOutlined, DeleteTwoTone } from '@ant-design/icons-vue'
 import { h, ref, unref } from 'vue'
+import { useTool } from './hooks/useTool'
 import { SizeEnum } from '@/enums/sizeEnum'
 
 const aggSwitch = ref(true)
@@ -17,15 +18,18 @@ const layerOverlay = ref(false)
 const titleSet = ref<Set<string>>(new Set())
 unref(titleSet).add('聚合')
 const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
+const { setIsAggSwitch, setIsLayerOverlay } = useTool()
 
 function aggCheckbox() {
   const title = '聚合'
   set(title, unref(aggSwitch))
+  setIsAggSwitch(unref(aggSwitch))
 }
 
 function layerCheckbox() {
   const title = '图层'
   set(title, unref(layerOverlay))
+  setIsLayerOverlay(unref(layerOverlay))
 }
 
 function set(title: string, isSet: boolean) {

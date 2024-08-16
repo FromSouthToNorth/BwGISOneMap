@@ -107,7 +107,7 @@ export interface TableActionType {
   insertTableDataRecord: (record: Recordable | Recordable[], index?: number) => Recordable[] | void
   findTableDataRecord: (keyValue: Key) => Recordable | void
   getColumns: (opt?: GetColumnsParams) => BasicColumn[]
-  setColumns: (columns: BasicColumn[] | string[]) => void
+  setColumns: (columns: BasicColumn[]) => void
   getDataSource: <T = Recordable>() => T[]
   getRawDataSource: <T = Recordable>() => T
   getSearchInfo: <T = Recordable>() => T

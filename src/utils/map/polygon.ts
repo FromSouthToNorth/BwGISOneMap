@@ -8,6 +8,8 @@ interface POptions extends PolylineOptions {
   dashSpeed?: number
 }
 
+export const polygonFeatureGroup = L.featureGroup()
+
 export function polygon(latlngs: LatLngExpression[], options: POptions): Polygon {
   return L.polygon(latlngs, options)
 }

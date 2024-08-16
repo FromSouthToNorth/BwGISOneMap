@@ -22,6 +22,7 @@ import TableSetting from './components/settings/index.vue'
 import { basicProps } from './props'
 import { useTableScroll } from './hooks/useTableScroll'
 import { useTableScrollTo } from './hooks/useScrollTo'
+import BodyCell from './components/BodyCell.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import BasicForm from '@/components/Form/src/BasicForm.vue'
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
@@ -132,9 +133,6 @@ function setProps(props: Partial<BasicTableProps>) {
 
 const tableAction: TableActionType = {
   setProps,
-  getDataSourceRef,
-  getDataSource,
-  setDataSource,
   setPagination,
   setColumns,
   setLoading,
@@ -169,7 +167,11 @@ defineExpose({ tableElRef, ...tableAction })
       v-bind="getBindValues"
       ref="tableElRef"
       @change="handleTableChange"
-    />
+    >
+      <template #bodyCell="data">
+        <BodyCell :data="data" />
+      </template>
+    </Table>
   </div>
 </template>
 
