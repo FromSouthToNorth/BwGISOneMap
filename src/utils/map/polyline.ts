@@ -83,3 +83,13 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
   const featureGroup = L.featureGroup([...lineLayers, ...markerLayers]).addTo(map)
   polylineGroupMap.set(key!, featureGroup)
 }
+
+export function clearLayers() {
+  const { map: leafletMap } = useMapSetting()
+  const map = toRaw(unref(leafletMap))
+  polylineGroupMap.forEach((layer) => {
+    layer.clearLayers()
+    map.removeLayer(layer)
+  })
+  polylineGroupMap.clear()
+}

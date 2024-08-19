@@ -12,6 +12,7 @@ import {
 import {
   publishOneMapSubMenu,
 } from '@/utils/mqtt/publish'
+import { isLayerOverlay } from '@/utils/map'
 
 const { getMenuDrop } = useMenuDrop()
 const { menuSubClick } = useMenuSub()
@@ -20,6 +21,7 @@ const menuContainerHide = ref(true)
 const activeTabKey = ref('')
 
 function menuClick(menu?: MenuItem) {
+  isLayerOverlay()
   if (menu) {
     const { id } = menu
     activeTabKey.value = id

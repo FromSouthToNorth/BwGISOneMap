@@ -71,14 +71,18 @@ export function createMap(id: string) {
   })
 }
 
+export function isLayerOverlay() {
+  if (!unref(getIsLayerOverlay)) {
+    clearLayers()
+  }
+}
+
 export function setLayer(
   data: any,
   menuSub: MenuSub,
   markconfig: any,
 ) {
-  if (!unref(getIsLayerOverlay)) {
-    clearMarkerclusterMap()
-  }
+  isLayerOverlay()
   const { markType } = menuSub
   switch (markType) {
     case 'AO1':
@@ -121,10 +125,12 @@ export function keyByExcludeLayers(key: string, layerMap: Map<string, LayerGroup
 export function clearLayers() {
   const { map: leafletMap } = useMapSetting()
   const layerMaps = [markerclusterMap, polylineGroupMap, polygonGroupMap]
-  layerMaps.forEach((map) => {
+  for (const map of layerMaps) {
+    if (!map.size)
+      break
     map.forEach((value) => {
       value.clearLayers()
       toRaw(unref(leafletMap)).removeLayer(value)
     })
-  })
+  }
 }
