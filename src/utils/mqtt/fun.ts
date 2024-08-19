@@ -1,7 +1,7 @@
 import { toRaw, unref } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
-import { isArray } from '../is'
+import { isArray, isObject } from '../is'
 import { setLayer } from '../map'
 import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
@@ -102,6 +102,7 @@ function oneMapDevice(result: MqttResult) {
     layer,
     count,
     markconfig,
+    subStrategy,
     columns: col,
     drawMarkerType,
   } = params
@@ -111,16 +112,19 @@ function oneMapDevice(result: MqttResult) {
   menuSub!.layer = layer
   menuSub!.tableKey = key
   menuSub!.count = count
+  menuSub!.subStrategy = subStrategy
+
   setActiveMenuSub(menuSub!)
   const columns = col.map((e: any) => {
     return e.value
   })
   setColumns(columns)
-  setDataSource(data)
-  setLayer(data, menuSub!, markconfig[0].value)
   setRowKey(key)
-  setMenuSubLoading(false)
-  setTableLoading(false)
+  setDataSource(data)
+  if (verifyData(result)) {
+    return
+  }
+  setLayer(data, menuSub!, markconfig)
 }
 
 function promptMessage(result: MqttResult) {
@@ -131,13 +135,29 @@ function promptMessage(result: MqttResult) {
 
 export function mqttFun(type: MqttFunEnum, result: MqttResult) {
   const fun = mqttFunMap.get(type)
-  if (fun)
+  if (fun) {
     fun(result)
-  else
+  }
+  else {
     createMessage.error(`mqttFunMap 内没有找到 ${type} 方法!`)
+  }
 }
 
 function getStrategyId(topic: string): string {
   const topics = topic.split('/')
   return topics[topics.length - 1]
+}
+
+function verifyData(result: MqttResult): boolean {
+  const { params } = result
+  setMenuSubLoading(false)
+  setTableLoading(false)
+  if (!params.data) {
+    const id = getStrategyId(result.topic)
+    createMessage.warn(`${id} 策略，没有查询到数据！`)
+    return true
+  }
+  else {
+    return false
+  }
 }

@@ -12,6 +12,7 @@ import { CaretDownOutlined, DeleteTwoTone } from '@ant-design/icons-vue'
 import { h, ref, unref } from 'vue'
 import { useTool } from './hooks/useTool'
 import { SizeEnum } from '@/enums/sizeEnum'
+import { clearLayers } from '@/utils/map'
 
 const aggSwitch = ref(true)
 const layerOverlay = ref(false)
@@ -42,7 +43,8 @@ function set(title: string, isSet: boolean) {
 }
 
 function clear() {
-  console.log('clear')
+  console.warn('clear')
+  clearLayers()
 }
 </script>
 

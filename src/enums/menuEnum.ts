@@ -53,3 +53,8 @@ export enum ToSwitchTypeEnum {
   STRATEGY = 'strategy',
   POPUP = 'popup',
 }
+
+export enum SubStrategyType {
+  INFO = 'info',
+  TABLE = 'table',
+}

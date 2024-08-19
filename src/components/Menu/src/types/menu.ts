@@ -1,4 +1,5 @@
-import type { ToSwitchTypeEnum } from '@/enums/menuEnum'
+import type { BasicColumn } from '@/components/Table/src/types/table'
+import type { SubStrategyType, ToSwitchTypeEnum } from '@/enums/menuEnum'
 
 export interface MenuItem {
   id: string
@@ -32,6 +33,13 @@ export interface ToSwitch {
   url?: string
 }
 
+export interface SubStrategy {
+  columns: BasicColumn[]
+  name: string
+  type: SubStrategyType
+  data_type: string
+}
+
 export interface MenuSub {
   id: string
   isUpdateZ: number
@@ -47,4 +55,5 @@ export interface MenuSub {
   tableKey?: string
   count?: string
   markerclusterMaxZoom?: number
+  subStrategy: SubStrategy
 }

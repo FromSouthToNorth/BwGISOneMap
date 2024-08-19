@@ -18,7 +18,7 @@ interface MOptions extends MarkerOptions {
   coalbed?: string
 }
 
-const { getIsAggSwitch, getIsLayerOverlay } = useTool()
+const { getIsAggSwitch } = useTool()
 
 export const markerFeatureGroup = L.featureGroup()
 
@@ -33,6 +33,8 @@ export function clearMarkerLayers() {
 }
 
 export function clearMarkerclusterMap() {
+  console.log('clearMarkerclusterMap: ', markerclusterMap)
+
   const { map: leafletMap } = useMapSetting()
   const map = toRaw(unref(leafletMap))
   markerclusterMap.forEach((value) => {
@@ -87,13 +89,13 @@ export function createMineBasePoint() {
 
 function svgIcon(data: any) {
   const { markconfig } = data
-  const { key, createMarkerIcon } = markconfig
   try {
     let svgSrc
-    if (!isObject(markconfig)) {
+    if (!markconfig && !isObject(markconfig)) {
       svgSrc = svgMarker.markerDefault
     }
     else {
+      const { key, createMarkerIcon } = markconfig
       let icon
       const keys = Object.keys(createMarkerIcon)
       for (const _key of keys) {
@@ -219,16 +221,17 @@ export function addMarkerLayer(
   menuSub: MenuSub,
   markconfig: any,
 ) {
-  const key = menuSub.layer || menuSub.layer
+  const key = menuSub.layer || menuSub.markType
   const { map: leafletMap } = useMapSetting()
   const map = toRaw(unref(leafletMap))
   const { markerclusterMaxZoom: zoom, moduleName, count } = menuSub
-  if (!unref(getIsLayerOverlay)) {
-    clearMarkerclusterMap()
-  }
+
   const layerValue = markerclusterMap.get(key!)
-  if (layerValue)
+  if (layerValue) {
     layerValue.clearLayers()
+    map.removeLayer(layerValue)
+    markerclusterMap.delete(key!)
+  }
 
   const newData = data.map((e: any) => {
     return { ...e, menuSub, markconfig }
@@ -236,12 +239,10 @@ export function addMarkerLayer(
   const markers = createMarkers(newData)
 
   let layerGroup
-  if (unref(getIsAggSwitch)) {
-    layerGroup = clusterGroup(moduleName, zoom, count).addLayers(markers)
-  }
-  else {
-    layerGroup = L.featureGroup(markers)
-  }
+  layerGroup = unref(getIsAggSwitch)
+    ? clusterGroup(moduleName, zoom, count).addLayers(markers)
+    : layerGroup = L.featureGroup(markers)
   layerGroup.addTo(map)
   markerclusterMap.set(key!, layerGroup)
+  console.log(markerclusterMap)
 }
