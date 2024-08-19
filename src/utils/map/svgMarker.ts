@@ -20,6 +20,7 @@ import video from '@/assets/markersImg/video.svg'
 import staff from '@/assets/markersImg/staff.svg'
 import staff_02 from '@/assets/markersImg/staff_02.svg'
 import bunker from '@/assets/markersImg/bunker.svg'
+import tachii from '@/assets/markersImg/tachii.svg'
 import markerDefault from '@/assets/markersImg/marker-default.svg'
 
 export const svgMarker: {
@@ -47,5 +48,6 @@ export const svgMarker: {
   staff,
   staff_02,
   bunker,
+  tachii,
   markerDefault,
 }

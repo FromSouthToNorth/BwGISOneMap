@@ -4,7 +4,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import type { LatLngExpression, Marker, MarkerCluster, MarkerOptions } from 'leaflet'
 import { toRaw, unref } from 'vue'
-import { isObject } from '../is'
+import { isObject, isString } from '../is'
 import { svgMarker } from './svgMarker'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { basePoint } from '@/enums/mapEnum'
@@ -87,14 +87,17 @@ export function createMineBasePoint() {
   )
 }
 
-function svgIcon(data: any) {
+export function svgIcon(data: any) {
   const { markconfig } = data
   try {
     let svgSrc
-    if (!markconfig && !isObject(markconfig)) {
+    if (!markconfig) {
       svgSrc = svgMarker.markerDefault
     }
-    else {
+    else if (isString(markconfig)) {
+      svgSrc = svgMarker[markconfig]
+    }
+    else if (isObject(markconfig)) {
       const { key, createMarkerIcon } = markconfig
       let icon
       const keys = Object.keys(createMarkerIcon)
