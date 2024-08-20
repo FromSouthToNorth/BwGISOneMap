@@ -2,7 +2,7 @@ import { computed, ref, toRaw, unref } from 'vue'
 import { useTimeoutFn } from '@vueuse/core'
 import type { CadType, CoalSeam } from '@/utils/mqtt/types'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
-import { useMapSetting } from '@/hooks/web/map/useMap'
+import { leafletMap } from '@/utils/map'
 
 const cadRef = ref<CadType[]>([])
 
@@ -13,11 +13,10 @@ export function useCadSetting() {
     cadRef.value = cad
     const { mineInfo } = useUserSetting()
     useTimeoutFn(() => {
-      const { map } = useMapSetting()
-      console.error('useCadSetting map: ', unref(map))
+      console.error('useCadSetting map: ', leafletMap)
       const { no_show_satellitemap, show_cad } = unref(mineInfo)
       if (no_show_satellitemap)
-        toRaw(unref(map)).setZoom(show_cad + 1)
+        toRaw(unref(leafletMap)!)!.setZoom(show_cad + 1)
     }, 500)
   }
 

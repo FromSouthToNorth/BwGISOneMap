@@ -10,6 +10,9 @@ import TabSub from './TabSub.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { SizeEnum } from '@/enums/sizeEnum'
 import { BasicTable } from '@/components/Table'
+import {
+  SlideYTransition,
+} from '@/components/Transtition'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
@@ -119,11 +122,11 @@ function menuSubClick(menuSub: MenuSub) {
       />
       <Tool />
     </div>
-    <template>
+    <component :is="SlideYTransition">
       <BasicTable
-        v-if="tableShow"
+        v-show="tableShow"
       />
-    </template>
+    </component>
   </Card>
 </template>
 

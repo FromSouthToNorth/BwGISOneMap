@@ -1,8 +1,8 @@
 import * as L from 'leaflet'
 import { reactive, toRaw, unref } from 'vue'
 import { marker, svgIcon } from './marker'
+import { leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
-import { useMapSetting } from '@/hooks/web/map/useMap'
 
 export const polylineFeatureGroup = L.featureGroup()
 
@@ -12,6 +12,7 @@ export interface MPathOptions extends L.PathOptions {
   key?: string
   coalbed?: string
   data: any
+  menuSub?: MenuSub
 }
 
 export function polyline(
@@ -22,15 +23,11 @@ export function polyline(
 }
 
 export function addLineLayer(data: any, menuSub: MenuSub) {
-  console.log(data, menuSub)
   const key = menuSub.layer || menuSub.markType
-  const { map: leafletMap } = useMapSetting()
-  const map = toRaw(unref(leafletMap))
-
   const layerValue = polylineGroupMap.get(key!)
   if (layerValue) {
     layerValue.clearLayers()
-    map.removeLayer(layerValue as L.FeatureGroup)
+    toRaw(unref(leafletMap)!).removeLayer(layerValue as L.FeatureGroup)
     polylineGroupMap.delete(key!)
   }
 
@@ -61,13 +58,13 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
         coalbed,
         weight,
         color,
+        menuSub,
       },
     )
   })
   const markerLayers = makers.map((maker) => {
     const { MarkType, icon, coalbed } = maker
     const markconfig = icon.split('.')[0]
-    console.log(markconfig)
 
     const _svgIcon = svgIcon({ markconfig })
     return marker(
@@ -80,16 +77,15 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
       },
     )
   })
-  const featureGroup = L.featureGroup([...lineLayers, ...markerLayers]).addTo(map)
+  const featureGroup = L.featureGroup([...lineLayers, ...markerLayers])
+    .addTo(toRaw(unref(leafletMap)!))
   polylineGroupMap.set(key!, featureGroup)
 }
 
 export function clearLayers() {
-  const { map: leafletMap } = useMapSetting()
-  const map = toRaw(unref(leafletMap))
   polylineGroupMap.forEach((layer) => {
     layer.clearLayers()
-    map.removeLayer(layer as L.FeatureGroup)
+    toRaw(unref(leafletMap)!).removeLayer(layer as L.FeatureGroup)
   })
   polylineGroupMap.clear()
 }

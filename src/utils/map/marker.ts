@@ -6,9 +6,9 @@ import type { LatLngExpression, Marker, MarkerCluster, MarkerOptions } from 'lea
 import { reactive, toRaw, unref } from 'vue'
 import { isObject, isString } from '../is'
 import { svgMarker } from './svgMarker'
+import { leafletMap } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { basePoint } from '@/enums/mapEnum'
-import { useMapSetting } from '@/hooks/web/map/useMap'
 import { useTool } from '@/components/Menu'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 
@@ -16,6 +16,7 @@ interface MOptions extends MarkerOptions {
   key: string | basePoint
   data?: any
   coalbed?: string
+  menuSub?: MenuSub
 }
 
 const { getIsAggSwitch } = useTool()
@@ -28,6 +29,52 @@ export function marker(latlng: LatLngExpression, options?: MOptions) {
   return L.marker(latlng, options)
 }
 
+const clusterGroup = function (name: string, zoom?: number, count?: string) {
+  return L.markerClusterGroup({
+    disableClusteringAtZoom: zoom || 20,
+    chunkedLoading: true,
+    iconCreateFunction: (cluster: MarkerCluster) => {
+      const childCount = markerCount(cluster, count)
+      let c = ' marker-cluster-'
+      if (childCount < 10) {
+        c += 'small'
+      }
+      else if (childCount < 100) {
+        c += 'medium'
+      }
+      else {
+        c += 'large'
+      }
+      let html = `<div><span>${childCount}</span>`
+      if (name) {
+        html += `<p class="cg-labels">${name}</p>`
+      }
+      html += '</div>'
+      return L.divIcon({
+        html,
+        className: `marker-cluster${c}`,
+        iconSize: L.point(40, 40),
+      })
+    },
+  })
+}
+
+function markerCount(cluster: MarkerCluster, count?: string) {
+  let num = 0
+  const c = cluster.getAllChildMarkers()
+  for (let i = 0; i < c.length; i++) {
+    if (!count) {
+      return cluster.getChildCount()
+    }
+    else {
+      num += Number(c[i].options.data[count])
+    }
+  }
+  // 考虑到浮点型|负数
+  return Number(num.toString()
+    .match(/^-?\d+(?:\.\d{0,2})?/))
+}
+
 export function clearMarkerLayers() {
   markerFeatureGroup.clearLayers()
 }
@@ -35,15 +82,42 @@ export function clearMarkerLayers() {
 export function clearMarkerclusterMap() {
   console.log('clearMarkerclusterMap: ', markerclusterMap)
 
-  const { map: leafletMap } = useMapSetting()
-  const map = toRaw(unref(leafletMap))
   markerclusterMap.forEach((value) => {
-    value.clearLayers()
-    if (map.hasLayer(value as L.FeatureGroup)) {
-      map.removeLayer(value as L.FeatureGroup)
+    toRaw(value).clearLayers()
+    if (toRaw(unref(leafletMap)!).hasLayer(toRaw(value) as L.FeatureGroup)) {
+      toRaw(unref(leafletMap)!).removeLayer(toRaw(value) as L.FeatureGroup)
     }
   })
   markerclusterMap.clear()
+}
+
+export function featureToCluster() {
+  markerclusterMap.forEach((_layer, key) => {
+    const layer = toRaw(_layer)
+    if (layer instanceof L.FeatureGroup) {
+      const markers = layer.getLayers()
+      const { menuSub } = markers[0].options as MOptions
+      const { markerclusterMaxZoom: zoom, moduleName, count } = menuSub as MenuSub
+      layer.clearLayers()
+      toRaw(unref(leafletMap)!).removeLayer(layer)
+      const layers = clusterGroup(moduleName, zoom, count).addLayers(markers)
+      layers.addTo(toRaw(unref(leafletMap)!))
+      markerclusterMap.set(key, layers)
+    }
+  })
+}
+
+export function clusterToFeature() {
+  markerclusterMap.forEach((_layer, key) => {
+    const layer = toRaw(_layer)
+    if (layer instanceof L.MarkerClusterGroup) {
+      const markers = layer.getLayers()
+      layer.clearLayers()
+      toRaw(unref(leafletMap)!).removeLayer(layer)
+      const layers = L.featureGroup(markers).addTo(toRaw(unref(leafletMap)!))
+      markerclusterMap.set(key, layers)
+    }
+  })
 }
 
 export function removeMineBasePoint() {
@@ -136,6 +210,7 @@ function createMarkers(data: any) {
       data: value,
       coalbed,
       icon,
+      menuSub,
       key: value[menuSub.tableKey],
     })
     if (MonitorValue) {
@@ -173,67 +248,17 @@ function createBaseMarker(
   markerFeatureGroup.addLayer(point)
 }
 
-const clusterGroup = function (name: string, zoom?: number, count?: string) {
-  return L.markerClusterGroup({
-    disableClusteringAtZoom: zoom || 20,
-    chunkedLoading: true,
-    iconCreateFunction: (cluster: MarkerCluster) => {
-      const childCount = markerCount(cluster, count)
-      let c = ' marker-cluster-'
-      if (childCount < 10) {
-        c += 'small'
-      }
-      else if (childCount < 100) {
-        c += 'medium'
-      }
-      else {
-        c += 'large'
-      }
-      let html = `<div><span>${childCount}</span>`
-      if (name) {
-        html += `<p class="cg-labels">${name}</p>`
-      }
-      html += '</div>'
-      return L.divIcon({
-        html,
-        className: `marker-cluster${c}`,
-        iconSize: L.point(40, 40),
-      })
-    },
-  })
-}
-
-function markerCount(cluster: MarkerCluster, count?: string) {
-  let num = 0
-  const c = cluster.getAllChildMarkers()
-  for (let i = 0; i < c.length; i++) {
-    if (!count) {
-      return cluster.getChildCount()
-    }
-    else {
-      num += Number(c[i].options.data[count])
-    }
-  }
-  // 考虑到浮点型|负数
-  return Number(num.toString()
-    .match(/^-?\d+(?:\.\d{0,2})?/))
-}
-
 export function addMarkerLayer(
   data: any,
   menuSub: MenuSub,
   markconfig: any,
 ) {
   const key = menuSub.layer || menuSub.markType
-  const { map: leafletMap } = useMapSetting()
-  const map = toRaw(unref(leafletMap))
   const { markerclusterMaxZoom: zoom, moduleName, count } = menuSub
 
   const layerValue = markerclusterMap.get(key!)
   if (layerValue) {
-    layerValue.clearLayers()
-    map.removeLayer(layerValue as L.FeatureGroup)
-    markerclusterMap.delete(key!)
+    toRaw(layerValue).clearLayers()
   }
 
   const newData = data.map((e: any) => {
@@ -245,7 +270,6 @@ export function addMarkerLayer(
   layerGroup = unref(getIsAggSwitch)
     ? clusterGroup(moduleName, zoom, count).addLayers(markers)
     : layerGroup = L.featureGroup(markers)
-  layerGroup.addTo(map)
+  layerGroup.addTo(toRaw(unref(leafletMap)!))
   markerclusterMap.set(key!, layerGroup)
-  console.log(markerclusterMap)
 }

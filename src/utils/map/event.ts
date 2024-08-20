@@ -1,11 +1,11 @@
 import type { LeafletEvent } from 'leaflet'
-import { toRaw } from 'vue'
+import { unref } from 'vue'
 import { removeTileLayer, showSatellite } from './tileLayer'
 import { clearCadLayers, defaultCad } from './cadsLayer'
 import { clearMarkerLayers } from './marker'
 import { clearLayers } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
-import { useMapSetting } from '@/hooks/web/map/useMap'
+import { leafletMap } from '@/utils/map'
 import { useMenuHide } from '@/components/Menu'
 import { useHideMinePoint } from '@/components/Application'
 
@@ -40,8 +40,7 @@ export function zoom(e: LeafletEvent) {
 }
 
 export function toShowCad() {
-  const { map } = useMapSetting()
   const { mineInfo } = useUserSetting()
   const { centerB, centerL, show_cad } = mineInfo.value
-  toRaw(map.value).setView([centerB, centerL], show_cad)
+  unref(leafletMap)!.setView([centerB, centerL], show_cad)
 }

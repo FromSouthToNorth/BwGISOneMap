@@ -1,6 +1,6 @@
 import * as L from 'leaflet'
-import type { LatLngExpression, Layer, LayerGroup } from 'leaflet'
-import { toRaw, unref, watch } from 'vue'
+import type { LatLngExpression, LayerGroup } from 'leaflet'
+import { type Ref, ref, toRaw, unref, watch } from 'vue'
 
 import { isArray } from '../is'
 import { showSatellite, tileLayersGroup } from './tileLayer'
@@ -8,7 +8,6 @@ import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import {
   addMarkerLayer,
-  clearMarkerclusterMap,
   markerFeatureGroup,
   markerclusterMap,
 } from './marker'
@@ -24,8 +23,6 @@ import {
 } from './polyline'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 
-import { useMapSetting } from '@/hooks/web/map/useMap'
-import { useMapStore } from '@/store/modules/map'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { useMenuSub, useTool } from '@/components/Menu'
@@ -33,15 +30,16 @@ import { useMenuSub, useTool } from '@/components/Menu'
 const { getActiveMenuSub } = useMenuSub()
 const { getIsLayerOverlay } = useTool()
 
+export const leafletMap: Ref<L.Map | null> = ref(null)
+
 export function createMap(id: string) {
   const { mineInfo } = useUserSetting()
   watch(mineInfo, (mineInfo) => {
-    const mapStore = useMapStore()
     const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
     const maxZoom = max_zoom || 25
     const minZoom = no_show_satellitemap ? show_cad : show_map
-    const map = L.map(id, {
+    leafletMap.value = L.map(id, {
       center,
       zoom: show_map,
       minZoom,
@@ -50,24 +48,23 @@ export function createMap(id: string) {
       zoomControl: false,
     })
 
-    map.on('zoom', onZoom)
+    toRaw(unref(leafletMap)!).on('zoom', onZoom)
 
-    const hash = behaviorHash({ map, mineInfo })
+    const hash = behaviorHash({ map: toRaw(unref(leafletMap)!), mineInfo })
     hash()
-    map.on('moveend', hash.updateHashIfNeeded)
+    toRaw(unref(leafletMap)!).on('moveend', hash.updateHashIfNeeded)
 
-    tileLayersGroup.addTo(map)
-    cadLayersGroup.addTo(map)
-    markerFeatureGroup.addTo(map)
-    polygonFeatureGroup.addTo(map)
-    polylineFeatureGroup.addTo(map)
+    tileLayersGroup.addTo(toRaw(unref(leafletMap)!))
+    cadLayersGroup.addTo(toRaw(unref(leafletMap)!))
+    markerFeatureGroup.addTo(toRaw(unref(leafletMap)!))
+    polygonFeatureGroup.addTo(toRaw(unref(leafletMap)!))
+    polylineFeatureGroup.addTo(toRaw(unref(leafletMap)!))
 
     if (!no_show_satellitemap) {
       showSatellite()
     }
-    mapStore.setMap(map)
 
-    return map
+    return leafletMap
   })
 }
 
@@ -113,26 +110,23 @@ export function activeMenuSubByExcludeLayers() {
 }
 
 export function keyByExcludeLayers(key: string, layerMap: Map<string, LayerGroup>) {
-  const { map } = useMapSetting()
   layerMap.forEach((value, _key) => {
     if (_key !== key) {
-      value.clearLayers()
-      toRaw(unref(map)).removeLayer(value)
+      toRaw(value).clearLayers()
+      toRaw(unref(leafletMap)!).removeLayer(toRaw(value))
     }
   })
 }
 
 export function clearLayers() {
-  const { map: leafletMap } = useMapSetting()
-  const map = toRaw(unref(leafletMap))
-  markerclusterMap.forEach((e) => {
-    e.clearLayers()
-    map.removeLayer(e)
-  })
-  polylineGroupMap.forEach((e) => {
-    e.clearLayers()
-  })
-  polygonGroupMap.forEach((e) => {
-    e.clearLayers()
-  })
+  const layers = [markerclusterMap, polylineGroupMap, polygonGroupMap]
+  for (const layer of layers) {
+    if (layer.size) {
+      layer.forEach((e) => {
+        toRaw(e).clearLayers()
+        toRaw(unref(leafletMap)!).removeLayer(toRaw(e) as L.FeatureGroup)
+      })
+    }
+    layer.clear()
+  }
 }

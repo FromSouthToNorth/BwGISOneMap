@@ -8,6 +8,7 @@ interface POptions extends PolylineOptions {
   key?: string
   data?: object
   dashSpeed?: number
+  menuSub?: MenuSub
 }
 
 export const polygonFeatureGroup = L.featureGroup()
