@@ -1,6 +1,7 @@
 import * as L from 'leaflet'
 import './pathDashFlow'
 import type { FeatureGroup, LatLngExpression, Polygon, PolylineOptions } from 'leaflet'
+import { reactive } from 'vue'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 
 interface POptions extends PolylineOptions {
@@ -10,7 +11,7 @@ interface POptions extends PolylineOptions {
 }
 
 export const polygonFeatureGroup = L.featureGroup()
-export const polygonGroupMap = new Map<string, FeatureGroup>()
+export const polygonGroupMap = reactive(new Map<string, FeatureGroup>())
 
 export function polygon(latlngs: LatLngExpression[], options: POptions): Polygon {
   return L.polygon(latlngs, options)

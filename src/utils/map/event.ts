@@ -3,6 +3,7 @@ import { toRaw } from 'vue'
 import { removeTileLayer, showSatellite } from './tileLayer'
 import { clearCadLayers, defaultCad } from './cadsLayer'
 import { clearMarkerLayers } from './marker'
+import { clearLayers } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useMapSetting } from '@/hooks/web/map/useMap'
 import { useMenuHide } from '@/components/Menu'
@@ -22,6 +23,7 @@ export function zoom(e: LeafletEvent) {
     setMenuHide(false)
     clearCadLayers()
     clearMarkerLayers()
+    clearLayers()
     seHideMinePoint(false)
     showSatellite()
   }

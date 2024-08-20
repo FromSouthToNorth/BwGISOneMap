@@ -54,7 +54,6 @@ const attrs = useAttrs()
 const slots = useSlots()
 
 const tableData = ref([])
-const showName = ref(false)
 const wrapRef = ref(null)
 const formRef = ref(null)
 const tableElRef = ref(null)
@@ -76,8 +75,6 @@ const {
   getPagination,
 } = usePagination()
 const {
-  getDataSource,
-  setDataSource,
   getDataSourceRef,
   getRowKey,
   handleTableChange: onTableChange,

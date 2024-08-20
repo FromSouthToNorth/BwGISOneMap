@@ -1,12 +1,12 @@
 import * as L from 'leaflet'
-import { toRaw, unref } from 'vue'
+import { reactive, toRaw, unref } from 'vue'
 import { marker, svgIcon } from './marker'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { useMapSetting } from '@/hooks/web/map/useMap'
 
 export const polylineFeatureGroup = L.featureGroup()
 
-export const polylineGroupMap = new Map<string, L.FeatureGroup>()
+export const polylineGroupMap = reactive(new Map<string, L.FeatureGroup>())
 
 export interface MPathOptions extends L.PathOptions {
   key?: string
@@ -30,7 +30,7 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
   const layerValue = polylineGroupMap.get(key!)
   if (layerValue) {
     layerValue.clearLayers()
-    map.removeLayer(layerValue)
+    map.removeLayer(layerValue as L.FeatureGroup)
     polylineGroupMap.delete(key!)
   }
 
@@ -89,7 +89,7 @@ export function clearLayers() {
   const map = toRaw(unref(leafletMap))
   polylineGroupMap.forEach((layer) => {
     layer.clearLayers()
-    map.removeLayer(layer)
+    map.removeLayer(layer as L.FeatureGroup)
   })
   polylineGroupMap.clear()
 }

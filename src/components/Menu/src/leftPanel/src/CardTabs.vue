@@ -119,7 +119,11 @@ function menuSubClick(menuSub: MenuSub) {
       />
       <Tool />
     </div>
-    <BasicTable v-show="tableShow" />
+    <template>
+      <BasicTable
+        v-if="tableShow"
+      />
+    </template>
   </Card>
 </template>
 

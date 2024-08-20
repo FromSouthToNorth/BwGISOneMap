@@ -35,7 +35,7 @@ const { getIsLayerOverlay } = useTool()
 
 export function createMap(id: string) {
   const { mineInfo } = useUserSetting()
-  watch(() => unref(mineInfo), (mineInfo) => {
+  watch(mineInfo, (mineInfo) => {
     const mapStore = useMapStore()
     const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = mineInfo
     const center: LatLngExpression = [centerB, centerL]
@@ -106,8 +106,8 @@ export function activeMenuSubByExcludeLayers() {
     const { layer, markType } = menuSub
     const key = layer || markType!
     const layerMaps = [markerclusterMap, polylineGroupMap, polygonGroupMap]
-    layerMaps.forEach((map: Map<string, LayerGroup>) => {
-      keyByExcludeLayers(key, map)
+    layerMaps.forEach((map) => {
+      keyByExcludeLayers(key, map as Map<string, L.FeatureGroup>)
     })
   }
 }
@@ -124,13 +124,15 @@ export function keyByExcludeLayers(key: string, layerMap: Map<string, LayerGroup
 
 export function clearLayers() {
   const { map: leafletMap } = useMapSetting()
-  const layerMaps = [markerclusterMap, polylineGroupMap, polygonGroupMap]
-  for (const map of layerMaps) {
-    if (!map.size)
-      break
-    map.forEach((value) => {
-      value.clearLayers()
-      toRaw(unref(leafletMap)).removeLayer(value)
-    })
-  }
+  const map = toRaw(unref(leafletMap))
+  markerclusterMap.forEach((e) => {
+    e.clearLayers()
+    map.removeLayer(e)
+  })
+  polylineGroupMap.forEach((e) => {
+    e.clearLayers()
+  })
+  polygonGroupMap.forEach((e) => {
+    e.clearLayers()
+  })
 }

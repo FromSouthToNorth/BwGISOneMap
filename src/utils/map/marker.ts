@@ -3,7 +3,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import type { LatLngExpression, Marker, MarkerCluster, MarkerOptions } from 'leaflet'
-import { toRaw, unref } from 'vue'
+import { reactive, toRaw, unref } from 'vue'
 import { isObject, isString } from '../is'
 import { svgMarker } from './svgMarker'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
@@ -22,7 +22,7 @@ const { getIsAggSwitch } = useTool()
 
 export const markerFeatureGroup = L.featureGroup()
 
-export const markerclusterMap = new Map<string, L.MarkerClusterGroup | L.FeatureGroup>()
+export const markerclusterMap = reactive(new Map<string, L.MarkerClusterGroup | L.FeatureGroup>())
 
 export function marker(latlng: LatLngExpression, options?: MOptions) {
   return L.marker(latlng, options)
@@ -39,8 +39,8 @@ export function clearMarkerclusterMap() {
   const map = toRaw(unref(leafletMap))
   markerclusterMap.forEach((value) => {
     value.clearLayers()
-    if (map.hasLayer(value)) {
-      map.removeLayer(value)
+    if (map.hasLayer(value as L.FeatureGroup)) {
+      map.removeLayer(value as L.FeatureGroup)
     }
   })
   markerclusterMap.clear()
@@ -232,7 +232,7 @@ export function addMarkerLayer(
   const layerValue = markerclusterMap.get(key!)
   if (layerValue) {
     layerValue.clearLayers()
-    map.removeLayer(layerValue)
+    map.removeLayer(layerValue as L.FeatureGroup)
     markerclusterMap.delete(key!)
   }
 
