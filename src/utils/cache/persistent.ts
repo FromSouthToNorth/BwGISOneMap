@@ -6,6 +6,7 @@ import type {
   MINE_DESC_KEY,
   MINE_INFO_KEY,
   MINE_NAME_KEY,
+  TABLE_SETTING_KEY,
   TOKEN_KEY,
   USER_INFO_KEY,
 } from '@/enums/cacheEnum'
@@ -18,6 +19,7 @@ interface BasicStore {
   [MINE_DESC_KEY]: string | null | undefined
   [MAP_LOCATION]: string
   [MINE_NAME_KEY]: string
+  [TABLE_SETTING_KEY]: string
 }
 
 export type BasicKeys = keyof BasicStore

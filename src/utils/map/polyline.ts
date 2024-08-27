@@ -3,6 +3,7 @@ import { reactive, toRaw, unref } from 'vue'
 import { marker, svgIcon } from './marker'
 import { leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
+import './Leaflet.TextPath'
 
 export const polylineFeatureGroup = L.featureGroup()
 
@@ -49,7 +50,11 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
     }
   })
   const lineLayers = lines.map((line) => {
-    const { MarkType, coalbed, weight, color } = line
+    const { MarkType, coalbed, weight, color, TunnelName } = line
+    const options = {
+      center: true,
+      clazz: 'label',
+    }
     return polyline(
       MarkType.coordinates,
       {
@@ -60,7 +65,7 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
         color,
         menuSub,
       },
-    )
+    ).setText(TunnelName, options)
   })
   const markerLayers = makers.map((maker) => {
     const { MarkType, icon, coalbed } = maker
@@ -88,4 +93,9 @@ export function clearLayers() {
     toRaw(unref(leafletMap)!).removeLayer(layer as L.FeatureGroup)
   })
   polylineGroupMap.clear()
+}
+
+function reverse(p: L.LatLngExpression[]): boolean {
+  const angle = Math.atan2(p[1].lat - p[0].lat, p[1].lng - p[0].lng)
+  return !(p[0].lng < p[p.length - 1].lng && angle < Math.PI / 2 && angle > -Math.PI / 2)
 }

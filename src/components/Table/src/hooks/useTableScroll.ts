@@ -19,7 +19,7 @@ export function useTableScroll(
   wrapRef: Ref<HTMLElement | null>,
   formRef: Ref<ComponentRef>,
 ) {
-  const tableHeightRef: Ref<Nullable<number | string>> = ref(420)
+  const tableHeightRef: Ref<Nullable<number | string>> = ref(506)
   const modalFn = useModalContext()
 
   // Greater than animation time 280

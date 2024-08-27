@@ -130,3 +130,42 @@ export function clearLayers() {
     layer.clear()
   }
 }
+
+export function tryInsert(
+  latLng: L.LatLngExpression | L.LatLngExpression[] | L.LatLngExpression[][],
+) {
+  if (Array.isArray(latLng) && latLng.length) {
+    return clipPolygon(latLng as L.LatLngExpression[]).length > 0
+  }
+  else {
+    return toRaw(unref(leafletMap)!).getBounds().contains(latLng as L.LatLngExpression)
+  }
+}
+
+export function clipPolygon(latLngs: L.LatLngExpression[]) {
+  const points = latLngsToPoints(latLngs)
+  return L.PolyUtil.clipPolygon(points, bounds())
+}
+
+/**
+ *
+ * @param {*} latLng
+ */
+export function latLngToPoint(latLng: L.LatLngExpression) {
+  return toRaw(unref(leafletMap)!).latLngToLayerPoint(latLng)
+}
+
+/**
+ *
+ * @param {*} latLngs
+ */
+export function latLngsToPoints(latLngs: L.LatLngExpression[]) {
+  return latLngs.map((latLng) => {
+    return latLngToPoint(latLng)
+  })
+}
+
+export function bounds() {
+  const bounds = toRaw(unref(leafletMap)!).getBounds()
+  return L.bounds(latLngToPoint(bounds.getNorthEast()), latLngToPoint(bounds.getSouthWest()))
+}
