@@ -6,6 +6,7 @@ import { computed, h, ref } from 'vue'
 import { SizeEnum } from '@/enums/sizeEnum'
 // import { LayerType } from '@/enums/mapEnum'
 import { getColor } from '@/utils/color'
+import { openPopup } from '@/utils/map'
 
 const props = defineProps<{ data: any }>()
 
@@ -18,12 +19,6 @@ const isCommon = computed(() => {
     // && column.scopedSlots.drawType === LayerType.MARKER
     && record.L && record.B
 })
-
-function onClickLocation() {
-  console.log('onClickLocation: ')
-  console.log('onClickLocation: ', column)
-  console.log('onClickLocation: ', record)
-}
 
 function onClickMark() {
   console.log('onClickMark: ')
@@ -63,7 +58,7 @@ function getValue() {
       v-if="isCommon"
       :size="sizeRef"
       type="primary"
-      @click="onClickLocation"
+      @click="openPopup(record)"
     >
       位置
     </Button>

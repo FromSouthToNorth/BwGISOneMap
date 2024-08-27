@@ -274,6 +274,41 @@ export function addMarkerLayer(
   markerclusterMap.set(key!, layerGroup)
 }
 
-export function showMarker(record: any) {
-  console.log(record)
+export function higMarker(
+  latlng: L.LatLngExpression,
+  _iconSize?: L.PointExpression,
+  _clazz?: string,
+  zIndexOffset?: number,
+) {
+  const className = _clazz || ''
+  const iconSize = _iconSize || [160, 160]
+  const icon = L.divIcon({
+    iconSize,
+    className: 'hig-marker',
+    html: `<span class="water1 ${className}"></span>
+           <span class="water2 ${className}"></span>
+           <span class="water3 ${className}"></span>
+           <span class="water4 ${className}"></span>`,
+  })
+  return marker(latlng, { zIndexOffset, icon, key: BasePoint.HIG_MARKER })
+}
+
+export function addHigMarker(
+  latLng: L.LatLngExpression,
+  _iconSize?: L.PointExpression,
+  _clazz?: string,
+  _zIndexOffset?: number,
+) {
+  clearHigMarker()
+  const higMark = higMarker(latLng, _iconSize, _clazz, _zIndexOffset)
+  markerFeatureGroup.addLayer(higMark)
+}
+
+function clearHigMarker() {
+  const layers = markerFeatureGroup.getLayers()
+  for (const layer of layers) {
+    if ((layer.options as MOptions).key === BasePoint.HIG_MARKER) {
+      markerFeatureGroup.removeLayer(layer)
+    }
+  }
 }

@@ -14,8 +14,7 @@ import {
   SlideYTransition,
 } from '@/components/Transtition'
 import { useModal } from '@/components/Modal'
-import { isLatLng } from '@/utils/map'
-import { showMarker } from '@/utils/map/marker'
+import { openPopup } from '@/utils/map'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
@@ -40,13 +39,14 @@ const sizeRef = ref<CardSize>(SizeEnum.SMALL)
 watch(
   () => unref(getMenu),
   (menu: MenuItem[]) => {
-    tabList.value = toRaw(menu).map((m: MenuItem) => {
-      return {
-        key: m.id,
-        tab: m.name,
-        menu: m,
-      }
-    })
+    tabList.value = toRaw(menu)
+      .map((m: MenuItem) => {
+        return {
+          key: m.id,
+          tab: m.name,
+          menu: m,
+        }
+      })
   },
 )
 
@@ -99,12 +99,7 @@ function menuSubClick(menuSub: MenuSub) {
 const [register, { openModal }] = useModal()
 
 function tableOpenModal(record: any) {
-  if (!isLatLng(record)) {
-    openModal()
-  }
-  else {
-    showMarker(record)
-  }
+  openPopup(record, openModal)
 }
 </script>
 

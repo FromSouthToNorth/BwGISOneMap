@@ -3,10 +3,12 @@ import type { LatLngExpression, LayerGroup } from 'leaflet'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
 
 import { isArray } from '../is'
+import { toGeoJSONLatLngs } from '../turf'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import {
+  addHigMarker,
   addMarkerLayer,
   markerFeatureGroup,
   markerclusterMap,
@@ -172,11 +174,26 @@ export function bounds() {
 
 export function isLatLng(data: any) {
   const { B, L } = data
-  return (B && L)
-    || isLatLngs(data)
+  return B && L
 }
 
 export function isLatLngs(data: any) {
   const { MarkType } = data
   return (MarkType && isArray(MarkType.coordinates) && MarkType.coordinates.length > 1)
+}
+
+export function openPopup(data: any, openModal?: any) {
+  const map = toRaw(unref(leafletMap))
+  if (!isLatLng(data) && !isLatLngs(data) && openModal) {
+    openModal()
+  }
+  else if (isLatLng(data)) {
+    const { B, L } = data
+    addHigMarker([B, L])
+    map?.setView([B, L], 19)
+  }
+  else if (isLatLngs(data)) {
+    const { MarkType } = data
+    console.log(toGeoJSONLatLngs(MarkType.coordinates))
+  }
 }

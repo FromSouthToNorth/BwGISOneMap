@@ -19,6 +19,7 @@ export enum PublicTile {
 export enum BasePoint {
   BASE_POINT = 'BasePoint',
   CENTER_POINT = 'centerPoint',
+  HIG_MARKER = 'higMarker',
 }
 
 export enum LayerType {

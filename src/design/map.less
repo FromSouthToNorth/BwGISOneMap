@@ -76,3 +76,57 @@ text textPath.label {
     #fff 0 -1.5px 0;
   // pointer-events: all;
 }
+
+
+.leaflet-marker-icon.hig-marker {
+  border: transparent;
+  background: transparent;
+  pointer-events: none;
+}
+
+@keyframes wateranimate {
+  0% {
+    transform: scale(0);
+    opacity: .5;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.water1 {
+  animation: wateranimate 8s 7s ease-out infinite;
+}
+
+.water2 {
+  animation: wateranimate 8s 5s ease-out infinite;
+}
+
+.water3 {
+  animation: wateranimate 8s 2s ease-out infinite;
+}
+
+.water4 {
+  animation: wateranimate 8s 0s ease-out infinite;
+}
+
+.water1,
+.water2,
+.water3,
+.water4 {
+  position: absolute;
+  z-index: 1;
+  top: 30%;
+  left: 30%;
+  padding: 20%;
+  border: 1px solid #E1F5FE;
+  border-radius: 100%;
+  opacity: 0;
+  box-shadow: 0 0 120px 30px #0958d9 inset;
+}
+
+.highlight-marker .water-blue {
+  box-shadow: 0 0 120px 30px #4096ff inset;
+}
