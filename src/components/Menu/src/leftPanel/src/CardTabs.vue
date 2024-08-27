@@ -9,10 +9,13 @@ import { Tool } from './tool'
 import TabSub from './TabSub.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { SizeEnum } from '@/enums/sizeEnum'
-import { BasicTable } from '@/components/Table'
+import { BasicTable, TableModal } from '@/components/Table'
 import {
   SlideYTransition,
 } from '@/components/Transtition'
+import { useModal } from '@/components/Modal'
+import { isLatLng } from '@/utils/map'
+import { showMarker } from '@/utils/map/marker'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
@@ -92,6 +95,17 @@ function menuSubClick(menuSub: MenuSub) {
   tableShow.value = true
   emit('subClick', menuSub)
 }
+
+const [register, { openModal }] = useModal()
+
+function tableOpenModal(record: any) {
+  if (!isLatLng(record)) {
+    openModal()
+  }
+  else {
+    showMarker(record)
+  }
+}
 </script>
 
 <template>
@@ -125,8 +139,10 @@ function menuSubClick(menuSub: MenuSub) {
     <component :is="SlideYTransition">
       <BasicTable
         v-show="tableShow"
+        @row-click="tableOpenModal"
       />
     </component>
+    <TableModal @register="register" />
   </Card>
 </template>
 

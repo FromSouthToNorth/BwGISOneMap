@@ -6,14 +6,14 @@ import type { LatLngExpression, Marker, MarkerCluster, MarkerOptions } from 'lea
 import { reactive, toRaw, unref } from 'vue'
 import { isObject, isString } from '../is'
 import { svgMarker } from './svgMarker'
-import { leafletMap } from '.'
+import { isLatLng, leafletMap } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
-import { basePoint } from '@/enums/mapEnum'
+import { BasePoint } from '@/enums/mapEnum'
 import { useTool } from '@/components/Menu'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 
 interface MOptions extends MarkerOptions {
-  key: string | basePoint
+  key: string | BasePoint
   data?: any
   coalbed?: string
   menuSub?: MenuSub
@@ -123,7 +123,7 @@ export function clusterToFeature() {
 export function removeMineBasePoint() {
   const layers = markerFeatureGroup.getLayers()
 
-  for (const [_key, value] of Object.entries(basePoint)) {
+  for (const [_key, value] of Object.entries(BasePoint)) {
     const point = layers.find((_layer) => {
       return (_layer.options as MOptions).key === value
     })
@@ -145,7 +145,7 @@ export function createMineBasePoint() {
       Y: y,
       Z: z,
     },
-    basePoint.BASE_POINT,
+    BasePoint.BASE_POINT,
   )
   createBaseMarker(
     [centerB, centerL],
@@ -157,7 +157,7 @@ export function createMineBasePoint() {
       Y: centerY,
       Z: z,
     },
-    basePoint.CENTER_POINT,
+    BasePoint.CENTER_POINT,
   )
 }
 
@@ -233,7 +233,7 @@ function createBaseMarker(
   popupContent: {
     [key: string]: any
   },
-  key: basePoint,
+  key: BasePoint,
 ) {
   let markerpopupContent: string = `<h3>${tooltip}</h3><hr>`
 
@@ -263,7 +263,7 @@ export function addMarkerLayer(
 
   const newData = data.map((e: any) => {
     return { ...e, menuSub, markconfig }
-  }).filter((e: any) => { return e.L && e.B })
+  }).filter(isLatLng)
   const markers = createMarkers(newData)
 
   let layerGroup
@@ -272,4 +272,8 @@ export function addMarkerLayer(
     : layerGroup = L.featureGroup(markers)
   layerGroup.addTo(toRaw(unref(leafletMap)!))
   markerclusterMap.set(key!, layerGroup)
+}
+
+export function showMarker(record: any) {
+  console.log(record)
 }

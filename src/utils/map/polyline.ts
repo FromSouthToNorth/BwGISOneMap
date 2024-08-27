@@ -1,7 +1,7 @@
 import * as L from 'leaflet'
 import { reactive, toRaw, unref } from 'vue'
 import { marker, svgIcon } from './marker'
-import { leafletMap } from '.'
+import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import './Leaflet.TextPath'
 
@@ -37,7 +37,7 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
   data.forEach((e: any) => {
     const layer = { ...e, menuSub }
     const { MarkType } = e
-    if (MarkType && MarkType.coordinates) {
+    if (isLatLngs(e)) {
       if (MarkType.type[0] === 'Line') {
         lines.push(layer)
       }

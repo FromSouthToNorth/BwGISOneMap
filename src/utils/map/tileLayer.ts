@@ -6,7 +6,7 @@ import { marker } from './marker'
 import { toShowCad } from './event'
 import { toLatlngs } from './to'
 import { polygon } from './polygon'
-import { mineLayersEnum } from '@/enums/mapEnum'
+import { MineLayersEnum } from '@/enums/mapEnum'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { useSatelliteSetting } from '@/components/Application'
 
@@ -30,7 +30,7 @@ export const tileLayer: MTileLayer = {
   tileUrl,
   options: {
     accessToken: '',
-    key: mineLayersEnum.MINE_SATELLITE,
+    key: MineLayersEnum.MINE_SATELLITE,
     zIndex: -100,
   },
 }
@@ -47,7 +47,7 @@ export function mineMarker() {
   const { mineInfo } = useUserSetting()
   const { centerB, centerL, mineName } = toRaw(mineInfo.value)
   // TODO: keepInView 为 true 控制台显示 Uncaught RangeError: Maximum call stack size exceeded
-  const mm = marker([centerB, centerL], { key: mineLayersEnum.MINE_MARKER })
+  const mm = marker([centerB, centerL], { key: MineLayersEnum.MINE_MARKER })
   tileLayersGroup.addLayer(mm)
   mm.on('click', (e) => {
     L.DomEvent.stopPropagation(e)
@@ -68,7 +68,7 @@ export function setMineBoundary(latLngs: BL[]) {
   mineBoundary = polygon(lls, {
     color,
     dashSpeed: 1,
-    key: mineLayersEnum.MINE_BOUNDARY,
+    key: MineLayersEnum.MINE_BOUNDARY,
   })
   mineBoundary.on('mouseover', () => {
     mineBoundary.setStyle({
@@ -114,8 +114,9 @@ export function removeTileLayer() {
   const layers = tileLayersGroup.getLayers()
   for (const layer of layers) {
     if (unref(getIsSatellite)
-      && (layer.options as MOptions).key === mineLayersEnum.MINE_SATELLITE)
+      && (layer.options as MOptions).key === MineLayersEnum.MINE_SATELLITE) {
       continue
+    }
     tileLayersGroup.removeLayer(layer)
   }
 }

@@ -23,6 +23,7 @@ import { basicProps } from './props'
 import { useTableScroll } from './hooks/useTableScroll'
 import { useTableScrollTo } from './hooks/useScrollTo'
 import BodyCell from './components/BodyCell.vue'
+import { useCustomRow } from './hooks/useCustomRow'
 import { useDesign } from '@/hooks/web/useDesign'
 import BasicForm from '@/components/Form/src/BasicForm.vue'
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
@@ -87,6 +88,7 @@ const { getScrollRef, redoHeight } = useTableScroll(
   wrapRef,
   formRef,
 )
+const { customRow } = useCustomRow(getProps, { emit })
 
 const debounceRedoHeight = debounce(redoHeight, 50)
 
@@ -96,6 +98,7 @@ const getBindValues = computed(() => {
   const dataSource = unref(getDataSourceRef)
   let propsData: any = {
     ...attrs,
+    customRow,
     ...unref(getProps),
     tableLayout: 'fixed',
     scroll: unref(getScrollRef),

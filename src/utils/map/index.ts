@@ -169,3 +169,14 @@ export function bounds() {
   const bounds = toRaw(unref(leafletMap)!).getBounds()
   return L.bounds(latLngToPoint(bounds.getNorthEast()), latLngToPoint(bounds.getSouthWest()))
 }
+
+export function isLatLng(data: any) {
+  const { B, L } = data
+  return (B && L)
+    || isLatLngs(data)
+}
+
+export function isLatLngs(data: any) {
+  const { MarkType } = data
+  return (MarkType && isArray(MarkType.coordinates) && MarkType.coordinates.length > 1)
+}

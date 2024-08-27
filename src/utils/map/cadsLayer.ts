@@ -11,7 +11,7 @@ import type { Cad } from '../mqtt/types'
 import { isArray } from '../is'
 import { useCadSetting } from '@/components/Application/src/cad'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
-import { mapURLEnum, publicTile } from '@/enums/mapEnum'
+import { MapURLEnum, PublicTile } from '@/enums/mapEnum'
 
 const { getDefaultCad, getCoalSeam } = useCadSetting()
 
@@ -50,7 +50,7 @@ function setDwgCadLayer(cad: Cad) {
   if (isArray(layers) && layers.length) {
     layers.forEach((layer) => {
       const cadLayer = layer as TileLayer.WMS
-      cadLayer.setUrl(mapURLEnum.CAD_URLS)
+      cadLayer.setUrl(MapURLEnum.CAD_URLS)
       cadLayer.setParams({ CQL_FILTER })
     })
   }
@@ -59,10 +59,10 @@ function setDwgCadLayer(cad: Cad) {
     const { mineDesc } = toRaw(mineInfo.value)
     unref(refSelectCoalSeamSet).forEach((value) => {
       if (isPublicLayers) {
-        const cadLayer = cadLayerWms(`${mineDesc}${publicTile.PUBLIC}`, value, mapURLEnum.CAD_URLS)
+        const cadLayer = cadLayerWms(`${mineDesc}${PublicTile.PUBLIC}`, value, MapURLEnum.CAD_URLS)
         cadLayersGroup.addLayer(cadLayer)
       }
-      const cadLayer = cadLayerWms(dwgId, value, mapURLEnum.CAD_URLS)
+      const cadLayer = cadLayerWms(dwgId, value, MapURLEnum.CAD_URLS)
       cadLayer.setParams({ CQL_FILTER })
       cadLayersGroup.addLayer(cadLayer)
     })
@@ -71,7 +71,7 @@ function setDwgCadLayer(cad: Cad) {
 
 function getCqlFilter(): string {
   const dwgLayerSet = unref(refSelectDwgLayerSet)
-  return publicTile.CQL_FILTER_START.concat(`'${Array.from(dwgLayerSet).join('\',\'')}'`, publicTile.CQL_FILTER_END)
+  return PublicTile.CQL_FILTER_START.concat(`'${Array.from(dwgLayerSet).join('\',\'')}'`, PublicTile.CQL_FILTER_END)
 }
 
 export function deleteSelectDwgLayerSet(dwgLayer: string, cad: Cad) {
@@ -85,7 +85,7 @@ export function deleteSelectDwgLayerSet(dwgLayer: string, cad: Cad) {
 
   layers.forEach((layer) => {
     const cadLayer = layer as TileLayer.WMS
-    cadLayer.setUrl(mapURLEnum.CAD_URLS)
+    cadLayer.setUrl(MapURLEnum.CAD_URLS)
     cadLayer.setParams({ CQL_FILTER })
   })
 }
@@ -186,13 +186,13 @@ export function setCadLayer(cad: Cad) {
     })
   }
   set.forEach((value) => {
-    const cadLayer = cadLayerWms(dwgId, value, mapURLEnum.CAD_URL)
+    const cadLayer = cadLayerWms(dwgId, value, MapURLEnum.CAD_URL)
     cadLayersGroup.addLayer(cadLayer)
   })
   setCadsMap(dwgId, cad)
 }
 
-function cadLayerWms(dwgId: string, coalSeam: string, cadUrl: mapURLEnum): TileLayer.WMS {
+function cadLayerWms(dwgId: string, coalSeam: string, cadUrl: MapURLEnum): TileLayer.WMS {
   return L.tileLayer.wms(cadUrl, {
     // crs: L.CRS.EPSG4326,
     layers: `bwcad:${dwgId}${coalSeam}`,
