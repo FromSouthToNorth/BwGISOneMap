@@ -69,7 +69,10 @@ function onToSwitchClick(toSwitch: ToSwitch) {
 </template>
 
 <style lang="less" scoped>
+.menu-sub+ .menu-sub {
+  margin-left: 4px;
+}
 .menu-sub {
-  margin: 1px;
+  margin: 4px 0;
 }
 </style>

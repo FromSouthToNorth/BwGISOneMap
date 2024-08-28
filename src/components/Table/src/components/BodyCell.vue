@@ -113,6 +113,19 @@ function getValue() {
       @click="onClickBroadcast"
     />
   </template>
+  <template
+    v-else-if="getValue() === 'isStart'"
+  >
+    <Tag
+      v-if="value === 1"
+      color="green"
+    >
+      是
+    </Tag>
+    <Tag v-else>
+      否
+    </Tag>
+  </template>
   <template v-else>
     {{ value }}
   </template>

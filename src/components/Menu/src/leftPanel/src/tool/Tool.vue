@@ -6,7 +6,6 @@ import {
   Divider,
   DropdownButton,
   Menu,
-  MenuItem,
 } from 'ant-design-vue'
 import { CaretDownOutlined, DeleteTwoTone } from '@ant-design/icons-vue'
 import { h, ref, unref } from 'vue'
@@ -66,22 +65,22 @@ function clear() {
     />
     <template #overlay>
       <Menu>
-        <MenuItem>
+        <Menu.Item>
           <Checkbox
             v-model:checked="aggSwitch"
             @change="aggCheckbox"
           >
             聚合开关
           </Checkbox>
-        </MenuItem>
-        <MenuItem>
+        </Menu.Item>
+        <Menu.Item>
           <Checkbox
             v-model:checked="layerOverlay"
             @change="layerCheckbox"
           >
             图层叠加
           </Checkbox>
-        </MenuItem>
+        </Menu.Item>
       </Menu>
     </template>
     <template #icon>
@@ -99,7 +98,7 @@ function clear() {
 
 <style lang="less" scoped>
 .tool-drop {
-  margin: 1px;
+  margin-right: 6px;
 
   span + span {
     margin-right: 6px;
