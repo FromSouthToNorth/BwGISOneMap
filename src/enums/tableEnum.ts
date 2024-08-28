@@ -1,4 +1,4 @@
-export enum specialColTypeEnum {
+export enum SpecialColTypeEnum {
   SCROLL_X = 'scrollX',
   SET_BOUNDS = 'setBounds',
   SHOW_SATELLITE = 'showSatellite',

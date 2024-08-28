@@ -169,7 +169,7 @@ defineExpose({ tableElRef, ...tableAction })
       @change="handleTableChange"
     >
       <template #bodyCell="data">
-        <BodyCell :data="data" />
+        <slot name="bodyCell" v-bind="data || {}" />
       </template>
     </Table>
   </div>

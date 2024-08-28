@@ -4,48 +4,36 @@ import { NotificationOutlined, SearchOutlined } from '@ant-design/icons-vue'
 
 import { computed, h, ref } from 'vue'
 import { SizeEnum } from '@/enums/sizeEnum'
-// import { LayerType } from '@/enums/mapEnum'
 import { getColor } from '@/utils/color'
 import { openPopup } from '@/utils/map'
 
-const props = defineProps<{ data: any }>()
-
-const { column, value, text, record } = props.data
+const props = defineProps<{ column: any, record: any, value: any }>()
 
 const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
 
 const isCommon = computed(() => {
-  return column.scopedSlots.drawType
-    // && column.scopedSlots.drawType === LayerType.MARKER
-    && record.L && record.B
+  return props.column.scopedSlots.drawType
+    && props.record.L && props.record.B
 })
 
 function onClickMark() {
   console.log('onClickMark: ')
-  console.log('onClickMark: ', column)
-  console.log('onClickMark: ', record)
 }
 
 function onClickPath() {
   console.log('onClickPath: ')
-  console.log('onClickPath: ', column)
-  console.log('onClickPath: ', record)
 }
 
 function onClickContextSearch() {
   console.log('onContextSearch: ')
-  console.log('onContextSearch: ', column)
-  console.log('onContextSearch: ', record)
 }
 
 function onClickBroadcast() {
   console.log('onClickBroadcast: ')
-  console.log('onClickBroadcast: ', column)
-  console.log('onClickBroadcast: ', record)
 }
 
 function getValue() {
-  const { scopedSlots, dataIndex } = column
+  const { scopedSlots, dataIndex } = props.column
   return scopedSlots && scopedSlots.customRender ? scopedSlots.customRender : dataIndex
 }
 </script>

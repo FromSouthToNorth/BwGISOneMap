@@ -5,8 +5,17 @@ import {
 } from '@turf/helpers'
 import { centroid as turfCentroid } from '@turf/centroid'
 
-export function polygon(latLngs: any) {
-  return turfPolygon(latLngs)
+// 判断两点是否相等
+export function pointEqual(point1: number[], point2: number[]) {
+  return point1[0] === point2[0] && point1[1] === point2[1]
+}
+
+export function polygon(_latLngs: any) {
+  const latLngs = [..._latLngs]
+  if (!pointEqual(latLngs[0], latLngs[1])) {
+    latLngs.push(latLngs[0])
+  }
+  return turfPolygon([latLngs])
 }
 
 export function lineString(latLngs: any) {
@@ -14,17 +23,17 @@ export function lineString(latLngs: any) {
 }
 
 export function centroid(geo: any) {
-  console.log(turfCentroid(geo))
+  return turfCentroid(geo).geometry.coordinates
 }
 
 export function toGeoJSONLatLng(latLng: L.LatLng) {
-  return [latLng.lng, latLng.lng]
+  return [latLng.lng, latLng.lat]
 }
 
 export function toGeoJSONLatLngs(_latLngs: L.LatLng[]) {
   const latLngs: number[][] = []
   _latLngs.forEach((l) => {
-    latLngs.push([l.lng, l.lat])
+    latLngs.push(toGeoJSONLatLng(l))
   })
   return latLngs
 }

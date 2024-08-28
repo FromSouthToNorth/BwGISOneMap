@@ -23,15 +23,15 @@ export function useCustomRow(
       onDblclick: (event: Event) => {
         emit('rowDbClick', record, index, event)
       },
-      onContextmenu: (event: Event) => {
-        emit('rowContextmenu', record, index, event)
-      },
-      onMouseenter: (event: Event) => {
-        emit('rowouseenter', record, index, event)
-      },
-      onMouseleave: (event: Event) => {
-        emit('rowouseleave', record, index, event)
-      },
+      // onContextmenu: (event: Event) => {
+      //   emit('rowContextmenu', record, index, event)
+      // },
+      // onMouseenter: (event: Event) => {
+      //   emit('rowouseenter', record, index, event)
+      // },
+      // onMouseleave: (event: Event) => {
+      //   emit('rowouseleave', record, index, event)
+      // },
     }
   }
 

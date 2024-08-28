@@ -7,14 +7,9 @@ import { useMenuSetting, useMenuSub } from '../../../index'
 import type { MenuItem, MenuSub } from '../../types/menu'
 import { Tool } from './tool'
 import TabSub from './TabSub.vue'
+import MenuTable from './table/MenuTable.vue'
 import { useDesign } from '@/hooks/web/useDesign'
 import { SizeEnum } from '@/enums/sizeEnum'
-import { BasicTable, TableModal } from '@/components/Table'
-import {
-  SlideYTransition,
-} from '@/components/Transtition'
-import { useModal } from '@/components/Modal'
-import { openPopup } from '@/utils/map'
 
 const props = defineProps({
   activeTabKey: { type: String, default: '' },
@@ -32,7 +27,7 @@ interface MCardTabListType extends CardTabListType {
 const activeTabKey = ref<string>('')
 const menuSubActiveKey = ref<string>('')
 const tabList = ref<MCardTabListType[]>([])
-const tableShow = ref(false)
+const tableHide = ref(false)
 
 const menuSubList = ref<MenuSub[] | undefined>([])
 const sizeRef = ref<CardSize>(SizeEnum.SMALL)
@@ -77,7 +72,7 @@ function onClick(key?: string) {
   if (unref(getMenuSubLoading))
     return
 
-  tableShow.value = false
+  tableHide.value = false
 
   if (key) {
     const tab = unref(tabList).find((tab) => {
@@ -92,14 +87,8 @@ function onClick(key?: string) {
 
 function menuSubClick(menuSub: MenuSub) {
   menuSubActiveKey.value = menuSub.id
-  tableShow.value = true
+  tableHide.value = true
   emit('subClick', menuSub)
-}
-
-const [register, { openModal }] = useModal()
-
-function tableOpenModal(record: any) {
-  openPopup(record, openModal)
 }
 </script>
 
@@ -131,13 +120,7 @@ function tableOpenModal(record: any) {
       />
       <Tool />
     </div>
-    <component :is="SlideYTransition">
-      <BasicTable
-        v-show="tableShow"
-        @row-click="tableOpenModal"
-      />
-    </component>
-    <TableModal @register="register" />
+    <MenuTable :table-hide="tableHide" />
   </Card>
 </template>
 

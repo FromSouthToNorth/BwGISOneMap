@@ -3,7 +3,7 @@ import type { LatLngExpression, LayerGroup } from 'leaflet'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
 
 import { isArray } from '../is'
-import { toGeoJSONLatLngs } from '../turf'
+import { centroid, polygon as geoPolygon, lineString, toGeoJSONLatLngs } from '../turf'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
@@ -28,6 +28,7 @@ import { behaviorHash } from '@/hooks/web/map/useHash'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { useMenuSub, useTool } from '@/components/Menu'
+import { LayerType } from '@/enums/mapEnum'
 
 const { getActiveMenuSub } = useMenuSub()
 const { getIsLayerOverlay } = useTool()
@@ -194,6 +195,18 @@ export function openPopup(data: any, openModal?: any) {
   }
   else if (isLatLngs(data)) {
     const { MarkType } = data
-    console.log(toGeoJSONLatLngs(MarkType.coordinates))
+    const coordinates = toGeoJSONLatLngs(MarkType.coordinates)
+    let cent
+    switch (MarkType.type[0]) {
+      case LayerType.POLYGON:
+        cent = centroid(geoPolygon(coordinates))
+        break
+      case LayerType.POLYLINE:
+        cent = centroid(lineString(coordinates))
+        break
+    }
+    if (cent) {
+      map?.setView([cent[1], cent[0]], 19)
+    }
   }
 }

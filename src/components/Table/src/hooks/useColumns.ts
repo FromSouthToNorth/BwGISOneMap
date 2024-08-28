@@ -1,7 +1,7 @@
 import { computed, ref, toRaw, unref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import type { BasicColumn } from '../types/table'
-import { specialColTypeEnum } from '@/enums/tableEnum'
+import { SpecialColTypeEnum } from '@/enums/tableEnum'
 
 const columnsRef = ref<BasicColumn[]>([])
 const originColumnsRef = ref<BasicColumn[]>([])
@@ -12,19 +12,11 @@ export function useColumns() {
     const columnsStr = JSON.stringify(columnList)
 
     columnList = JSON.parse(columnsStr, funReviver)
-    columnsRef.value = []
-    columnList.forEach((c: any) => {
-      const { dataIndex, ifShow } = c
-      if (Object.values(specialColTypeEnum).includes(dataIndex)) {
-        // setScrollX(c.value[dataIndex])
-      }
-      else if (ifShow === false) {
-        //
-      }
-      else {
-        columnsRef.value.push(c)
-      }
-      originColumnsRef.value.push(c)
+    originColumnsRef.value = columnList
+    columnsRef.value = columnList.filter((e) => {
+      const { dataIndex, ifShow } = e
+      return !Object.values(SpecialColTypeEnum).includes(dataIndex)
+        && ifShow !== false
     })
   }
 
@@ -55,7 +47,7 @@ export function useColumns() {
 }
 
 function funReviver(_key: string, value: string) {
-  if (typeof value === 'string' && value.indexOf(specialColTypeEnum._BW_FUNCTION_) === 0) {
+  if (typeof value === 'string' && value.indexOf(SpecialColTypeEnum._BW_FUNCTION_) === 0) {
     value = value.replace(/_bw_function_/g, 'function')
     // eslint-disable-next-line no-new-func
     const dom = new Function(`return ${value}`)()
