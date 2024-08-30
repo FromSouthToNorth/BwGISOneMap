@@ -29,7 +29,7 @@ export function useDataSource() {
     setPagination,
     setLoading,
     tableData,
-  }: ActionType, pagination: any, _filters: any, sorter: any, emit: EmitType) {
+  }: ActionType, pagination: any, _filters: any, sorter: any, _emit: EmitType) {
     setPagination(pagination)
     setLoading(true)
     if (!isEmpty(sorter)) {

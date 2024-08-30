@@ -7,7 +7,7 @@ import { SizeEnum } from '@/enums/sizeEnum'
 import { getColor } from '@/utils/color'
 import { openPopup } from '@/utils/map'
 
-const props = defineProps<{ column: any, record: any, value: any }>()
+const props = defineProps<{ column: any, record: any, text: any }>()
 
 const sizeRef = ref<'small' | 'large' | undefined>(SizeEnum.SMALL)
 
@@ -64,24 +64,24 @@ function getValue() {
     v-else-if="getValue() === 'workingFaceState'"
   >
     <Tag
-      :color="getColor(value)"
+      :color="getColor(text)"
     >
-      {{ value }}
+      {{ text }}
     </Tag>
   </template>
   <template
     v-else-if="getValue() === 'whetherOnline'"
   >
-    <Badge :status="value ? 'processing' : 'default'" />
-    {{ value ? '在线' : '离线' }}
+    <Badge :status="text ? 'processing' : 'default'" />
+    {{ text ? '在线' : '离线' }}
   </template>
   <template
     v-else-if="getValue() === 'trState'"
   >
     <Tag
-      :color="getColor(value)"
+      :color="getColor(text)"
     >
-      {{ value }}
+      {{ text }}
     </Tag>
   </template>
   <template
@@ -117,7 +117,7 @@ function getValue() {
     v-else-if="getValue() === 'isStart'"
   >
     <Tag
-      v-if="value === 1"
+      v-if="text === 1"
       color="green"
     >
       是
@@ -127,6 +127,6 @@ function getValue() {
     </Tag>
   </template>
   <template v-else>
-    {{ value }}
+    {{ text }}
   </template>
 </template>

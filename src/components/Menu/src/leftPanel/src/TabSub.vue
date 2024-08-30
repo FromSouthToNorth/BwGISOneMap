@@ -3,7 +3,6 @@ import {
   Button,
   DropdownButton,
   Menu,
-  MenuItem,
   Tooltip,
 } from 'ant-design-vue'
 import { DownOutlined } from '@ant-design/icons-vue'
@@ -41,13 +40,13 @@ function onToSwitchClick(toSwitch: ToSwitch) {
       {{ menuSub.moduleName }}
       <template #overlay>
         <Menu>
-          <MenuItem
+          <Menu.Item
             v-for="(item, index) in menuSub.toSwitchs"
             :key="index"
             @click="onToSwitchClick(item)"
           >
             {{ item.title }}
-          </MenuItem>
+          </Menu.Item>
         </Menu>
       </template>
       <template #icon>

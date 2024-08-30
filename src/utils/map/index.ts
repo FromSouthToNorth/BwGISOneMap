@@ -184,6 +184,7 @@ export function isLatLngs(data: any) {
 }
 
 export function openPopup(data: any, openModal?: any) {
+  console.log('openPopup: ', data)
   const map = toRaw(unref(leafletMap))
   if (!isLatLng(data) && !isLatLngs(data) && openModal) {
     openModal()
@@ -201,6 +202,7 @@ export function openPopup(data: any, openModal?: any) {
       case LayerType.POLYGON:
         cent = centroid(geoPolygon(coordinates))
         break
+      case LayerType.LINE:
       case LayerType.POLYLINE:
         cent = centroid(lineString(coordinates))
         break

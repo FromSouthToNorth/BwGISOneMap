@@ -94,6 +94,7 @@ function oneMapSubMenu(result: MqttResult) {
 }
 
 function oneMapDevice(result: MqttResult) {
+  console.warn('oneMapDevice: ', result)
   const { params } = result
   const {
     key,
@@ -107,7 +108,6 @@ function oneMapDevice(result: MqttResult) {
     drawMarkerType,
   } = params
   const menuSub = toRaw(unref(getActiveMenuSub))
-  console.warn('oneMapDevice: ', result)
   menuSub!.markType = drawMarkerType
   menuSub!.layer = layer
   menuSub!.tableKey = key
@@ -118,13 +118,16 @@ function oneMapDevice(result: MqttResult) {
   const columns = col.map((e: any) => {
     return e.value
   })
+  const newData = data.map((e: any) => {
+    return { ...e, menuSub, markconfig }
+  })
   setColumns(columns)
   setRowKey(key)
-  setDataSource(data)
+  setDataSource(newData)
   if (verifyData(result)) {
     return
   }
-  setLayer(data, menuSub!, markconfig)
+  setLayer(newData, menuSub!, markconfig)
 }
 
 function promptMessage(result: MqttResult) {

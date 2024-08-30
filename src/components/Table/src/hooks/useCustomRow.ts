@@ -14,8 +14,7 @@ export function useCustomRow(
       onClick: (e: Event) => {
         e?.stopPropagation()
         function handleClick() {
-          console.warn(propsRef)
-          console.warn('handleClick')
+          console.warn('handleClick: ', unref(propsRef))
         }
         handleClick()
         emit('rowClick', record, index, e)

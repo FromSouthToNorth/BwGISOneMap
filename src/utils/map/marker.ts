@@ -251,7 +251,6 @@ function createBaseMarker(
 export function addMarkerLayer(
   data: any,
   menuSub: MenuSub,
-  markconfig: any,
 ) {
   const key = menuSub.layer || menuSub.markType
   const { markerclusterMaxZoom: zoom, moduleName, count } = menuSub
@@ -261,9 +260,7 @@ export function addMarkerLayer(
     toRaw(layerValue).clearLayers()
   }
 
-  const newData = data.map((e: any) => {
-    return { ...e, menuSub, markconfig }
-  }).filter(isLatLng)
+  const newData = data.filter(isLatLng)
   const markers = createMarkers(newData)
 
   let layerGroup

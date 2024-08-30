@@ -26,4 +26,5 @@ export enum LayerType {
   MARKER = 'Marker',
   POLYLINE = 'Polyline',
   POLYGON = 'Polygon',
+  LINE = 'Line',
 }

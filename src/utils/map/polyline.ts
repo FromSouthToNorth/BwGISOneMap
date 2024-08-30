@@ -34,10 +34,9 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
 
   const lines: any[] = []
   const makers: any[] = []
-  data.forEach((e: any) => {
-    const layer = { ...e, menuSub }
-    const { MarkType } = e
-    if (isLatLngs(e)) {
+  data.forEach((layer: any) => {
+    const { MarkType } = layer
+    if (isLatLngs(layer)) {
       if (MarkType.type[0] === 'Line') {
         lines.push(layer)
       }

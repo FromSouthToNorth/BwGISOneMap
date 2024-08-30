@@ -27,12 +27,12 @@ function tableOpenModal(record: any) {
       v-show="tableHide"
       @row-click="tableOpenModal"
     >
-      <template #bodyCell="{ column, record, value }">
+      <template #bodyCell="{ column, record, text }">
         <BodyCell
           v-if="column"
           :column="column"
           :record="record"
-          :value="value"
+          :text="text"
         />
       </template>
     </BasicTable>
