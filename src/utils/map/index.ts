@@ -85,7 +85,7 @@ export function setLayer(
   isLayerOverlay()
   const { markType } = menuSub
   switch (markType) {
-    case 'AO1':
+    case 'A01':
       addPolygonLayer(data, menuSub)
       console.log('polygon')
       break
