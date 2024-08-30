@@ -1,5 +1,5 @@
 import { intersectionWith, isEqual, mergeWith, unionWith } from 'lodash-es'
-import type { App, Component } from 'vue'
+import { type App, type Component, unref } from 'vue'
 import { isArray, isObject } from '@/utils/is'
 
 export function utilStringQs(str: string): any {
@@ -26,8 +26,7 @@ export function utilQsString(obj: any, noencode: boolean): string {
   return Object.keys(obj)
     .sort()
     .map((key) => {
-      return `${encodeURIComponent(key)}=${noencode ? softEncode(obj[key]) : encodeURIComponent(obj[key])
-        }`
+      return `${encodeURIComponent(key)}=${noencode ? softEncode(obj[key]) : encodeURIComponent(obj[key])}`
     })
     .join('&')
 }
@@ -130,4 +129,15 @@ export function withInstall<T extends CustomComponent>(component: T, alias?: str
  */
 export function getPopupContainer(node?: HTMLElement): HTMLElement {
   return (node?.parentNode as HTMLElement) ?? document.body
+}
+
+// dynamic use hook props
+export function getDynamicProps<T extends Record<string, unknown>, U>(props: T): Partial<U> {
+  const ret: Recordable = {}
+
+  Object.keys(props).forEach((key) => {
+    ret[key] = unref((props as Recordable)[key])
+  })
+
+  return ret as Partial<U>
 }

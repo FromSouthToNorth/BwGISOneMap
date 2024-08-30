@@ -1,7 +1,7 @@
 import { toRaw, unref } from 'vue'
 import { setMineBoundary } from '../map/tileLayer'
 import { addSelectCoalSeamSet } from '../map/cadsLayer'
-import { isArray, isObject } from '../is'
+import { isArray } from '../is'
 import { setLayer } from '../map'
 import type { MqttResult } from './types'
 import type { MineInfo } from '#/store'
@@ -12,11 +12,10 @@ import type { MenuItem, MenuSub } from '@/components/Menu/src/types/menu'
 import { useCadSetting } from '@/components/Application/src/cad'
 import { useMenuSetting, useMenuSub } from '@/components/Menu'
 import { useAppStoreWithOut } from '@/store/modules/app'
+import { useTableSettingStore } from '@/store/modules/tableSetting'
 import { useMessage } from '@/hooks/web/useMessage'
 
 import {
-  useColumns,
-  useDataSource,
   useTableLoading,
 } from '@/components/Table'
 
@@ -29,13 +28,11 @@ const {
   setMenuSubLoading,
 } = useMenuSub()
 
-const { setDataSource, setRowKey } = useDataSource()
-const { setColumns } = useColumns()
-
 const { setLoading: setTableLoading } = useTableLoading()
 
 const appState = useAppStoreWithOut()
 const userStore = useUserStoreWithOut()
+const tableStore = useTableSettingStore()
 
 export const mqttFunMap = new Map<MqttFunEnum, Fn>()
 
@@ -118,16 +115,18 @@ function oneMapDevice(result: MqttResult) {
   const columns = col.map((e: any) => {
     return e.value
   })
-  const newData = data.map((e: any) => {
+  const dataSource = data.map((e: any) => {
     return { ...e, menuSub, markconfig }
   })
-  setColumns(columns)
-  setRowKey(key)
-  setDataSource(newData)
+  tableStore.setDeviceDataSource({
+    key,
+    columns,
+    dataSource,
+  })
   if (verifyData(result)) {
     return
   }
-  setLayer(newData, menuSub!, markconfig)
+  setLayer(dataSource, menuSub!, markconfig)
 }
 
 function promptMessage(result: MqttResult) {

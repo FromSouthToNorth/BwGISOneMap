@@ -1,27 +1,80 @@
-import { computed, ref, toRaw, unref } from 'vue'
+import { type ComputedRef, computed, ref, toRaw, unref, watch } from 'vue'
 import { cloneDeep } from 'lodash-es'
-import type { BasicColumn } from '../types/table'
+import type { BasicColumn, BasicTableProps } from '../types/table'
+import type { PaginationProps } from '../types/pagination'
+import { DEFAULT_ALIGN, INDEX_COLUMN_FLAG, PAGE_SIZE } from '../const'
+import { isBoolean, isFunction } from '@/utils/is'
 import { SpecialColTypeEnum } from '@/enums/tableEnum'
 
-const columnsRef = ref<BasicColumn[]>([])
-const originColumnsRef = ref<BasicColumn[]>([])
-const specialColumnsRef = ref({})
+function handleItem(item: BasicColumn, ellipsis: boolean) {
+  const { key, dataIndex, children } = item
+  item.align = item.align || DEFAULT_ALIGN
+  if (ellipsis) {
+    if (!key) {
+      item.key = typeof dataIndex == 'object' ? dataIndex.join('-') : dataIndex
+    }
+    if (!isBoolean(item.ellipsis)) {
+      Object.assign(item, {
+        ellipsis,
+      })
+    }
+  }
+  if (children && children.length) {
+    handleChildren(children, !!ellipsis)
+  }
+}
 
-export function useColumns() {
+function handleChildren(children: BasicColumn[] | undefined, ellipsis: boolean) {
+  if (!children)
+    return
+  children.forEach((item) => {
+    const { children } = item
+    handleItem(item, ellipsis)
+    handleChildren(children, ellipsis)
+  })
+}
+
+export function useColumns(
+  propsRef: ComputedRef<BasicTableProps>,
+  getPaginationRef: ComputedRef<boolean | PaginationProps>,
+) {
+  const columnsRef = ref<BasicColumn[]>([])
+  const originColumnsRef = ref<BasicColumn[]>([])
+
+  watch(
+    () => unref(propsRef).columns,
+    (columns) => {
+      setColumns(columns)
+    },
+  )
+
   function setColumns(columnList: BasicColumn[]) {
     const columnsStr = JSON.stringify(columnList)
 
     columnList = JSON.parse(columnsStr, funReviver)
-    originColumnsRef.value = columnList
+    originColumnsRef.value = columnList as BasicColumn[]
     columnsRef.value = columnList.filter((e) => {
-      const { dataIndex, ifShow } = e
+      const { dataIndex } = e
       return !Object.values(SpecialColTypeEnum).includes(dataIndex)
-        && ifShow !== false
     })
   }
 
   const getColumnsRef = computed(() => {
-    return cloneDeep(unref(columnsRef))
+    const columns = cloneDeep(unref(columnsRef))
+    if (!columns) {
+      return []
+    }
+    const { ellipsis } = unref(propsRef)
+
+    columns.forEach((item) => {
+      const { customRender, slots } = item
+
+      handleItem(
+        item,
+        Reflect.has(item, 'ellipsis') ? !!item.ellipsis : !!ellipsis && !customRender && !slots,
+      )
+    })
+    return columns
   })
 
   function getColumns() {
@@ -29,20 +82,36 @@ export function useColumns() {
     return columns
   }
 
-  const getSpecialColumns = computed(() => unref(specialColumnsRef))
+  const getOriginColumns = computed(() => {
+    return toRaw(unref(originColumnsRef))
+  })
 
   const getViewColumns = computed(() => {
     const viewColumns = sortFixedColumn(unref(getColumnsRef))
     const columns = cloneDeep(viewColumns)
-    return columns
+    return columns.filter(column => isIfShow(column))
   })
+
+  function isIfShow(column: BasicColumn): boolean {
+    const ifShow = column.ifShow
+
+    let isIfShow = true
+
+    if (isBoolean(ifShow)) {
+      isIfShow = ifShow
+    }
+    if (isFunction(ifShow)) {
+      isIfShow = ifShow(column)
+    }
+    return isIfShow
+  }
 
   return {
     setColumns,
     getColumns,
     getColumnsRef,
-    getSpecialColumns,
     getViewColumns,
+    getOriginColumns,
   }
 }
 

@@ -1,6 +1,8 @@
-import { isEmpty } from 'lodash-es'
-import { type ComputedRef, type Ref, computed, ref, unref } from 'vue'
+import { cloneDeep, isEmpty } from 'lodash-es'
+import { type ComputedRef, type Ref, computed, ref, unref, watch, watchEffect } from 'vue'
+import type { Key } from 'ant-design-vue/lib/table/interface'
 import type { PaginationProps } from '../types/pagination'
+import type { BasicTableProps } from '../types/table'
 import { useMenuSub } from '@/components/Menu'
 
 interface ActionType {
@@ -11,19 +13,44 @@ interface ActionType {
 }
 
 const { menuSubClick } = useMenuSub()
-const dataSourceRef = ref<Recordable[]>([])
-const rowKeyRef = ref('')
 
-export function useDataSource() {
-  function setDataSource(dataSource: []) {
-    dataSourceRef.value = dataSource
-  }
+export function useDataSource(
+  propsRef: ComputedRef<BasicTableProps>,
+  {
+    getPaginationInfo,
+    setPagination,
+    setLoading,
+    tableData,
+  }: ActionType,
+  emit: EmitType,
+) {
+  const dataSourceRef = ref<Recordable[]>([])
+  const rawDataSourceRef = ref<Recordable>({})
+
+  watchEffect(() => {
+    tableData.value = unref(dataSourceRef)
+  })
+
+  watch(
+    () => unref(propsRef).dataSource,
+    () => {
+      const { dataSource } = unref(propsRef)
+      if (dataSource) {
+        rawDataSourceRef.value = dataSource
+        dataSourceRef.value = dataSource
+      }
+    },
+    {
+      immediate: true,
+    },
+  )
+
   const getDataSource = computed(() => unref(dataSourceRef))
 
-  function setRowKey(key: string) {
-    rowKeyRef.value = key
-  }
-  const getRowKey = computed(() => unref(rowKeyRef))
+  const getRowKey = computed(() => {
+    const { rowKey } = unref(propsRef)
+    return rowKey
+  })
 
   function handleTableChange({
     setPagination,
@@ -42,7 +69,7 @@ export function useDataSource() {
           return a[sorter.field] < b[sorter.field] ? 1 : -1
         }
       })
-      setDataSource(tableData.value as [])
+      dataSourceRef.value = tableData.value
     }
     setLoading(false)
   }
@@ -51,13 +78,27 @@ export function useDataSource() {
     menuSubClick()
   }
 
+  function findTableDataRecord(value: Key, key?: string) {
+    console.log(value, key)
+    const dataSource = cloneDeep(unref(rawDataSourceRef))
+    let data: Recordable[] = []
+    if (key) {
+      data = dataSource.filter((data: any) => {
+        return data[key].includes(value)
+      })
+    }
+    else {
+      // console.log(columns)
+    }
+    dataSourceRef.value = data
+  }
+
   return {
     getDataSourceRef: computed(() => unref(dataSourceRef)),
-    setDataSource,
     getDataSource,
-    setRowKey,
     getRowKey,
     handleTableChange,
     reload,
+    findTableDataRecord,
   }
 }

@@ -10,6 +10,8 @@ interface ItemRender {
   originalElement: any
 }
 
+const show = ref(true)
+
 function itemRender({ page, type, originalElement }: ItemRender) {
   if (type === 'prev') {
     return page === 0 ? null : h(LeftOutlined)
@@ -54,9 +56,19 @@ export function usePagination() {
     return unref(getPaginationInfo)
   }
 
+  function getShowPagination() {
+    return unref(show)
+  }
+
+  async function setShowPagination(flag: boolean) {
+    show.value = flag
+  }
+
   return {
     setPagination,
     getPagination,
     getPaginationInfo,
+    getShowPagination,
+    setShowPagination,
   }
 }

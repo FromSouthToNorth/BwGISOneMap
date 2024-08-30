@@ -9,14 +9,24 @@ import type { ColumnOptionsType, SizeType } from '@/components/Table/src/types/t
 
 interface TableSettingState {
   setting: Nullable<Partial<TableSetting>>
+  deviceDataSource: any
+  subDataSource: any
 }
 
 export const useTableSettingStore = defineStore({
   id: 'table-setting',
   state: (): TableSettingState => ({
     setting: getCache(TABLE_SETTING_KEY),
+    deviceDataSource: {},
+    subDataSource: {},
   }),
   getters: {
+    getDeviceDataSource(state): any {
+      return state.deviceDataSource
+    },
+    getSubDataSource(state): any {
+      return state.subDataSource
+    },
     getTableSetting(state): Nullable<Partial<TableSetting>> {
       return state.setting
     },
@@ -46,6 +56,12 @@ export const useTableSettingStore = defineStore({
     },
   },
   actions: {
+    setDeviceDataSource(dataSource: any) {
+      this.deviceDataSource = dataSource
+    },
+    setSubDataSource(dataSource: any) {
+      this.subDataSource = dataSource
+    },
     setTableSetting(setting: Partial<TableSetting>) {
       this.setting = Object.assign({}, this.setting, setting)
       setCache(TABLE_SETTING_KEY, this.setting)

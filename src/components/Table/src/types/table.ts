@@ -90,41 +90,21 @@ export type SizeType = 'default' | 'middle' | 'small' | 'large'
 
 export interface TableActionType {
   reload: () => Promise<void>
-  setSelectedRows: (rows: Recordable[]) => void
-  getSelectRows: <T = Recordable>() => T[]
-  clearSelectedRowKeys: () => void
-  expandAll: () => void
-  collapseAll: () => void
-  expandRows: (keyValues: Key[]) => void
-  collapseRows: (keyValues: Key[]) => void
   scrollTo: (pos: string) => void // pos: id | "top" | "bottom"
-  getSelectRowKeys: () => Key[]
-  deleteSelectRowByKey: (keyValue: Key) => void
   setPagination: (info: Partial<PaginationProps>) => void
   setTableData: <T = Recordable>(values: T[]) => void
-  updateTableDataRecord: (keyValue: Key, record: Recordable) => Recordable | void
-  deleteTableDataRecord: (keyValues: Key | Key[]) => void
-  insertTableDataRecord: (record: Recordable | Recordable[], index?: number) => Recordable[] | void
-  findTableDataRecord: (keyValue: Key) => Recordable | void
+  findTableDataRecord: (value: Key, key: string) => Recordable | void
   getColumns: (opt?: GetColumnsParams) => BasicColumn[]
   setColumns: (columns: BasicColumn[]) => void
   getDataSource: <T = Recordable>() => T[]
-  getRawDataSource: <T = Recordable>() => T
-  getSearchInfo: <T = Recordable>() => T
   setLoading: (loading: boolean) => void
   setProps: (props: Partial<BasicTableProps>) => void
   redoHeight: () => void
-  setSelectedRowKeys: (keyValues: Key[]) => void
   getPaginationRef: () => PaginationProps | boolean
   getSize: () => SizeType
-  getRowSelection: () => TableRowSelection<Recordable>
-  getCacheColumns: () => BasicColumn[]
   emit?: EmitType
-  updateTableData: (index: number, key: string, value: any) => Recordable
   setShowPagination: (show: boolean) => Promise<void>
   getShowPagination: () => boolean
-  setCacheColumnsByField?: (dataIndex: string | undefined, value: BasicColumn) => void
-  setCacheColumns?: (columns: BasicColumn[]) => void
 }
 
 export interface FetchSetting {

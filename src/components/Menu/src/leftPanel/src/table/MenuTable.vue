@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, toRaw, unref, watch } from 'vue'
+import type { VoidCallback } from 'mqtt'
 import {
   BasicTable,
   BodyCell,
@@ -10,9 +12,13 @@ import {
   SlideYTransition,
 } from '@/components/Transtition'
 
+import { useTableStting } from '@/hooks/web/sys/useTableStting'
+
 defineProps({
   tableHide: { type: Boolean, default: false },
 })
+
+const { deviceDataSource } = useTableStting()
 
 const [register, { openModal }] = useModal()
 
@@ -25,6 +31,9 @@ function tableOpenModal(record: any) {
   <component :is="SlideYTransition">
     <BasicTable
       v-show="tableHide"
+      :data-source="deviceDataSource.dataSource"
+      :columns="deviceDataSource.columns"
+      :row-key="deviceDataSource.key"
       @row-click="tableOpenModal"
     >
       <template #bodyCell="{ column, record, text }">

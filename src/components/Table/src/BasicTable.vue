@@ -22,7 +22,6 @@ import TableSetting from './components/settings/index.vue'
 import { basicProps } from './props'
 import { useTableScroll } from './hooks/useTableScroll'
 import { useTableScrollTo } from './hooks/useScrollTo'
-import BodyCell from './components/BodyCell.vue'
 import { useCustomRow } from './hooks/useCustomRow'
 import { useDesign } from '@/hooks/web/useDesign'
 import BasicForm from '@/components/Form/src/BasicForm.vue'
@@ -31,7 +30,6 @@ import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
 defineOptions({ name: 'BasicTable' })
 
 const props = defineProps(basicProps)
-
 const emit = defineEmits([
   'fetchSuccess',
   'fetchError',
@@ -68,19 +66,33 @@ const getProps = computed(() => {
 const isFixedHeightPage = inject(PageWrapperFixedHeightKey, false)
 
 const { getLoading, setLoading } = useLoading()
-const { getColumns, setColumns, getViewColumns } = useColumns()
 
 const {
   getPaginationInfo,
   setPagination,
   getPagination,
+  setShowPagination,
+  getShowPagination,
 } = usePagination()
+const { getColumns, setColumns, getViewColumns } = useColumns(getProps, getPaginationInfo)
+
 const {
-  getDataSourceRef,
   getRowKey,
+  getDataSource,
+  getDataSourceRef,
   handleTableChange: onTableChange,
   reload,
-} = useDataSource()
+  findTableDataRecord,
+} = useDataSource(
+  getProps,
+  {
+    tableData,
+    getPaginationInfo,
+    setLoading,
+    setPagination,
+  },
+  emit,
+)
 const { getScrollRef, redoHeight } = useTableScroll(
   getProps,
   tableElRef,
@@ -141,12 +153,18 @@ const tableAction: TableActionType = {
   reload,
   emit,
   scrollTo,
+  findTableDataRecord,
+  setShowPagination,
+  getShowPagination,
+  getDataSource,
   getSize: () => {
     return unref(getBindValues).size as SizeType
   },
 }
 
 createTableContext({ ...tableAction, wrapRef, getBindValues })
+
+emit('register', tableAction)
 
 defineExpose({ tableElRef, ...tableAction })
 </script>
