@@ -126,6 +126,16 @@ function getValue() {
       否
     </Tag>
   </template>
+  <template v-else-if="getValue() === 'IsWalk'">
+    <Tag :color="text ? 'green' : 'red'">
+      {{ text ? '是' : '否' }}
+    </Tag>
+  </template>
+  <template v-else-if="getValue() === 'OutOffUse'">
+    <Tag :color="text ? 'red' : 'green'">
+      {{ text ? '是' : '否' }}
+    </Tag>
+  </template>
   <template v-else>
     {{ text }}
   </template>

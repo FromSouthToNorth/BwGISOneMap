@@ -6,11 +6,7 @@ import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import './Leaflet.TextPath'
 
-export const polylineFeatureGroup = L.featureGroup()
-
-export const polylineGroupMap = reactive(new Map<string, L.FeatureGroup>())
-
-export interface MPathOptions extends L.PathOptions {
+export interface PathOptions extends L.PathOptions {
   key?: string
   coalbed?: string
   data: any
@@ -19,9 +15,17 @@ export interface MPathOptions extends L.PathOptions {
   reverse: boolean
 }
 
+interface LineLayer extends L.Layer {
+  setText: ((name: string, options: any) => any) & ((opt: null) => any)
+}
+
+export const polylineFeatureGroup = L.featureGroup()
+
+export const polylineGroupMap = reactive(new Map<string, L.FeatureGroup>())
+
 export function polyline(
   latLngs: L.LatLngExpression[] | L.LatLngExpression[][],
-  options?: MPathOptions,
+  options?: PathOptions,
 ) {
   return L.polyline(latLngs, options)
 }
@@ -106,15 +110,16 @@ export function lineNameHide(zoom: number) {
     polylineGroupMap.forEach((group, _key) => {
       const layers = group.getLayers()
       layers.forEach((layer) => {
-        const { tunnelName } = layer.options as MPathOptions
+        const { tunnelName } = layer.options as PathOptions
         if (tunnelName) {
-          layer.setText(
-            tunnelName,
-            {
-              center: true,
-              clazz: 'label',
-            },
-          )
+          (layer as LineLayer)
+            .setText(
+              tunnelName,
+              {
+                center: true,
+                clazz: 'label',
+              },
+            )
         }
       })
     })
@@ -125,9 +130,9 @@ export function lineNameHide(zoom: number) {
     polylineGroupMap.forEach((group, _key) => {
       const layers = group.getLayers()
       layers.forEach((layer) => {
-        const { tunnelName } = layer.options as MPathOptions
+        const { tunnelName } = layer.options as PathOptions
         if (tunnelName) {
-          layer.setText(null)
+          (layer as LineLayer).setText(null)
         }
       })
     })
@@ -135,7 +140,14 @@ export function lineNameHide(zoom: number) {
   }
 }
 
-function reverse(p: L.LatLngExpression[]): boolean {
-  const angle = Math.atan2(p[1].lat - p[0].lat, p[1].lng - p[0].lng)
-  return !(p[0].lng < p[p.length - 1].lng && angle < Math.PI / 2 && angle > -Math.PI / 2)
+function reverse(p: L.LatLng[]): boolean {
+  const angle = Math.atan2(
+    p[1].lat - p[0].lat,
+    p[1].lng - p[0].lng,
+  )
+  return !(
+    p[0].lng < p[p.length - 1].lng
+    && angle < Math.PI / 2
+    && angle > -Math.PI / 2
+  )
 }

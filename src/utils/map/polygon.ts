@@ -12,7 +12,7 @@ import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { LayerType } from '@/enums/mapEnum'
 
-interface MPathOptions extends PolylineOptions {
+interface PathOptions extends PolylineOptions {
   key?: string
   data?: object
   coalbed?: string
@@ -24,7 +24,7 @@ interface MPathOptions extends PolylineOptions {
 export const polygonFeatureGroup = L.featureGroup()
 export const polygonGroupMap = reactive(new Map<string, FeatureGroup>())
 
-export function polygon(latlngs: LatLngExpression[], options: MPathOptions): Polygon {
+export function polygon(latlngs: LatLngExpression[], options: PathOptions): Polygon {
   return L.polygon(latlngs, options)
 }
 
