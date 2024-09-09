@@ -1,4 +1,5 @@
 import * as L from 'leaflet'
+import { cloneDeep } from 'lodash-es'
 import { reactive, toRaw, unref } from 'vue'
 import { marker, svgIcon } from './marker'
 import { isLatLngs, leafletMap } from '.'
@@ -14,6 +15,8 @@ export interface MPathOptions extends L.PathOptions {
   coalbed?: string
   data: any
   menuSub?: MenuSub
+  tunnelName: string
+  reverse: boolean
 }
 
 export function polyline(
@@ -50,12 +53,11 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
   })
   const lineLayers = lines.map((line) => {
     const { MarkType, coalbed, weight, color, TunnelName } = line
-    const options = {
-      center: true,
-      clazz: 'label',
-    }
+    const coordinates = cloneDeep(MarkType.coordinates)
+    const _reverse = reverse(coordinates)
+    const latLngs = _reverse ? coordinates.reverse() : coordinates
     return polyline(
-      MarkType.coordinates,
+      latLngs,
       {
         data: line,
         key: line[menuSub.tableKey!],
@@ -63,8 +65,10 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
         weight,
         color,
         menuSub,
+        tunnelName: TunnelName,
+        reverse: _reverse,
       },
-    ).setText(TunnelName, options)
+    )
   })
   const markerLayers = makers.map((maker) => {
     const { MarkType, icon, coalbed } = maker
@@ -92,6 +96,43 @@ export function clearLayers() {
     toRaw(unref(leafletMap)!).removeLayer(layer as L.FeatureGroup)
   })
   polylineGroupMap.clear()
+}
+
+let _lineNameHide = false
+const LineNameHideLevel = 19
+export function lineNameHide(zoom: number) {
+  if (zoom >= LineNameHideLevel
+    && _lineNameHide) {
+    polylineGroupMap.forEach((group, _key) => {
+      const layers = group.getLayers()
+      layers.forEach((layer) => {
+        const { tunnelName } = layer.options as MPathOptions
+        if (tunnelName) {
+          layer.setText(
+            tunnelName,
+            {
+              center: true,
+              clazz: 'label',
+            },
+          )
+        }
+      })
+    })
+    _lineNameHide = false
+  }
+  else if (zoom < LineNameHideLevel
+    && !_lineNameHide) {
+    polylineGroupMap.forEach((group, _key) => {
+      const layers = group.getLayers()
+      layers.forEach((layer) => {
+        const { tunnelName } = layer.options as MPathOptions
+        if (tunnelName) {
+          layer.setText(null)
+        }
+      })
+    })
+    _lineNameHide = true
+  }
 }
 
 function reverse(p: L.LatLngExpression[]): boolean {

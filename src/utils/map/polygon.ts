@@ -16,8 +16,9 @@ interface MPathOptions extends PolylineOptions {
   key?: string
   data?: object
   coalbed?: string
-  dashSpeed?: number
   menuSub?: MenuSub
+  dashArray?: string
+  dashSpeed?: number
 }
 
 export const polygonFeatureGroup = L.featureGroup()
@@ -39,16 +40,17 @@ export function addPolygonLayer(data: any, menuSub: MenuSub) {
     isLatLngs(e) && e.MarkType.type[0] === LayerType.POLYGON)
     .map((p: any) => {
       const { MarkType, coalbed, color: c, FaceState } = p
-      const color = FaceState ? getColor(FaceState) : (c || '#76FF03')
+      const _options = faceState(FaceState)
+      const options = Object.assign({
+        data: p,
+        key: p[menuSub.tableKey!],
+        coalbed,
+        color: c || '#76FF03',
+        menuSub,
+      }, _options)
       return polygon(
         MarkType.coordinates,
-        {
-          data: p,
-          key: p[menuSub.tableKey!],
-          coalbed,
-          color,
-          menuSub,
-        },
+        options,
       )
     })
   const featureGroup = L.featureGroup(layers)
@@ -62,4 +64,12 @@ export function clearLayers() {
     toRaw(unref(leafletMap)!).removeLayer(layer as L.FeatureGroup)
   })
   polygonGroupMap.clear()
+}
+
+function faceState(state?: string) {
+  const options: any = {}
+  if (state) {
+    options.color = getColor(state)
+  }
+  return options
 }

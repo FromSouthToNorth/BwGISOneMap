@@ -3,6 +3,7 @@ import { unref } from 'vue'
 import { removeTileLayer, showSatellite } from './tileLayer'
 import { clearCadLayers, defaultCad } from './cadsLayer'
 import { clearMarkerLayers } from './marker'
+import { lineNameHide } from './polyline'
 import { clearLayers } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { leafletMap } from '@/utils/map'
@@ -37,6 +38,7 @@ export function zoom(e: LeafletEvent) {
       seHideMinePoint(true)
     }
   }
+  lineNameHide(zoom)
 }
 
 export function toShowCad() {
