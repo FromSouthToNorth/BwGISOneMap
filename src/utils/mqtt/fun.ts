@@ -97,7 +97,7 @@ function buildDeviceData(params: any) {
     data,
     layer,
     count,
-    markconfig,
+    markconfig: markfig,
     subStrategy,
     columns: col,
     drawMarkerType,
@@ -119,6 +119,11 @@ function buildDeviceData(params: any) {
   const columns = col.map((e: any) => {
     return e.value
   })
+
+  let markconfig: any
+  if (markfig) {
+    markconfig = markfig[0].value
+  }
 
   const dataSource = data.map((e: any) => {
     return { ...e, menuSub, markconfig }

@@ -165,28 +165,30 @@ export function svgIcon(data: any) {
   const { markconfig } = data
   try {
     let svgSrc
-    if (!markconfig) {
-      svgSrc = svgMarker.markerDefault
-    }
-    else if (isString(markconfig)) {
+    if (isString(markconfig)) {
       svgSrc = svgMarker[markconfig]
     }
     else if (isObject(markconfig)) {
       const { key, createMarkerIcon } = markconfig
       let icon
-      const keys = Object.keys(createMarkerIcon)
-      for (const _key of keys) {
-        if (createMarkerIcon[_key] === data[key]) {
-          icon = svgMarker[_key]
-          break
+      if (isObject(createMarkerIcon)) {
+        const keys = Object.keys(createMarkerIcon)
+        for (const _key of keys) {
+          if (createMarkerIcon[_key] === data[key]) {
+            icon = svgMarker[_key]
+            break
+          }
         }
+      }
+      else if (isString(createMarkerIcon)) {
+        icon = svgMarker[createMarkerIcon]
       }
       svgSrc = icon || svgMarker.markerDefault
     }
     return L.divIcon({
       className: 'point',
       iconSize: [22, 22],
-      html: `<img src="${svgSrc}">`,
+      html: svgSrc ? `<img src="${svgSrc}">` : '',
     })
   }
   catch (error) {
