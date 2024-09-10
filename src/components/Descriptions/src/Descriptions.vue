@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Descriptions } from 'ant-design-vue'
 import type { SubStrategy } from './types'
+import { BodyCell } from '@/components/Table'
 
 const props = defineProps<{ subStrategy: SubStrategy }>()
 console.log(props.subStrategy)

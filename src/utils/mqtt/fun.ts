@@ -90,9 +90,7 @@ function oneMapSubMenu(result: MqttResult) {
   setMenuSub(result.params as unknown as MenuSub[])
 }
 
-function oneMapDevice(result: MqttResult) {
-  console.warn('oneMapDevice: ', result)
-  const { params } = result
+function buildDeviceData(params: any) {
   const {
     key,
     dwg,
@@ -109,12 +107,19 @@ function oneMapDevice(result: MqttResult) {
   menuSub!.layer = layer
   menuSub!.tableKey = key
   menuSub!.count = count
-  menuSub!.subStrategy = subStrategy
+  menuSub!.subStrategy = subStrategy.map((e: any) => {
+    const columns = e.columns.map((e: any) => {
+      return e.value
+    })
+    e.columns = columns
+    return e
+  })
 
   setActiveMenuSub(menuSub!)
   const columns = col.map((e: any) => {
     return e.value
   })
+
   const dataSource = data.map((e: any) => {
     return { ...e, menuSub, markconfig }
   })
@@ -123,6 +128,14 @@ function oneMapDevice(result: MqttResult) {
     columns,
     dataSource,
   })
+
+  return { dataSource, menuSub, markconfig }
+}
+
+function oneMapDevice(result: MqttResult) {
+  console.warn('oneMapDevice: ', result)
+  const { params } = result
+  const { dataSource, menuSub, markconfig } = buildDeviceData(params)
   if (verifyData(result)) {
     return
   }
