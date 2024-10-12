@@ -125,9 +125,11 @@ function buildDeviceData(params: any) {
     markconfig = markfig[0].value
   }
 
-  const dataSource = data.map((e: any) => {
-    return { ...e, menuSub, markconfig }
-  })
+  const dataSource = data
+    ? data.map((e: any) => {
+      return { ...e, menuSub, markconfig }
+    })
+    : []
   tableStore.setDeviceDataSource({
     key,
     columns,
@@ -140,11 +142,11 @@ function buildDeviceData(params: any) {
 function oneMapDevice(result: MqttResult) {
   console.warn('oneMapDevice: ', result)
   const { params } = result
-  const { dataSource, menuSub, markconfig } = buildDeviceData(params)
+  const { dataSource, menuSub } = buildDeviceData(params)
   if (verifyData(result)) {
     return
   }
-  setLayer(dataSource, menuSub!, markconfig)
+  setLayer(dataSource, menuSub!)
 }
 
 function promptMessage(result: MqttResult) {

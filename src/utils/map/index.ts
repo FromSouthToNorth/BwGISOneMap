@@ -29,16 +29,18 @@ import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { useMenuSub, useTool } from '@/components/Menu'
 import { LayerType } from '@/enums/mapEnum'
+import { useCadSetting } from '@/components/Application/src/cad/src/hooks/useCadSetting'
 
+const { mineInfo } = useUserSetting()
 const { getActiveMenuSub } = useMenuSub()
 const { getIsLayerOverlay } = useTool()
+const { getCad, loadDefaultCad } = useCadSetting()
 
 export const leafletMap: Ref<L.Map | null> = ref(null)
 
 export function createMap(id: string) {
-  const { mineInfo } = useUserSetting()
-  watch(mineInfo, (mineInfo) => {
-    const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = mineInfo
+  watch(getCad, () => {
+    const { show_map, show_cad, centerB, centerL, max_zoom, no_show_satellitemap } = unref(mineInfo)
     const center: LatLngExpression = [centerB, centerL]
     const maxZoom = max_zoom || 25
     const minZoom = no_show_satellitemap ? show_cad : show_map
@@ -66,7 +68,9 @@ export function createMap(id: string) {
     if (!no_show_satellitemap) {
       showSatellite()
     }
-
+    else {
+      loadDefaultCad()
+    }
     return leafletMap
   })
 }
@@ -80,7 +84,6 @@ export function isLayerOverlay() {
 export function setLayer(
   data: any,
   menuSub: MenuSub,
-  markconfig: any,
 ) {
   isLayerOverlay()
   const { markType } = menuSub
@@ -96,7 +99,7 @@ export function setLayer(
       break
     default:
       console.log('maker')
-      addMarkerLayer(data, menuSub, isArray(markconfig) ? markconfig[0].value : null)
+      addMarkerLayer(data, menuSub)
   }
 }
 
