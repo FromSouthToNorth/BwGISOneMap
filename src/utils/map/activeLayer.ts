@@ -61,7 +61,7 @@ function activeLine(
   latlng: L.LatLngExpression[],
   clazz?: string,
 ) {
-  const className = `flicker-line ${clazz || ''} `
+  const className = `flicker ${clazz || ''} `
   const weight = 16
   return polyline(latlng, { color: '#ff4d4f', className, weight })
 }
