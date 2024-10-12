@@ -133,10 +133,15 @@ text textPath.label {
 
 @keyframes blink {
   0% { opacity: 0.8; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0; }
   100% { opacity: 0.8; }
 }
 
 .flicker {
   animation: blink 1s infinite;
+}
+
+.active-marker {
+  background-color: #cf1322;
+  border-radius: 50%;
 }

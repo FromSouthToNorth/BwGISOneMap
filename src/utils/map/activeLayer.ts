@@ -41,7 +41,16 @@ export function addActiveLayer(data: any | L.LatLngExpression[], clazz?: string)
   activeFeatureGroup.bringToBack()
 }
 
-function activeMarker(
+function activeMarker(latlng: number[], clazz?: string) {
+  const className = `active-marker flicker ${clazz || ''}`
+  const icon = L.divIcon({
+    iconSize: [30, 30],
+    className,
+  })
+  return marker((latlng as L.LatLngExpression), { icon, key: BasePoint.HIG_MARKER }).setZIndexOffset(-1000)
+}
+
+function higMarker(
   latlng: number[],
   clazz?: string,
 ) {
