@@ -196,6 +196,8 @@ export interface BasicTableProps<T = any> {
   dataSource?: Recordable[]
   // 标题右侧提示
   titleHelpMessage?: string | string[]
+  // 表格滚动最小高度
+  minHeight?: number
   // 表格滚动最大高度
   maxHeight?: number
   // 是否显示边框

@@ -32,7 +32,7 @@ export const useTableSettingStore = defineStore({
     },
     //
     getTableSize(state) {
-      return state.setting?.size || 'middle'
+      return state.setting?.size || 'small'
     },
     //
     getShowIndexColumn(state) {

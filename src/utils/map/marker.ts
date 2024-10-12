@@ -6,7 +6,7 @@ import type { LatLngExpression, Marker, MarkerCluster, MarkerOptions } from 'lea
 import { reactive, toRaw, unref } from 'vue'
 import { isObject, isString } from '../is'
 import { svgMarker } from './svgMarker'
-import { isLatLng, leafletMap } from '.'
+import { isLatLng, leafletMap, openPopup } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { BasePoint } from '@/enums/mapEnum'
 import { useTool } from '@/components/Menu'
@@ -269,6 +269,9 @@ export function addMarkerLayer(
   layerGroup = unref(getIsAggSwitch)
     ? clusterGroup(moduleName, zoom, count).addLayers(markers)
     : layerGroup = L.featureGroup(markers)
+  layerGroup.on('click', ({ sourceTarget }) => {
+    openPopup(sourceTarget.options.data)
+  })
   layerGroup.addTo(toRaw(unref(leafletMap)!))
   markerclusterMap.set(key!, layerGroup)
 }
