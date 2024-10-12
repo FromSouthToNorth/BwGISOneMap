@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref, toRaw, unref, watch } from 'vue'
-import type { VoidCallback } from 'mqtt'
 import {
   BasicTable,
   BodyCell,

@@ -5,14 +5,15 @@ import { marker, svgIcon } from './marker'
 import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import './Leaflet.TextPath'
+import { onClickLayer } from './event'
 
 export interface PathOptions extends L.PathOptions {
   key?: string
   coalbed?: string
-  data: any
+  data?: any
   menuSub?: MenuSub
-  tunnelName: string
-  reverse: boolean
+  tunnelName?: string
+  reverse?: boolean
 }
 
 interface LineLayer extends L.Layer {
@@ -90,7 +91,7 @@ export function addLineLayer(data: any, menuSub: MenuSub) {
     )
   })
   const featureGroup = L.featureGroup([...lineLayers, ...markerLayers])
-    .addTo(toRaw(unref(leafletMap)!))
+    .addTo(toRaw(unref(leafletMap)!)).on('click', onClickLayer)
   polylineGroupMap.set(key!, featureGroup)
 }
 

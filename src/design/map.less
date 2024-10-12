@@ -130,3 +130,13 @@ text textPath.label {
 .highlight-marker .water-blue {
   box-shadow: 0 0 120px 30px #4096ff inset;
 }
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.flicker-line {
+  animation: blink 1s infinite;
+}

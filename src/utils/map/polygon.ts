@@ -8,6 +8,7 @@ import type {
 } from 'leaflet'
 import { reactive, toRaw, unref } from 'vue'
 import { getColor } from '../color'
+import { onClickLayer } from './event'
 import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { LayerType } from '@/enums/mapEnum'
@@ -54,7 +55,7 @@ export function addPolygonLayer(data: any, menuSub: MenuSub) {
       )
     })
   const featureGroup = L.featureGroup(layers)
-    .addTo(toRaw(unref(leafletMap)!))
+    .addTo(toRaw(unref(leafletMap)!)).on('click', onClickLayer)
   polygonGroupMap.set(key!, featureGroup)
 }
 

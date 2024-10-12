@@ -4,7 +4,7 @@ import { removeTileLayer, showSatellite } from './tileLayer'
 import { clearCadLayers, defaultCad } from './cadsLayer'
 import { clearMarkerLayers } from './marker'
 import { lineNameHide } from './polyline'
-import { clearLayers } from '.'
+import { clearLayers, openPopup } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { leafletMap } from '@/utils/map'
 import { useMenuHide } from '@/components/Menu'
@@ -45,4 +45,9 @@ export function toShowCad() {
   const { mineInfo } = useUserSetting()
   const { centerB, centerL, show_cad } = mineInfo.value
   unref(leafletMap)!.setView([centerB, centerL], show_cad)
+}
+
+export function onClickLayer(layer: L.LeafletEvent) {
+  const { sourceTarget } = layer
+  openPopup(sourceTarget.options.data)
 }

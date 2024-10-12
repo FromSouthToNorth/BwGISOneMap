@@ -3,12 +3,10 @@ import type { LatLngExpression, LayerGroup } from 'leaflet'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
 
 import { isArray } from '../is'
-import { centroid, polygon as geoPolygon, lineString, toGeoJSONLatLngs } from '../turf'
 import { showSatellite, tileLayersGroup } from './tileLayer'
 import { zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import {
-  addHigMarker,
   addMarkerLayer,
   markerFeatureGroup,
   markerclusterMap,
@@ -23,12 +21,12 @@ import {
   polylineFeatureGroup,
   polylineGroupMap,
 } from './polyline'
+import { activeFeatureGroup, addActiveLayer, clearFeatureGroup } from './activeLayer'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import { useMenuSub, useTool } from '@/components/Menu'
-import { LayerType } from '@/enums/mapEnum'
 import { useCadSetting } from '@/components/Application/src/cad/src/hooks/useCadSetting'
 
 const { mineInfo } = useUserSetting()
@@ -64,6 +62,7 @@ export function createMap(id: string) {
     markerFeatureGroup.addTo(toRaw(unref(leafletMap)!))
     polygonFeatureGroup.addTo(toRaw(unref(leafletMap)!))
     polylineFeatureGroup.addTo(toRaw(unref(leafletMap)!))
+    activeFeatureGroup.addTo(toRaw(unref(leafletMap)!))
 
     if (!no_show_satellitemap) {
       showSatellite()
@@ -90,15 +89,12 @@ export function setLayer(
   switch (markType) {
     case 'A01':
       addPolygonLayer(data, menuSub)
-      console.log('polygon')
       break
     case 'B08':
     case 'B46':
       addLineLayer(data, menuSub)
-      console.log('polyline')
       break
     default:
-      console.log('maker')
       addMarkerLayer(data, menuSub)
   }
 }
@@ -135,6 +131,7 @@ export function clearLayers() {
     }
     layer.clear()
   }
+  clearFeatureGroup()
 }
 
 export function tryInsert(
@@ -187,31 +184,15 @@ export function isLatLngs(data: any) {
 }
 
 export function openPopup(data: any, openModal?: any) {
-  console.log('openPopup: ', data)
   const map = toRaw(unref(leafletMap))
   if (!isLatLng(data) && !isLatLngs(data) && openModal) {
     openModal()
   }
-  else if (isLatLng(data)) {
-    const { B, L } = data
-    addHigMarker([B, L])
-    map?.setView([B, L], 19)
-  }
-  else if (isLatLngs(data)) {
-    const { MarkType } = data
-    const coordinates = toGeoJSONLatLngs(MarkType.coordinates)
-    let cent
-    switch (MarkType.type[0]) {
-      case LayerType.POLYGON:
-        cent = centroid(geoPolygon(coordinates))
-        break
-      case LayerType.LINE:
-      case LayerType.POLYLINE:
-        cent = centroid(lineString(coordinates))
-        break
-    }
-    if (cent) {
-      map?.setView([cent[1], cent[0]], 19)
-    }
+  else {
+    addActiveLayer(data)
+    // eslint-disable-next-line ts/no-unused-expressions
+    isLatLng(data) && map?.setView([data.B, data.L], 19)
+    // eslint-disable-next-line ts/no-unused-expressions
+    isLatLngs(data) && map?.fitBounds(L.latLngBounds(data.MarkType.coordinates).pad(0.6))
   }
 }
