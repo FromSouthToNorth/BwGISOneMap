@@ -13,4 +13,5 @@ export enum MqttFunEnum {
   ONE_MAP_SUB_MENU = 'oneMapSubMenu',
   ONE_MAP_DEVICE = 'oneMapDevice',
   PROMPT_MESSAGE = 'promptMessage',
+  ONE_MAP_DEVICE_INFO = 'oneMapDeviceInfo',
 }

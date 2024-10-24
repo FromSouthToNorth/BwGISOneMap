@@ -43,6 +43,7 @@ mqttFunMap.set(MqttFunEnum.ONE_MAP_MENU, oneMapMenu)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_SUB_MENU, oneMapSubMenu)
 mqttFunMap.set(MqttFunEnum.ONE_MAP_DEVICE, oneMapDevice)
 mqttFunMap.set(MqttFunEnum.PROMPT_MESSAGE, promptMessage)
+mqttFunMap.set(MqttFunEnum.ONE_MAP_DEVICE_INFO, oneMapDeviceInfo)
 
 function setMineInfo(result: MqttResult) {
   const mineInfo = result.params.data[0] as unknown as MineInfo
@@ -140,13 +141,26 @@ function buildDeviceData(params: any) {
 }
 
 function oneMapDevice(result: MqttResult) {
-  console.warn('oneMapDevice: ', result)
+  console.warn('--oneMapDevice: ', result)
   const { params } = result
   const { dataSource, menuSub } = buildDeviceData(params)
   if (verifyData(result)) {
     return
   }
   setLayer(dataSource, menuSub!)
+}
+
+function oneMapDeviceInfo(result: MqttResult) {
+  console.warn('--oneMapDeviceInfo: ', result)
+  if (verifyData(result)) {
+    return
+  }
+  const { params } = result
+  const { tab } = params
+  tableStore.setSubDataSource({
+    key: tab.key,
+    dataSource: tab.data,
+  })
 }
 
 function promptMessage(result: MqttResult) {
@@ -174,7 +188,7 @@ function verifyData(result: MqttResult): boolean {
   const { params } = result
   setMenuSubLoading(false)
   setTableLoading(false)
-  if (!params.data) {
+  if (!params.data && !params.tab) {
     const id = getStrategyId(result.topic)
     createMessage.warn(`${id} 策略，没有查询到数据！`)
     return true

@@ -13,11 +13,16 @@ export function useCustomRow(
     return {
       onClick: (e: Event) => {
         e?.stopPropagation()
-        function handleClick() {
-          console.warn('handleClick: ', unref(propsRef))
+        try {
+          function handleClick() {
+            console.warn('handleClick: ', unref(propsRef))
+          }
+          handleClick()
+          emit('rowClick', record, index, e)
         }
-        handleClick()
-        emit('rowClick', record, index, e)
+        catch (error) {
+          console.error(error)
+        }
       },
       onDblclick: (event: Event) => {
         emit('rowDbClick', record, index, event)

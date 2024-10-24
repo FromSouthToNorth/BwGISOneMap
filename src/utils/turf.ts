@@ -3,6 +3,9 @@ import {
   point as turfPoint,
   polygon as turfPolygon,
 } from '@turf/helpers'
+import {
+  center,
+} from '@turf/center'
 import { centroid as turfCentroid } from '@turf/centroid'
 
 // 判断两点是否相等
@@ -22,8 +25,12 @@ export function lineString(latLngs: any) {
   return turfLineString(latLngs)
 }
 
+export function turfCenter(geo: any) {
+  return center(geo).geometry.coordinates.reverse()
+}
+
 export function centroid(geo: any) {
-  return turfCentroid(geo).geometry.coordinates
+  return turfCentroid(geo).geometry.coordinates.reverse()
 }
 
 export function toGeoJSONLatLng(latLng: L.LatLng) {

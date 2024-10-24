@@ -25,7 +25,7 @@ interface PathOptions extends PolylineOptions {
 export const polygonFeatureGroup = L.featureGroup()
 export const polygonGroupMap = reactive(new Map<string, FeatureGroup>())
 
-export function polygon(latlngs: LatLngExpression[], options: PathOptions): Polygon {
+export function polygon(latlngs: LatLngExpression[], options?: PathOptions): Polygon {
   return L.polygon(latlngs, options)
 }
 
@@ -73,4 +73,23 @@ function faceState(state?: string) {
     options.color = getColor(state)
   }
   return options
+}
+
+export function selectPolygon(id: string, key?: string): L.Polygon | undefined {
+  let resLayer: L.Polygon | undefined
+  if (key && polygonGroupMap.has(key)) {
+    resLayer = polygonGroupMap.get(key)?.getLayers().find((layer) => {
+      return (layer.options as PathOptions).key === id
+    }) as L.Polygon
+  }
+  else {
+    for (const [_key, layers] of polygonGroupMap) {
+      resLayer = layers.getLayers().find((layer) => {
+        return (layer.options as PathOptions).key === id
+      }) as L.Polygon
+      if (resLayer)
+        break
+    }
+  }
+  return resLayer
 }

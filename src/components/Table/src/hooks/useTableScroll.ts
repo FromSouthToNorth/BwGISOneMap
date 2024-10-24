@@ -270,14 +270,6 @@ export function useTableScroll(
     if (!headEl)
       return
 
-    const tagContainerEL = document.querySelector('.tag-container') as HTMLElement
-
-    const antTabsTopEL = document.querySelector('.ant-tabs-top') as HTMLElement
-    const tagHeight = tagContainerEL.offsetHeight || 0
-    const antTabsTopHeight = antTabsTopEL.offsetHeight ? antTabsTopEL.offsetHeight - 28 : 0
-    // console.log('tagHeight:', tagHeight)
-    // console.log('antTabsTopHeight:', antTabsTopHeight)
-
     const paginationHeight = caclPaginationHeight(tableEl)
     const footerHeight = caclFooterHeight(tableEl)
     const headerHeight = calcHeaderHeight(headEl)
@@ -290,8 +282,6 @@ export function useTableScroll(
     // Math.floor 宁愿小1px，也不溢出
     let height = Math.floor(
       bottomIncludeBody
-      // - tagHeight
-      // - antTabsTopHeight
       - (resizeHeightOffset || 0)
       - paginationHeight
       - footerHeight

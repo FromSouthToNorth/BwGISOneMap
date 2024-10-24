@@ -1,11 +1,11 @@
 import * as L from 'leaflet'
 import { cloneDeep } from 'lodash-es'
 import { reactive, toRaw, unref } from 'vue'
+import { onClickLayer } from './event'
 import { marker, svgIcon } from './marker'
 import { isLatLngs, leafletMap } from '.'
 import type { MenuSub } from '@/components/Menu/src/types/menu'
 import './Leaflet.TextPath'
-import { onClickLayer } from './event'
 
 export interface PathOptions extends L.PathOptions {
   key?: string
@@ -151,4 +151,23 @@ function reverse(p: L.LatLng[]): boolean {
     && angle < Math.PI / 2
     && angle > -Math.PI / 2
   )
+}
+
+export function selectLien(id: string, key?: string): L.Polyline | undefined {
+  let resLayer: L.Polyline | undefined
+  if (key && polylineGroupMap.has(key)) {
+    resLayer = polylineGroupMap.get(key)?.getLayers().find((layer) => {
+      return (layer.options as PathOptions).key === id
+    }) as L.Polyline
+  }
+  else {
+    for (const [_key, layers] of polylineGroupMap) {
+      resLayer = layers.getLayers().find((layer) => {
+        return (layer.options as PathOptions).key === id
+      }) as L.Polyline
+      if (resLayer)
+        break
+    }
+  }
+  return resLayer
 }

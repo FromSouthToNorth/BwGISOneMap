@@ -4,7 +4,7 @@ import { type Ref, ref, toRaw, unref, watch } from 'vue'
 
 import { isArray } from '../is'
 import { showSatellite, tileLayersGroup } from './tileLayer'
-import { zoom as onZoom } from './event'
+import { onClickMap, zoom as onZoom } from './event'
 import { cadLayersGroup } from './cadsLayer'
 import {
   addMarkerLayer,
@@ -21,7 +21,8 @@ import {
   polylineFeatureGroup,
   polylineGroupMap,
 } from './polyline'
-import { activeFeatureGroup, addActiveLayer, clearFeatureGroup } from './activeLayer'
+import { activeFeatureGroup, clearActiveLayers } from './activeLayer'
+import { clearPopLayer, popup, popupFeatureGroup } from './popup'
 import { behaviorHash } from '@/hooks/web/map/useHash'
 
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
@@ -56,6 +57,7 @@ export function createMap(id: string) {
     const hash = behaviorHash({ map: toRaw(unref(leafletMap)!), mineInfo })
     hash()
     toRaw(unref(leafletMap)!).on('moveend', hash.updateHashIfNeeded)
+    toRaw(unref(leafletMap)!).on('click', onClickMap)
 
     tileLayersGroup.addTo(toRaw(unref(leafletMap)!))
     cadLayersGroup.addTo(toRaw(unref(leafletMap)!))
@@ -63,6 +65,7 @@ export function createMap(id: string) {
     polygonFeatureGroup.addTo(toRaw(unref(leafletMap)!))
     polylineFeatureGroup.addTo(toRaw(unref(leafletMap)!))
     activeFeatureGroup.addTo(toRaw(unref(leafletMap)!))
+    popupFeatureGroup.addTo(toRaw(unref(leafletMap)!))
 
     if (!no_show_satellitemap) {
       showSatellite()
@@ -131,7 +134,8 @@ export function clearLayers() {
     }
     layer.clear()
   }
-  clearFeatureGroup()
+  clearActiveLayers()
+  clearPopLayer()
 }
 
 export function tryInsert(
@@ -184,15 +188,10 @@ export function isLatLngs(data: any) {
 }
 
 export function openPopup(data: any, openModal?: any) {
-  const map = toRaw(unref(leafletMap))
   if (!isLatLng(data) && !isLatLngs(data) && openModal) {
     openModal()
   }
   else {
-    addActiveLayer(data)
-    // eslint-disable-next-line ts/no-unused-expressions
-    isLatLng(data) && map?.setView([data.B, data.L], 19)
-    // eslint-disable-next-line ts/no-unused-expressions
-    isLatLngs(data) && map?.fitBounds(L.latLngBounds(data.MarkType.coordinates).pad(0.6))
+    popup(data)
   }
 }

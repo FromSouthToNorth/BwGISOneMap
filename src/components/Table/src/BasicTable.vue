@@ -7,7 +7,6 @@ import {
   toRaw,
   unref,
   useAttrs,
-  useSlots,
   watch,
 } from 'vue'
 import { debounce, omit } from 'lodash-es'
@@ -50,7 +49,6 @@ const emit = defineEmits([
 ])
 
 const attrs = useAttrs()
-const slots = useSlots()
 
 const tableData = ref([])
 const wrapRef = ref(null)
@@ -179,7 +177,7 @@ defineExpose({ tableElRef, ...tableAction })
       class="table-header"
     >
       <BasicForm />
-      <TableSetting />
+      <TableSetting :setting="getProps.tableSetting" />
     </div>
     <Table
       v-bind="getBindValues"

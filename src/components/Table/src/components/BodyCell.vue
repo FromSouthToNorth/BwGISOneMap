@@ -36,6 +36,23 @@ function getValue() {
   const { scopedSlots, dataIndex } = props.column
   return scopedSlots && scopedSlots.customRender ? scopedSlots.customRender : dataIndex
 }
+
+function specialLaneElevation() {
+  const key = [[], ['井口', '井底'], [], ['上口', '下口']]
+  const { record } = props
+  if (record.TunnelType === 3 || record.TunnelType === 1) {
+    const z: number[] = []
+    record.MarkType.coordinates.forEach((val: any) => {
+      const { seq } = val
+      const index = seq.indexOf('-')
+      z.push(seq.substring(index + 1, seq.length))
+    })
+    return `<span>${key[record.TunnelType][0]}: <b>${z[0]}</b>
+                </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span>${key[record.TunnelType][1]}: <b>${z[1]}</b>
+                </span>`
+  }
+}
 </script>
 
 <template>
@@ -135,6 +152,9 @@ function getValue() {
     <Tag :color="text ? 'red' : 'green'">
       {{ text ? '是' : '否' }}
     </Tag>
+  </template>
+  <template v-else-if="getValue() === 'specialLane'">
+    <div v-html="specialLaneElevation()" />
   </template>
   <template v-else>
     {{ text }}

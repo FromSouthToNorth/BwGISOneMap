@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import {
   BasicTable,
   BodyCell,
@@ -16,11 +17,14 @@ defineProps({
   tableHide: { type: Boolean, default: false },
 })
 
+const data = ref([])
+
 const { deviceDataSource } = useTableStting()
 
 const [register, { openModal }] = useModal()
 
 function tableOpenModal(record: any) {
+  data.value = record
   openPopup(record, openModal)
 }
 </script>
@@ -45,6 +49,7 @@ function tableOpenModal(record: any) {
     </BasicTable>
   </component>
   <TableModal
+    :data="data"
     @register="register"
   />
 </template>

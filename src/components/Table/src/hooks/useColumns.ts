@@ -2,7 +2,7 @@ import { type ComputedRef, computed, ref, toRaw, unref, watch } from 'vue'
 import { cloneDeep } from 'lodash-es'
 import type { BasicColumn, BasicTableProps } from '../types/table'
 import type { PaginationProps } from '../types/pagination'
-import { DEFAULT_ALIGN, INDEX_COLUMN_FLAG, PAGE_SIZE } from '../const'
+import { DEFAULT_ALIGN } from '../const'
 import { isBoolean, isFunction } from '@/utils/is'
 import { SpecialColTypeEnum } from '@/enums/tableEnum'
 
@@ -50,7 +50,6 @@ export function useColumns(
 
   function setColumns(columnList: BasicColumn[]) {
     const columnsStr = JSON.stringify(columnList)
-
     columnList = JSON.parse(columnsStr, funReviver)
     originColumnsRef.value = columnList as BasicColumn[]
     columnsRef.value = columnList.filter((e) => {

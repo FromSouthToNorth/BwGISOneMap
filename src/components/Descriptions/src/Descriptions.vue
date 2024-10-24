@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { Descriptions } from 'ant-design-vue'
-import type { SubStrategy } from './types'
 import { BodyCell } from '@/components/Table'
 
-const props = defineProps<{ subStrategy: SubStrategy }>()
-console.log(props.subStrategy)
+defineProps<{ columns: any[], data: any }>()
 </script>
 
 <template>
-  <Descriptions>
+  <Descriptions size="small" bordered>
     <Descriptions.Item
-      v-for="({ value }, index) in subStrategy.columns"
+      v-for="(column, index) in columns"
       :key="index"
-      :label="value.title"
-    />
+      :label="column.title"
+    >
+      <BodyCell
+        :column="column"
+        :record="data"
+        :text="data[column.dataIndex]"
+      />
+    </Descriptions.Item>
   </Descriptions>
 </template>

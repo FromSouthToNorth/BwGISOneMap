@@ -1,5 +1,4 @@
 import * as L from 'leaflet'
-import { centroid, lineString, polygon, toGeoJSONLatLngs } from '../turf'
 import { marker } from './marker'
 import { polyline } from './polyline'
 import { isLatLng, isLatLngs } from '.'
@@ -8,29 +7,24 @@ import { BasePoint, LayerType } from '@/enums/mapEnum'
 export const activeFeatureGroup = L.featureGroup()
 
 export function addActiveLayer(data: any | L.LatLngExpression[], clazz?: string) {
-  clearFeatureGroup()
+  clearActiveLayers()
   let activeLayer: L.Layer | undefined
-  let cent: number[] = []
   if (isLatLng(data)) {
     const { B, L } = data
-    cent = [B, L]
-    activeLayer = activeMarker(cent, clazz)
+    activeLayer = activeMarker([B, L], clazz)
   }
   else if (isLatLngs(data)) {
     const { MarkType } = data
-    const coordinates = toGeoJSONLatLngs(MarkType.coordinates)
+    const { lat, lng } = (MarkType.coordinates[0] as unknown) as L.LatLng
     switch (MarkType.type[0]) {
       case LayerType.POLYGON:
-        cent = centroid(polygon(coordinates))
         activeLayer = activeLine([...MarkType.coordinates, MarkType.coordinates[0]])
         break
       case LayerType.LINE:
       case LayerType.POLYLINE:
-        cent = centroid(lineString(coordinates))
         activeLayer = activeLine(MarkType.coordinates)
         break
       case LayerType.MARKER:
-        const { lat, lng } = MarkType.coordinates[0]
         activeLayer = activeMarker([lat, lng])
         break
     }
@@ -47,7 +41,14 @@ function activeMarker(latlng: number[], clazz?: string) {
     iconSize: [30, 30],
     className,
   })
-  return marker((latlng as L.LatLngExpression), { icon, key: BasePoint.HIG_MARKER }).setZIndexOffset(-1000)
+  return marker(
+    (latlng as L.LatLngExpression),
+    {
+      icon,
+      key: BasePoint.HIG_MARKER,
+    },
+  )
+    .setZIndexOffset(-1000)
 }
 
 function higMarker(
@@ -75,6 +76,6 @@ function activeLine(
   return polyline(latlng, { color: '#ff4d4f', className, weight })
 }
 
-export function clearFeatureGroup() {
+export function clearActiveLayers() {
   activeFeatureGroup.clearLayers()
 }

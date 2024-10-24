@@ -32,7 +32,7 @@ export function marker(latlng: LatLngExpression, options?: MOptions) {
 
 const clusterGroup = function (name: string, zoom?: number, count?: string) {
   return L.markerClusterGroup({
-    disableClusteringAtZoom: zoom || 20,
+    disableClusteringAtZoom: zoom || 19,
     chunkedLoading: true,
     iconCreateFunction: (cluster: MarkerCluster) => {
       const childCount = markerCount(cluster, count)

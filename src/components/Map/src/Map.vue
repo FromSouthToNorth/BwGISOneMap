@@ -12,6 +12,11 @@ const mapContainerRef = ref()
 const mapRef = ref()
 
 function init() {
+  if (mapRef.value) {
+    mapRef.value.remove()
+    const mapInstance = unref(mapContainerRef)
+    mapInstance?.destroy?.()
+  }
   mapRef.value = createMap(unref(mapContainerRef))
 }
 // onMounted(() => {

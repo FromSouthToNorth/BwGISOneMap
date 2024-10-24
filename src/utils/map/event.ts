@@ -4,6 +4,7 @@ import { removeTileLayer, showSatellite } from './tileLayer'
 import { clearCadLayers, defaultCad } from './cadsLayer'
 import { clearMarkerLayers } from './marker'
 import { lineNameHide } from './polyline'
+import { clearActiveLayers } from './activeLayer'
 import { clearLayers, openPopup } from '.'
 import { useUserSetting } from '@/hooks/web/sys/useUserSetting'
 import { leafletMap } from '@/utils/map'
@@ -48,6 +49,11 @@ export function toShowCad() {
 }
 
 export function onClickLayer(layer: L.LeafletEvent) {
-  const { sourceTarget } = layer
+  const { sourceTarget, latlng } = layer
+  sourceTarget.options.data.latlng = latlng
   openPopup(sourceTarget.options.data)
+}
+
+export function onClickMap() {
+  clearActiveLayers()
 }

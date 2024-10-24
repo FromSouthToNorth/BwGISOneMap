@@ -131,3 +131,21 @@ export function publishOneMapDevice(menuSub: MenuSub) {
   })
   mqtt.publish(con)
 }
+
+export function tabDeviceTable(code: number, device: any) {
+  const keyArray: string[] = []
+  for (const key in device) {
+    keyArray.push(key)
+  }
+  const paramsMap = keyArray.map((item) => {
+    return {
+      name: item,
+      value: device[item],
+    }
+  })
+  const con = publishContext({
+    code,
+    strategyParams: paramsMap,
+  })
+  mqtt.publish(con)
+}
