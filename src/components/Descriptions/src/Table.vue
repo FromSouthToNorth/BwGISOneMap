@@ -33,6 +33,7 @@ watch(() => unref(subDataSource).dataSource, () => {
       setting: false,
       fullScreen: false,
     }"
+    :max-height="330"
   >
     <template #bodyCell="{ column, record, text }">
       <BodyCell

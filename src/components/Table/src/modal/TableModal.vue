@@ -8,8 +8,13 @@ const [register, { closeModal }] = useModalInner()
 
 <template>
   <BasicModal
+    :show-cancel-btn="false"
+    :show-ok-btn="false"
     @register="register"
   >
-    <Tabs :data="data" />
+    <Tabs
+      :data="data"
+      :right-extra="false"
+    />
   </BasicModal>
 </template>

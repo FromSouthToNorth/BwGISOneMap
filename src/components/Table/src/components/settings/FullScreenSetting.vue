@@ -4,12 +4,17 @@ import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons-vu
 import { useFullscreen } from '@vueuse/core'
 import { watch } from 'vue'
 import { useTableContext } from '../../hooks/useTableContext'
+import { useFullScreen } from '../../hooks/useFullScreen'
 
 defineOptions({ name: 'FullScreenSetting' })
 
+const { setFullScreen } = useFullScreen()
+
 const table = useTableContext()
 const { toggle, isFullscreen } = useFullscreen(table.wrapRef)
+
 watch(() => isFullscreen.value, (val) => {
+  setFullScreen(val)
 })
 </script>
 

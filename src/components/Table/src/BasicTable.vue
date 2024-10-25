@@ -22,6 +22,7 @@ import { basicProps } from './props'
 import { useTableScroll } from './hooks/useTableScroll'
 import { useTableScrollTo } from './hooks/useScrollTo'
 import { useCustomRow } from './hooks/useCustomRow'
+import { useFullScreen } from './hooks/useFullScreen'
 import { useDesign } from '@/hooks/web/useDesign'
 import BasicForm from '@/components/Form/src/BasicForm.vue'
 import { PageWrapperFixedHeightKey } from '@/enums/pageEnum'
@@ -91,10 +92,13 @@ const {
   },
   emit,
 )
+
+const { getFullScreen } = useFullScreen()
 const { getScrollRef, redoHeight } = useTableScroll(
   getProps,
   tableElRef,
   getDataSourceRef,
+  getFullScreen,
   wrapRef,
   formRef,
 )

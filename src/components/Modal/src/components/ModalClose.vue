@@ -18,10 +18,10 @@ const { prefixCls } = useDesign('basic-modal-close')
 const getClass = computed(() => {
   return [
     prefixCls,
-      `${prefixCls}--custom`,
-      {
-        [`${prefixCls}--can-full`]: props.canFullscreen,
-      },
+    `${prefixCls}--custom`,
+    {
+      [`${prefixCls}--can-full`]: props.canFullscreen,
+    },
   ]
 })
 
@@ -42,11 +42,11 @@ function handleFullScreen(e: Event) {
       <Tooltip v-if="fullScreen" title="restore" placement="bottom">
         <FullscreenExitOutlined role="full" @click="handleFullScreen" />
       </Tooltip>
-      <Tooltip v-else title="maximize" placement="bottom">
+      <Tooltip v-else title="大小" placement="bottom">
         <FullscreenOutlined role="close" @click="handleFullScreen" />
       </Tooltip>
     </template>
-    <Tooltip title="close" placement="bottom">
+    <Tooltip title="关闭" placement="bottom">
       <CloseOutlined @click="handleCancel" />
     </Tooltip>
   </div>

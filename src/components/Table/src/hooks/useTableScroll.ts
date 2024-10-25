@@ -16,6 +16,7 @@ export function useTableScroll(
   propsRef: ComputedRef<BasicTableProps>,
   tableElRef: Ref<ComponentRef>,
   getDataSourceRef: ComputedRef<Recordable[]>,
+  getFullScreenRef: Ref<boolean>,
   wrapRef: Ref<HTMLElement | null>,
   formRef: Ref<ComponentRef>,
 ) {
@@ -319,9 +320,10 @@ export function useTableScroll(
   const getScrollRef = computed(() => {
     const tableHeight = unref(tableHeightRef)
     const { canResize, scroll } = unref(propsRef)
+    const fullScreen = unref(getFullScreenRef)
     return {
       x: unref(getScrollX),
-      y: canResize ? tableHeight : null,
+      y: canResize && fullScreen ? tableHeight : 420,
       scrollToFirstRowOnChange: false,
       ...scroll,
     } as BasicTableProps['scroll']

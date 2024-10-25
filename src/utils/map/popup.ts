@@ -13,20 +13,15 @@ export const popupFeatureGroup = L.featureGroup()
 function getCentroid(data: any) {
   const { MarkType, menuSub } = data
   const { tableKey } = menuSub
-  const map = toRaw(unref(leafletMap))
-  let bounds
+
   let cent: any
   if (MarkType && isArray(MarkType.type)) {
     switch (MarkType.type[0]) {
       case LayerType.POLYGON:
-        bounds = selectPolygon(data[tableKey], menuSub.layer || menuSub.markType)!.getBounds()
-        map?.fitBounds(bounds)
-        cent = bounds.getCenter()
+        cent = selectPolygon(data[tableKey], menuSub.layer || menuSub.markType)!.getCenter()
         break
       case LayerType.LINE:
       case LayerType.POLYLINE:
-        bounds = selectLien(data[tableKey], menuSub.layer || menuSub.markType)!.getBounds()
-        map?.fitBounds(bounds)
         cent = selectLien(data[tableKey], menuSub.layer || menuSub.markType)!.getCenter()
         break
       case LayerType.MARKER:
@@ -37,10 +32,6 @@ function getCentroid(data: any) {
   else {
     cent = [data.B, data.L]
   }
-  if (!bounds) {
-    const zoom = map!.getZoom()
-    map?.setView(cent, zoom >= 20 ? zoom : 20)
-  }
   return cent
 }
 
@@ -50,19 +41,19 @@ export function popup(data: any) {
   const dom = document.createDocumentFragment()
   const html = createApp({
     render() {
-      return h(Tabs, { data })
+      return h(Tabs, { data, rightExtra: true })
     },
   }).mount(dom)
 
   const latlng = getCentroid(data)
-  const pop = L.popup(latlng, { minWidth: 600, maxHeight: 200 })
+  const pop = L.popup(latlng, { closeButton: false, minWidth: 860 })
     .setContent(html.$el)
   popupFeatureGroup.addLayer(pop)
 
   const map = toRaw(unref(leafletMap))
   const point = map!.latLngToLayerPoint(latlng)
   point.x -= 332
-  point.y -= 180
+  point.y -= 200
   map!.flyTo(map!.layerPointToLatLng(point))
 }
 
